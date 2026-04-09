@@ -1,0 +1,88 @@
+site_name: 南哪助手应用教程汇总
+site_description: 小破手今天搓代码了吗？
+site_author: NannaHelper
+docs_dir: docs
+
+theme:
+  name: material
+  language: zh
+  palette:
+    - scheme: default
+      primary: indigo
+      accent: indigo
+      toggle:
+        icon: material/brightness-7
+        name: 切换至深色模式
+    - scheme: slate
+      primary: indigo
+      accent: indigo
+      toggle:
+        icon: material/brightness-4
+        name: 切换至浅色模式
+  features:
+    - navigation.tabs
+    - navigation.top
+    - content.code.copy
+    - content.code.annotate
+
+nav:
+  - 零基础入门LLM API 开发与应用:
+    - 首页: llm_from_zero_with_python/00-llm_api_dev_index.md
+    - 环境准备: llm_from_zero_with_python/01-environment-setup.md
+    - API 集成入门: llm_from_zero_with_python/02-api-integration.md
+    - 概念与 Chatbot 实战: llm_from_zero_with_python/03-concepts.md
+    - 批量处理工作流: llm_from_zero_with_python/04-batch-processing.md
+    - 安全与展望: llm_from_zero_with_python/05-security.md
+  - Git 与 GitHub 团队协作指南:
+    - 第 1 章：认识版本控制与环境配置: git_github_from_zero/01-git-github-intro.md
+    - 第 2 章：本地单机操作与 .gitignore: git_github_from_zero/02-local-operations-gitignore.md
+    - 第 3 章：分支管理——创造平行宇宙: git_github_from_zero/03-branch-management.md
+    - 第 4 章：连接云端——与 GitHub 互通: git_github_from_zero/04-remote-operations.md
+    - 第 5 章：团队协作与代码审查: git_github_from_zero/05-team-collaboration.md
+    - 第 6 章：遇到冲突怎么办: git_github_from_zero/06-merge-conflict-resolution.md
+    - 第 7 章：吃后悔药——进阶与自救: git_github_from_zero/07-troubleshooting-advanced.md
+    - 第 8 章：项目管理与团队协同——Projects & Discussions: git_github_from_zero/08-projects-discussions-agile.md
+
+markdown_extensions:
+  - abbr
+  - admonition
+  - attr_list
+  - def_list
+  - footnotes
+  - md_in_html
+  - toc:
+      permalink: true
+  - pymdownx.arithmatex:
+      generic: true
+  - pymdownx.betterem:
+      smart_enable: all
+  - pymdownx.caret
+  - pymdownx.details
+  - pymdownx.emoji:
+      emoji_index: !!python/name:material.extensions.emoji.twemoji
+      emoji_generator: !!python/name:material.extensions.emoji.to_svg
+  - pymdownx.highlight:
+      anchor_linenums: true
+      line_spans: __span
+      pygments_lang_class: true
+  - pymdownx.inlinehilite
+  - pymdownx.keys
+  - pymdownx.magiclink:
+      normalize_issue_symbols: true
+      repo_url_shorthand: true
+      user: squfrit
+      repo: nannahelper-docs
+  - pymdownx.mark
+  - pymdownx.smartsymbols
+  - pymdownx.snippets
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
+  - pymdownx.tabbed:
+      alternate_style: true
+  - pymdownx.tasklist:
+      custom_checkbox: true
+  - pymdownx.tilde
+  - tables

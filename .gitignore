@@ -1,0 +1,22 @@
+# 敏感配置文件（绝对不能上传 GitHub）
+.env
+
+# Python 虚拟环境
+.venv/
+venv/
+__pycache__/
+*.pyc
+
+# MkDocs/Zensical 构建产物
+site/
+build/
+dist/
+
+# IDE
+.vscode/settings.json
+
+.roo/
+openspec/
+
+.cache/
+.github/
