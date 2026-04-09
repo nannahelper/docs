@@ -72,7 +72,7 @@ markdown_extensions:
       normalize_issue_symbols: true
       repo_url_shorthand: true
       user: squfrit
-      repo: nannahelper-docs
+      repo: docs
   - pymdownx.mark
   - pymdownx.smartsymbols
   - pymdownx.snippets
