@@ -1,6 +1,7 @@
 site_name: 南哪助手应用教程汇总
 site_description: 小破手今天搓代码了吗？
 site_author: NannaHelper
+site_url: https://nannahelper.github.io/docs/
 docs_dir: docs
 
 theme:
