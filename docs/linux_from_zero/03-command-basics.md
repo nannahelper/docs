@@ -291,4 +291,4 @@ $ pwd          # 确认回到了/home/yourname
 - 文件 = 抽屉里的物品  
 - 操作命令 = 整理物品的动作
 
-👉 [进入第4章：文件操作](chapter4.md)
+👉 [进入第4章：文件操作](04-file-operations)

@@ -462,4 +462,4 @@ rm：是否删除普通文件 'temp_file.txt'? y
 - root用户 = 房东（万能钥匙）  
 - sudo = 临时借用万能钥匙
 
-👉 [进入第5章：用户与权限](chapter5.md)
+👉 [进入第5章：用户与权限](05-user-permissions)

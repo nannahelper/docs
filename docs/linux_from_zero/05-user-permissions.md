@@ -439,4 +439,4 @@ $ rm -rf PermissionTest
 - 管道 `|` = 流水线传送带  
 - 脚本 = 管家任务清单
 
-👉 [进入第6章：实用技巧与下一步](chapter6.md)
+👉 [进入第6章：实用技巧与下一步](06-advanced-tips)
