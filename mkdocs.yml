@@ -27,6 +27,7 @@ theme:
     - content.code.annotate
 
 nav:
+  - 首页: index.md
   - 零基础入门LLM API 开发与应用:
     - 首页: llm_from_zero_with_python/00-llm_api_dev_index.md
     - 环境准备: llm_from_zero_with_python/01-environment-setup.md
@@ -43,6 +44,14 @@ nav:
     - 第 6 章：遇到冲突怎么办: git_github_from_zero/06-merge-conflict-resolution.md
     - 第 7 章：吃后悔药——进阶与自救: git_github_from_zero/07-troubleshooting-advanced.md
     - 第 8 章：项目管理与团队协同——Projects & Discussions: git_github_from_zero/08-projects-discussions-agile.md
+  - Linux 新手入门指南:
+    - 首页: linux_from_zero/00-linux-index.md
+    - 第 1 章：认识Linux: linux_from_zero/01-linux-intro.md
+    - 第 2 章：搭建环境: linux_from_zero/02-environment-setup.md
+    - 第 3 章：命令行初体验: linux_from_zero/03-command-basics.md
+    - 第 4 章：文件操作: linux_from_zero/04-file-operations.md
+    - 第 5 章：用户与权限: linux_from_zero/05-user-permissions.md
+    - 第 6 章：实用技巧与下一步: linux_from_zero/06-advanced-tips.md
 
 markdown_extensions:
   - abbr
