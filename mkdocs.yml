@@ -52,6 +52,29 @@ nav:
     - 第 4 章：文件操作: linux_from_zero/04-file-operations.md
     - 第 5 章：用户与权限: linux_from_zero/05-user-permissions.md
     - 第 6 章：实用技巧与下一步: linux_from_zero/06-advanced-tips.md
+  - 《人月神话》软件工程入门:
+    - 首页: mythical_man_month/index.md
+    - 第 1 章 焦油坑: mythical_man_month/chapter1.md
+    - 第 2 章 人月神话: mythical_man_month/chapter2.md
+    - 第 3 章 外科手术队伍: mythical_man_month/chapter3.md
+    - 第 4 章 贵族专制与系统设计: mythical_man_month/chapter4.md
+    - 第 5 章 画蛇添足: mythical_man_month/chapter5.md
+    - 第 6 章 贯彻执行: mythical_man_month/chapter6.md
+    - 第 7 章 巴比伦塔: mythical_man_month/chapter7.md
+    - 第 8 章 胸有成竹: mythical_man_month/chapter8.md
+    - 第 9 章 削足适履: mythical_man_month/chapter9.md
+    - 第 10 章 提纲挈领: mythical_man_month/chapter10.md
+    - 第 11 章 未雨绸缪: mythical_man_month/chapter11.md
+    - 第 12 章 干将莫邪: mythical_man_month/chapter12.md
+    - 第 13 章 整体部分: mythical_man_month/chapter13.md
+    - 第 14 章 祸起萧墙: mythical_man_month/chapter14.md
+    - 第 15 章 另外一面: mythical_man_month/chapter15.md
+    - 第 16 章 没有银弹: mythical_man_month/chapter16.md
+    - 第 17 章 再论没有银弹: mythical_man_month/chapter17.md
+    - 第 18 章 观点是或非: mythical_man_month/chapter18.md
+    - 第 19 章 结束语: mythical_man_month/chapter19.md
+    - 学习目标对照表: mythical_man_month/learning_map.md
+    - 质量评估报告: mythical_man_month/quality_report.md
 
 markdown_extensions:
   - abbr
