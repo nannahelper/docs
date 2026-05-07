@@ -52,6 +52,14 @@ nav:
     - 第 4 章：文件操作: linux_from_zero/04-file-operations.md
     - 第 5 章：用户与权限: linux_from_zero/05-user-permissions.md
     - 第 6 章：实用技巧与下一步: linux_from_zero/06-advanced-tips.md
+  - 网络爬虫新手指南:
+    - 首页: web-crawler-from-zero/index.md
+    - 第 1 章：揭秘网络爬虫——从浏览器背后的秘密说起: web-crawler-from-zero/01-intro.md
+    - 第 2 章：环境搭建与第一个请求——开启你的爬虫之旅: web-crawler-from-zero/02-env-setup.md
+    - 第 3 章：精准解析网页——像外科医生一样提取数据: web-crawler-from-zero/03-parsing.md
+    - 第 4 章：数据持久化——将战利品存入仓库: web-crawler-from-zero/04-storage.md
+    - 第 5 章：应对反爬挑战——成为“伪装大师”: web-crawler-from-zero/05-anti-scraping.md
+    - 第 6 章：完整实战：抓取豆瓣 Top 250 全榜单: web-crawler-from-zero/06-final-project.md
   - 《人月神话》软件工程入门:
     - 首页: mythical_man_month/index.md
     - 第 1 章 焦油坑: mythical_man_month/chapter1.md
