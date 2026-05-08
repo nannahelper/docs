@@ -33,14 +33,17 @@
        ```powershell
        cd D:\Projects\web-crawler-tutorial
        ```
+
     3. 创建虚拟环境：
        ```powershell
        python -m venv venv
        ```
+
     4. 激活虚拟环境：
        ```powershell
        venv\Scripts\activate
        ```
+
     5. 激活成功后，命令行前会出现 `(venv)` 标识。
 
 === "macOS"
@@ -50,14 +53,17 @@
        ```bash
        cd ~/Projects/web-crawler-tutorial
        ```
+
     3. 创建虚拟环境：
        ```bash
        python3 -m venv venv
        ```
+
     4. 激活虚拟环境：
        ```bash
        source venv/bin/activate
        ```
+
     5. 激活成功后，命令行前会出现 `(venv)` 标识。
 
 **验证安装成功：** 命令行前缀出现 `(venv)` 字样，说明虚拟环境已激活 ✅
