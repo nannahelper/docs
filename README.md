@@ -128,25 +128,16 @@ docs/
 
 ### 架构设计
 
-```
-┌─────────────────────────────────────────────┐
-│                  GitHub Pages               │
-│            nannahelper.github.io/docs       │
-└──────────────────┬──────────────────────────┘
-                   │ 自动部署
-┌──────────────────▼──────────────────────────┐
-│              GitHub Actions                 │
-│         mkdocs build → gh-deploy            │
-└──────────────────┬──────────────────────────┘
-                   │ 触发构建
-┌──────────────────▼──────────────────────────┐
-│            GitHub Repository                │
-│       github.com/nannahelper/docs           │
-│  ┌──────────────────────────────────────┐   │
-│  │         Markdown 源文件               │   │
-│  │  (教程内容 + mkdocs.yml 配置)          │   │
-│  └──────────────────────────────────────┘   │
-└─────────────────────────────────────────────┘
+```mermaid
+flowchart TD
+    subgraph repo["GitHub Repository<br/>github.com/nannahelper/docs"]
+        src["Markdown 源文件<br/>教程内容 + mkdocs.yml 配置"]
+    end
+    actions["GitHub Actions<br/>mkdocs build → gh-deploy"]
+    pages["GitHub Pages<br/>nannahelper.github.io/docs"]
+
+    repo -->|触发构建| actions
+    actions -->|自动部署| pages
 ```
 
 ---
