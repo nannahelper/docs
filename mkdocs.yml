@@ -60,6 +60,14 @@ nav:
     - 第 4 章：数据持久化——将战利品存入仓库: web-crawler-from-zero/04-storage.md
     - 第 5 章：应对反爬挑战——成为"伪装大师": web-crawler-from-zero/05-anti-scraping.md
     - 第 6 章：完整实战：抓取豆瓣 Top 250 全榜单: web-crawler-from-zero/06-final-project.md
+  - HTML5+CSS3+JavaScript 前端开发入门指南:
+    - 首页: frontend-from-zero/index.md
+    - 第 1 章：HTML5 语义化与文档结构: frontend-from-zero/01-html5-semantics.md
+    - 第 2 章：CSS3 样式与视觉美化: frontend-from-zero/02-css3-styling.md
+    - 第 3 章：CSS3 布局与响应式设计: frontend-from-zero/03-css3-layout-responsive.md
+    - 第 4 章：JavaScript 基础语法: frontend-from-zero/04-javascript-basics.md
+    - 第 5 章：DOM 操作与事件处理: frontend-from-zero/05-dom-events.md
+    - 第 6 章：综合实战——打造个人主页: frontend-from-zero/06-final-project.md
   - 《人月神话》软件工程入门:
     - 首页: mythical_man_month/index.md
     - 第 1 章 焦油坑: mythical_man_month/chapter1.md
