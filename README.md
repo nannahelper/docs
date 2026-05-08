@@ -130,12 +130,12 @@ docs/
 
 ```mermaid
 flowchart TD
-    subgraph repo["GitHub Repository<br/>github.com/nannahelper/docs"]
-        src["Markdown 源文件<br/>教程内容 + mkdocs.yml 配置"]
-    end
+    src["Markdown 源文件<br/>教程内容 + mkdocs.yml 配置"]
+    repo["GitHub Repository<br/>github.com/nannahelper/docs"]
     actions["GitHub Actions<br/>mkdocs build → gh-deploy"]
     pages["GitHub Pages<br/>nannahelper.github.io/docs"]
 
+    src -->|归属于| repo
     repo -->|触发构建| actions
     actions -->|自动部署| pages
 ```
