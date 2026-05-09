@@ -21,7 +21,6 @@ theme:
         icon: material/brightness-4
         name: 切换至浅色模式
   features:
-    #- navigation.sections
     - navigation.instant
     - content.code.copy
     - content.code.annotate
@@ -41,16 +40,16 @@ nav:
       - 第 8 章：项目管理与团队协同——Projects & Discussions: git_github_from_zero/08-projects-discussions-agile.md
     - Markdown 新手指南:
       - 首页: markdown-from-zero/index.md
-      - 第 1 章：基础概念: markdown-from-zero/01-basics.md
-      - 第 2 章：核心语法: markdown-from-zero/02-syntax.md
-      - 第 3 章：常用技巧: markdown-from-zero/03-tips.md
-      - 第 4 章：实战案例: markdown-from-zero/04-practice.md
+      - 第 1 章：你的第一篇技术文档: markdown-from-zero/01-basics.md
+      - 第 2 章：打造项目主页: markdown-from-zero/02-syntax.md
+      - 第 3 章：团队协作文档: markdown-from-zero/03-tips.md
+      - 第 4 章：发布你的作品: markdown-from-zero/04-practice.md
     - LaTeX 新手指南:
       - 首页: latex-from-zero/index.md
-      - 第 1 章：基础概念: latex-from-zero/01-basics.md
-      - 第 2 章：核心语法: latex-from-zero/02-syntax.md
-      - 第 3 章：常用技巧: latex-from-zero/03-tips.md
-      - 第 4 章：实战案例: latex-from-zero/04-practice.md
+      - 第 1 章：你的第一篇学术作业: latex-from-zero/01-basics.md
+      - 第 2 章：让论文更专业: latex-from-zero/02-syntax.md
+      - 第 3 章：管理参考文献与引用: latex-from-zero/03-tips.md
+      - 第 4 章：打造学术作品集: latex-from-zero/04-practice.md
     - MkDocs 与 GitHub Pages 部署指南:
       - 首页: mkdocs-from-zero/index.md
       - 第 1 章：环境准备: mkdocs-from-zero/01-environment-setup.md
@@ -63,16 +62,16 @@ nav:
     - 分类概览: categories/programming-languages.md
     - R 语言新手指南:
       - 首页: r-from-zero/index.md
-      - 第 1 章：基础概念: r-from-zero/01-basics.md
-      - 第 2 章：核心语法: r-from-zero/02-syntax.md
-      - 第 3 章：常用技巧: r-from-zero/03-tips.md
-      - 第 4 章：实战案例: r-from-zero/04-practice.md
+      - 第 1 章：你的第一次数据分析: r-from-zero/01-basics.md
+      - 第 2 章：让数据可视化: r-from-zero/02-syntax.md
+      - 第 3 章：数据清洗与变换: r-from-zero/03-tips.md
+      - 第 4 章：完成数据分析报告: r-from-zero/04-practice.md
     - MATLAB 新手指南:
       - 首页: matlab-from-zero/index.md
-      - 第 1 章：基础概念: matlab-from-zero/01-basics.md
-      - 第 2 章：核心语法: matlab-from-zero/02-syntax.md
-      - 第 3 章：常用技巧: matlab-from-zero/03-tips.md
-      - 第 4 章：实战案例: matlab-from-zero/04-practice.md
+      - 第 1 章：你的第一个数据分析: matlab-from-zero/01-basics.md
+      - 第 2 章：让数据说话: matlab-from-zero/02-syntax.md
+      - 第 3 章：自动化你的工作: matlab-from-zero/03-tips.md
+      - 第 4 章：完成数据分析项目: matlab-from-zero/04-practice.md
   - 技术领域:
     - 分类概览: categories/technical-domains.md
     - 零基础入门 LLM API 开发与应用:
