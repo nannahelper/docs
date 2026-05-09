@@ -21,7 +21,7 @@ theme:
         icon: material/brightness-4
         name: 切换至浅色模式
   features:
-    - navigation.sections
+    #- navigation.sections
     - navigation.instant
     - content.code.copy
     - content.code.annotate
