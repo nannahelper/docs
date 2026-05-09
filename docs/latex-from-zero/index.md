@@ -6,7 +6,7 @@
 
 ## 教程简介
 
-LaTeX（发音为"拉泰克"或"雷泰克"）是由 Leslie Lamport 在 1980 年代开发的文档排版系统，底层基于 Donald Knuth 的 TeX 排版引擎。与 Word 等"所见即所得"软件不同，LaTeX 采用"所想即所得"的理念——你只需关注内容和结构，排版由系统自动完成。
+LaTeX 是 Leslie Lamport 在 1980 年代开发的文档排版系统，底层基于 Donald Knuth 的 TeX 排版引擎。与 Word 等"所见即所得"软件不同，LaTeX 采用"所想即所得"的理念——你只需关注内容和结构，排版由系统自动完成。
 
 !!! info "为什么学 LaTeX？"
 

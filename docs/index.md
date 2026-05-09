@@ -2,7 +2,7 @@
 
 > **小破手今天搓代码了吗？**
 
-欢迎来到南哪助手教程汇总站点！这里汇集了多个零基础入门教程，帮助你从新手成长为熟练的开发者。
+欢迎来到南哪助手教程汇总站点！这里汇集了多个零基础入门教程，帮助你从小白快速入门。
 
 ---
 
@@ -182,7 +182,7 @@
 
 本站点使用 [MkDocs](https://www.mkdocs.org/) 构建，采用 [Material](https://squidfunk.github.io/mkdocs-material/) 主题。
 
-**作者：** NannaHelper  
+**作者：** NannaHelper  (南哪助手团队)
 **项目地址：** [GitHub](https://github.com/nannahelper/docs)
 
 ---

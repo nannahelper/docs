@@ -6,7 +6,7 @@
 
 ## 1.1 MATLAB 的定位
 
-MATLAB 是一个**面向矩阵运算**的数值计算平台。与 Python 和 R 不同，MATLAB 从底层设计就以矩阵为核心数据结构。
+MATLAB 是一个 **面向矩阵运算** 的数值计算平台。与 Python 和 R 不同，MATLAB 从底层设计就以矩阵为核心数据结构。
 
 | 对比维度 | MATLAB | Python + NumPy | R 语言 |
 |:---|:---|:---|:---|
