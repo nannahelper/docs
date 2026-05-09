@@ -28,69 +28,83 @@ theme:
 
 nav:
   - 首页: index.md
-  - 零基础入门LLM API 开发与应用:
-    - 首页: llm_from_zero_with_python/00-llm_api_dev_index.md
-    - 环境准备: llm_from_zero_with_python/01-environment-setup.md
-    - API 集成入门: llm_from_zero_with_python/02-api-integration.md
-    - 概念与 Chatbot 实战: llm_from_zero_with_python/03-concepts.md
-    - 批量处理工作流: llm_from_zero_with_python/04-batch-processing.md
-    - 安全与展望: llm_from_zero_with_python/05-security.md
-  - Git 与 GitHub 团队协作指南:
-    - 第 1 章：认识版本控制与环境配置: git_github_from_zero/01-git-github-intro.md
-    - 第 2 章：本地单机操作与 .gitignore: git_github_from_zero/02-local-operations-gitignore.md
-    - 第 3 章：分支管理——创造平行宇宙: git_github_from_zero/03-branch-management.md
-    - 第 4 章：连接云端——与 GitHub 互通: git_github_from_zero/04-remote-operations.md
-    - 第 5 章：团队协作与代码审查: git_github_from_zero/05-team-collaboration.md
-    - 第 6 章：遇到冲突怎么办: git_github_from_zero/06-merge-conflict-resolution.md
-    - 第 7 章：吃后悔药——进阶与自救: git_github_from_zero/07-troubleshooting-advanced.md
-    - 第 8 章：项目管理与团队协同——Projects & Discussions: git_github_from_zero/08-projects-discussions-agile.md
-  - Linux 新手入门指南:
-    - 首页: linux_from_zero/00-linux-index.md
-    - 第 1 章：认识Linux: linux_from_zero/01-linux-intro.md
-    - 第 2 章：搭建环境: linux_from_zero/02-environment-setup.md
-    - 第 3 章：命令行初体验: linux_from_zero/03-command-basics.md
-    - 第 4 章：文件操作: linux_from_zero/04-file-operations.md
-    - 第 5 章：用户与权限: linux_from_zero/05-user-permissions.md
-    - 第 6 章：实用技巧与下一步: linux_from_zero/06-advanced-tips.md
-  - 网络爬虫新手指南:
-    - 首页: web-crawler-from-zero/index.md
-    - 第 1 章：揭秘网络爬虫——从浏览器背后的秘密说起: web-crawler-from-zero/01-intro.md
-    - 第 2 章：环境搭建与第一个请求——开启你的爬虫之旅: web-crawler-from-zero/02-env-setup.md
-    - 第 3 章：精准解析网页——像外科医生一样提取数据: web-crawler-from-zero/03-parsing.md
-    - 第 4 章：数据持久化——将战利品存入仓库: web-crawler-from-zero/04-storage.md
-    - 第 5 章：应对反爬挑战——成为"伪装大师": web-crawler-from-zero/05-anti-scraping.md
-    - 第 6 章：完整实战：抓取豆瓣 Top 250 全榜单: web-crawler-from-zero/06-final-project.md
-  - 前端入门指南:
-    - 首页: frontend-from-zero/index.md
-    - 第 1 章：HTML5 语义化与文档结构: frontend-from-zero/01-html5-semantics.md
-    - 第 2 章：CSS3 样式与视觉美化: frontend-from-zero/02-css3-styling.md
-    - 第 3 章：CSS3 布局与响应式设计: frontend-from-zero/03-css3-layout-responsive.md
-    - 第 4 章：JavaScript 基础语法: frontend-from-zero/04-javascript-basics.md
-    - 第 5 章：DOM 操作与事件处理: frontend-from-zero/05-dom-events.md
-    - 第 6 章：综合实战——打造个人主页: frontend-from-zero/06-final-project.md
-  - 《人月神话》软件工程入门:
-    - 首页: mythical_man_month/index.md
-    - 第 1 章 焦油坑: mythical_man_month/chapter1.md
-    - 第 2 章 人月神话: mythical_man_month/chapter2.md
-    - 第 3 章 外科手术队伍: mythical_man_month/chapter3.md
-    - 第 4 章 贵族专制与系统设计: mythical_man_month/chapter4.md
-    - 第 5 章 画蛇添足: mythical_man_month/chapter5.md
-    - 第 6 章 贯彻执行: mythical_man_month/chapter6.md
-    - 第 7 章 巴比伦塔: mythical_man_month/chapter7.md
-    - 第 8 章 胸有成竹: mythical_man_month/chapter8.md
-    - 第 9 章 削足适履: mythical_man_month/chapter9.md
-    - 第 10 章 提纲挈领: mythical_man_month/chapter10.md
-    - 第 11 章 未雨绸缪: mythical_man_month/chapter11.md
-    - 第 12 章 干将莫邪: mythical_man_month/chapter12.md
-    - 第 13 章 整体部分: mythical_man_month/chapter13.md
-    - 第 14 章 祸起萧墙: mythical_man_month/chapter14.md
-    - 第 15 章 另外一面: mythical_man_month/chapter15.md
-    - 第 16 章 没有银弹: mythical_man_month/chapter16.md
-    - 第 17 章 再论没有银弹: mythical_man_month/chapter17.md
-    - 第 18 章 观点是或非: mythical_man_month/chapter18.md
-    - 第 19 章 结束语: mythical_man_month/chapter19.md
-    - 学习目标对照表: mythical_man_month/learning_map.md
-    - 质量评估报告: mythical_man_month/quality_report.md
+  - 零基础入门 LLM API 开发与应用: llm_from_zero_with_python/00-llm_api_dev_index.md
+  - LLM · 环境准备: llm_from_zero_with_python/01-environment-setup.md
+  - LLM · API 集成入门: llm_from_zero_with_python/02-api-integration.md
+  - LLM · 概念与 Chatbot 实战: llm_from_zero_with_python/03-concepts.md
+  - LLM · 批量处理工作流: llm_from_zero_with_python/04-batch-processing.md
+  - LLM · 安全与展望: llm_from_zero_with_python/05-security.md
+  - Git 与 GitHub 团队协作指南: git_github_from_zero/01-git-github-intro.md
+  - Git · 本地操作与 .gitignore: git_github_from_zero/02-local-operations-gitignore.md
+  - Git · 分支管理: git_github_from_zero/03-branch-management.md
+  - Git · 连接云端: git_github_from_zero/04-remote-operations.md
+  - Git · 团队协作与代码审查: git_github_from_zero/05-team-collaboration.md
+  - Git · 冲突解决: git_github_from_zero/06-merge-conflict-resolution.md
+  - Git · 进阶与自救: git_github_from_zero/07-troubleshooting-advanced.md
+  - Git · 项目管理: git_github_from_zero/08-projects-discussions-agile.md
+  - Linux 新手入门指南: linux_from_zero/00-linux-index.md
+  - Linux · 认识 Linux: linux_from_zero/01-linux-intro.md
+  - Linux · 搭建环境: linux_from_zero/02-environment-setup.md
+  - Linux · 命令行初体验: linux_from_zero/03-command-basics.md
+  - Linux · 文件操作: linux_from_zero/04-file-operations.md
+  - Linux · 用户与权限: linux_from_zero/05-user-permissions.md
+  - Linux · 实用技巧: linux_from_zero/06-advanced-tips.md
+  - 网络爬虫新手指南: web-crawler-from-zero/index.md
+  - 爬虫 · 揭秘网络爬虫: web-crawler-from-zero/01-intro.md
+  - 爬虫 · 环境搭建与第一个请求: web-crawler-from-zero/02-env-setup.md
+  - 爬虫 · 精准解析网页: web-crawler-from-zero/03-parsing.md
+  - 爬虫 · 数据持久化: web-crawler-from-zero/04-storage.md
+  - 爬虫 · 应对反爬挑战: web-crawler-from-zero/05-anti-scraping.md
+  - 爬虫 · 完整实战：豆瓣 Top 250: web-crawler-from-zero/06-final-project.md
+  - 前端入门指南: frontend-from-zero/index.md
+  - 前端 · HTML5 语义化: frontend-from-zero/01-html5-semantics.md
+  - 前端 · CSS3 样式与美化: frontend-from-zero/02-css3-styling.md
+  - 前端 · CSS3 布局与响应式: frontend-from-zero/03-css3-layout-responsive.md
+  - 前端 · JavaScript 基础: frontend-from-zero/04-javascript-basics.md
+  - 前端 · DOM 操作与事件: frontend-from-zero/05-dom-events.md
+  - 前端 · 综合实战: frontend-from-zero/06-final-project.md
+  - 《人月神话》软件工程入门: mythical_man_month/index.md
+  - 人月神话 · 焦油坑: mythical_man_month/chapter1.md
+  - 人月神话 · 人月神话: mythical_man_month/chapter2.md
+  - 人月神话 · 外科手术队伍: mythical_man_month/chapter3.md
+  - 人月神话 · 贵族专制与系统设计: mythical_man_month/chapter4.md
+  - 人月神话 · 画蛇添足: mythical_man_month/chapter5.md
+  - 人月神话 · 贯彻执行: mythical_man_month/chapter6.md
+  - 人月神话 · 巴比伦塔: mythical_man_month/chapter7.md
+  - 人月神话 · 胸有成竹: mythical_man_month/chapter8.md
+  - 人月神话 · 削足适履: mythical_man_month/chapter9.md
+  - 人月神话 · 提纲挈领: mythical_man_month/chapter10.md
+  - 人月神话 · 未雨绸缪: mythical_man_month/chapter11.md
+  - 人月神话 · 干将莫邪: mythical_man_month/chapter12.md
+  - 人月神话 · 整体部分: mythical_man_month/chapter13.md
+  - 人月神话 · 祸起萧墙: mythical_man_month/chapter14.md
+  - 人月神话 · 另外一面: mythical_man_month/chapter15.md
+  - 人月神话 · 没有银弹: mythical_man_month/chapter16.md
+  - 人月神话 · 再论没有银弹: mythical_man_month/chapter17.md
+  - 人月神话 · 观点是或非: mythical_man_month/chapter18.md
+  - 人月神话 · 结束语: mythical_man_month/chapter19.md
+  - 人月神话 · 学习目标对照表: mythical_man_month/learning_map.md
+  - 人月神话 · 质量评估报告: mythical_man_month/quality_report.md
+  - Markdown 新手指南: markdown-from-zero/index.md
+  - Markdown · 基础概念: markdown-from-zero/01-basics.md
+  - Markdown · 核心语法: markdown-from-zero/02-syntax.md
+  - Markdown · 常用技巧: markdown-from-zero/03-tips.md
+  - Markdown · 实战案例: markdown-from-zero/04-practice.md
+  - LaTeX 新手指南: latex-from-zero/index.md
+  - LaTeX · 基础概念: latex-from-zero/01-basics.md
+  - LaTeX · 核心语法: latex-from-zero/02-syntax.md
+  - LaTeX · 常用技巧: latex-from-zero/03-tips.md
+  - LaTeX · 实战案例: latex-from-zero/04-practice.md
+  - R 语言新手指南: r-from-zero/index.md
+  - R 语言 · 基础概念: r-from-zero/01-basics.md
+  - R 语言 · 核心语法: r-from-zero/02-syntax.md
+  - R 语言 · 常用技巧: r-from-zero/03-tips.md
+  - R 语言 · 实战案例: r-from-zero/04-practice.md
+  - MATLAB 新手指南: matlab-from-zero/index.md
+  - MATLAB · 基础概念: matlab-from-zero/01-basics.md
+  - MATLAB · 核心语法: matlab-from-zero/02-syntax.md
+  - MATLAB · 常用技巧: matlab-from-zero/03-tips.md
+  - MATLAB · 实战案例: matlab-from-zero/04-practice.md
 
 markdown_extensions:
   - abbr
