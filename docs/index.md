@@ -76,7 +76,18 @@
 
 本站点使用 [MkDocs](https://www.mkdocs.org/) 构建，采用 [Material](https://squidfunk.github.io/mkdocs-material/) 主题。
 
+**免责声明：**
+
+1. **内容准确性**：本站点内容仅供学习参考，我们尽力确保内容的准确性和时效性，但不对因使用本站内容而产生的任何损失或损害承担责任。
+
+2. **第三方链接**：本站点可能包含指向第三方网站的链接，这些链接仅为方便用户而提供，我们不对第三方网站的内容或服务负责。
+
+3. **版权声明**：除另有说明外，本站点所有原创内容均采用 [MIT 许可证](https://opensource.org/licenses/MIT) 进行许可。转载或引用时请注明出处。
+
+4. **观点独立**：本教程中的观点和经验分享仅代表作者个人意见，不构成任何投资、决策或专业建议。
+
 **作者：** NannaHelper  (南哪助手团队)
+**联系邮箱：** nannadev at 163.com
 **项目地址：** [GitHub](https://github.com/nannahelper/docs)
 
 ---
