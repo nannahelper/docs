@@ -115,6 +115,14 @@ nav:
     - 第 2 章：核心语法: matlab-from-zero/02-syntax.md
     - 第 3 章：常用技巧: matlab-from-zero/03-tips.md
     - 第 4 章：实战案例: matlab-from-zero/04-practice.md
+  - MkDocs 与 GitHub Pages 部署指南:
+    - 首页: mkdocs-from-zero/index.md
+    - 第 1 章：环境准备: mkdocs-from-zero/01-environment-setup.md
+    - 第 2 章：MkDocs 入门: mkdocs-from-zero/02-mkdocs-basics.md
+    - 第 3 章：配置详解: mkdocs-from-zero/03-configuration.md
+    - 第 4 章：内容创作: mkdocs-from-zero/04-content-creation.md
+    - 第 5 章：主题定制: mkdocs-from-zero/05-theme-customization.md
+    - 第 6 章：部署上线: mkdocs-from-zero/06-deployment.md
 
 markdown_extensions:
   - abbr

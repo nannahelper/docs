@@ -6,7 +6,7 @@
 
 ## 1.1 Markdown 的起源
 
-2004 年，博客写作者 John Gruber 和 Aaron Swartz 共同创建了 Markdown。他们的目标是设计一种**易读易写**的纯文本格式，让普通人不用学习 HTML 也能写出结构化的网页内容。
+2004 年，博客写作者 John Gruber 和 Aaron Swartz 共同创建了 Markdown。他们的目标是设计一种 **易读易写** 的纯文本格式，让普通人不用学习 HTML 也能写出结构化的网页内容。
 
 !!! info "标记语言 vs 所见即所得"
 

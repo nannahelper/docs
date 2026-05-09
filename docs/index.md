@@ -154,6 +154,21 @@
 
 ---
 
+### MkDocs 与 GitHub Pages 部署指南
+
+从零搭建专业文档网站。使用 MkDocs Material 主题 + GitHub Pages + GitHub Actions，完成从环境搭建到线上自动部署的完整流程。
+
+- 第 1 章：环境准备 —— Python、Git、VS Code 安装与验证
+- 第 2 章：MkDocs 入门 —— 安装、创建项目、本地预览
+- 第 3 章：配置详解 —— mkdocs.yml 导航、主题、扩展配置
+- 第 4 章：内容创作 —— 弹窗组件、代码块、标签页、流程图
+- 第 5 章：主题定制 —— 配色、字体、Logo、自定义 CSS
+- 第 6 章：部署上线 —— GitHub Actions CI/CD、GitHub Pages 发布
+
+[进入教程 →](mkdocs-from-zero/index.md)
+
+---
+
 ## 学习建议
 
 1. **按顺序学习** — 每套教程都是循序渐进的

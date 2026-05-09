@@ -150,6 +150,19 @@
 | 常用技巧 | 数据可视化、文件 I/O、数据分析 |
 | 实战案例 | 信号处理、图像处理、数值分析综合案例 |
 
+### 11. MkDocs 与 GitHub Pages 部署指南
+
+从零搭建专业文档网站。使用 MkDocs Material 主题 + GitHub Pages + GitHub Actions，完成从环境搭建到线上自动部署的完整流程。
+
+| 章节 | 内容 |
+|:---|:---|
+| 环境准备 | Python、pip、Git、VS Code 安装与验证 |
+| MkDocs 入门 | 安装 MkDocs、创建项目、本地预览与热重载 |
+| 配置详解 | mkdocs.yml 深度配置：导航、主题、功能开关、Markdown 扩展 |
+| 内容创作 | 弹窗组件、代码块、标签页、表格、Mermaid 流程图 |
+| 主题定制 | Material 主题配色、字体、Logo、自定义 CSS、插件 |
+| 部署上线 | GitHub 仓库创建、GitHub Actions CI/CD、GitHub Pages 发布 |
+
 ---
 
 ## 技术架构
@@ -185,7 +198,8 @@ docs/
     ├── markdown-from-zero/          # Markdown 新手指南
     ├── latex-from-zero/             # LaTeX 新手指南
     ├── r-from-zero/                 # R 语言新手指南
-    └── matlab-from-zero/            # MATLAB 新手指南
+    ├── matlab-from-zero/            # MATLAB 新手指南
+    └── mkdocs-from-zero/            # MkDocs 与 GitHub Pages 部署指南
 ```
 
 ### 架构设计
