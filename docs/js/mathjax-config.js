@@ -1,9 +1,8 @@
 window.MathJax = {
   tex: {
-    inlineMath: [["\\(", "\\)"]],
-    displayMath: [["\\[", "\\]"]],
-    processEscapes: true,
-    processEnvironments: true
+    inlineMath: [["$", "$"]],
+    displayMath: [],
+    processEscapes: true
   },
   options: {
     processHtmlClass: "arithmatex"
