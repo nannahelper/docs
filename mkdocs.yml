@@ -115,6 +115,15 @@ nav:
       - 第 6 章：Transformer 架构: neural-network-from-zero/06-transformer-architecture.md
       - 第 7 章：注意力机制: neural-network-from-zero/07-attention-mechanism.md
       - 第 8 章：LLM 如何记忆: neural-network-from-zero/08-how-llms-memorize.md
+    - 线性规划与优化方法新手指南:
+      - 首页: linear-programming-from-zero/index.md
+      - 第 1 章：运筹学与线性规划概述: linear-programming-from-zero/01-introduction.md
+      - 第 2 章：数学基础回顾: linear-programming-from-zero/02-math-basics.md
+      - 第 3 章：线性规划数学模型: linear-programming-from-zero/03-lp-model.md
+      - 第 4 章：图解法: linear-programming-from-zero/04-graphical-method.md
+      - 第 5 章：标准形式与灵敏度分析: linear-programming-from-zero/05-standard-form-sensitivity.md
+      - 第 6 章：单纯形法原理: linear-programming-from-zero/06-simplex-method.md
+      - 第 7 章：表格单纯形法与进阶: linear-programming-from-zero/07-simplex-tableau-advanced.md
   - 工程实践:
     - 分类概览: categories/engineering-practice.md
     - 《人月神话》软件工程入门:
