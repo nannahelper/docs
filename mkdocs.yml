@@ -150,6 +150,9 @@ nav:
       - 学习目标对照表: mythical_man_month/learning_map.md
       - 质量评估报告: mythical_man_month/quality_report.md
 
+extra_javascript:
+  - https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js
+
 markdown_extensions:
   - abbr
   - admonition
