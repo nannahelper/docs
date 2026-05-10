@@ -22,13 +22,13 @@
 
 !!! info "名词解释：虚拟环境 (Virtual Environment)"
     **虚拟环境** 是 Python 的一个隔离运行环境。每个项目拥有自己独立的 `site-packages` 目录，互不干扰。
-    **类比理解**：就像一栋大楼里的不同房间。你在 301 房间（项目 A）里放了一张桌子（安装了 requests v2.28），这不会影响 302 房间（项目 B）里放的沙发（requests v2.31）。
+     **类比理解** ：就像一栋大楼里的不同房间。你在 301 房间（项目 A）里放了一张桌子（安装了 requests v2.28），这不会影响 302 房间（项目 B）里放的沙发（requests v2.31）。
 
 ### 🛠️ 创建虚拟环境
 
 === "Windows"
 
-    1. 打开 **命令提示符** 或 **PowerShell**（按 `Win + R`，输入 `cmd`）。
+    1. 打开  **命令提示符**  或  **PowerShell** （按 `Win + R`，输入 `cmd`）。
     2. 进入你的项目目录：
        ```powershell
        cd D:\Projects\web-crawler-tutorial
@@ -48,7 +48,7 @@
 
 === "macOS"
 
-    1. 打开 **终端 (Terminal)**。
+    1. 打开  **终端 (Terminal)**  。
     2. 进入你的项目目录：
        ```bash
        cd ~/Projects/web-crawler-tutorial
@@ -164,7 +164,7 @@ print(f"响应内容预览:\n{response.text[:500]}")
 | `response.elapsed` | `timedelta` | 请求耗时 | 性能监控 |
 
 !!! tip "作者经验：总是先检查状态码"
-    在编写爬虫时，养成习惯：**先检查 `status_code`，再处理 `text`**。如果状态码不是 200，处理响应内容毫无意义。
+    在编写爬虫时，养成习惯： **先检查 `status_code`，再处理 `text`** 。如果状态码不是 200，处理响应内容毫无意义。
 
 ---
 

@@ -142,7 +142,7 @@ print(f"最终输入形状: {final_input.shape}")  # (5, 768)
 
 注意力层之后，每个位置的向量会通过一个简单的两层全连接网络：
 
-$$\text{FFN}(x) = \text{ReLU}(xW_1 + b_1)W_2 + b_2$$
+$$FFN(x) = \max(0, xW_1 + b_1)W_2 + b_2$$
 
 ```python
 def feed_forward_network(x, W1, b1, W2, b2):
@@ -193,7 +193,7 @@ FFN 输出形状: (5, 768)
 
 ### 残差连接（Residual Connection）
 
-$$\text{output} = x + \text{Sublayer}(x)$$
+$$output = x + sublayer(x)$$
 
 **直觉：** 给梯度一条"高速公路"，让它能直接流到前面的层，缓解梯度消失。
 
@@ -357,14 +357,14 @@ Transformer Block 输出形状: (5, 768)
 
 ## 课后练习
 
-1. **手算位置编码**：对 `seq_len=3, embed_dim=4`，手动计算正弦位置编码矩阵。
+1.  **手算位置编码** ：对 `seq_len=3, embed_dim=4`，手动计算正弦位置编码矩阵。
 
-2. **残差连接实验**：修改上面的 `TransformerBlock`，去掉残差连接，观察训练 100 层网络时的梯度变化。
+2.  **残差连接实验** ：修改上面的 `TransformerBlock`，去掉残差连接，观察训练 100 层网络时的梯度变化。
 
-3. **思考题**：为什么 Transformer 的 FFN 维度通常是嵌入维度的 4 倍？如果改成 2 倍或 8 倍会怎样？
+3.  **思考题** ：为什么 Transformer 的 FFN 维度通常是嵌入维度的 4 倍？如果改成 2 倍或 8 倍会怎样？
 
 ---
 
-**下一章预告：** 第 6 章中我们跳过了 Transformer 最核心的组件——**自注意力机制**。第 7 章将深入剖析注意力机制的工作原理：Query、Key、Value 分别是什么？多头注意力为什么有效？注意力权重如何可视化？
+ **下一章预告：** 第 6 章中我们跳过了 Transformer 最核心的组件—— **自注意力机制** 。第 7 章将深入剖析注意力机制的工作原理：Query、Key、Value 分别是什么？多头注意力为什么有效？注意力权重如何可视化？
 
 [继续第 7 章：注意力机制 →](07-attention-mechanism.md)

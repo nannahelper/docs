@@ -7,7 +7,7 @@
 ## 4.1 链式法则：微积分中的"多米诺骨牌"
 
 !!! example "核心比喻：多米诺骨牌"
-    想象一排多米诺骨牌。推倒第一块（改变 $x$），它影响第二块（改变 $g(x)$），第二块影响第三块（改变 $f(g(x))$）。链式法则告诉你：**$x$ 对最终结果的影响 = 每一块对下一块影响的乘积**。
+    想象一排多米诺骨牌。推倒第一块（改变 $x$），它影响第二块（改变 $g(x)$），第二块影响第三块（改变 $f(g(x))$）。链式法则告诉你： **$x$ 对最终结果的影响 = 每一块对下一块影响的乘积** 。
     
     $$\frac{df}{dx} = \frac{df}{dg} \cdot \frac{dg}{dx}$$
 
@@ -106,7 +106,7 @@ f(3, 1) = (3 + 2*1)^2 = 25
 
 $$\frac{\partial L}{\partial w_1} = \frac{\partial L}{\partial z_2} \cdot \frac{\partial z_2}{\partial a_1} \cdot \frac{\partial a_1}{\partial z_1} \cdot \frac{\partial z_1}{\partial w_1}$$
 
-这就是反向传播的数学本质——**一条从损失到参数的偏导数乘积链**。
+这就是反向传播的数学本质—— **一条从损失到参数的偏导数乘积链** 。
 
 ### 逐步推导
 
@@ -268,7 +268,7 @@ W2 梯度范数: 0.000000
 ```
 
 !!! tip "矩阵反向传播的记忆技巧"
-    反向传播中矩阵乘法的规则：**梯度的形状必须和参数本身相同**。如果你算出来的 `dW` 形状和 `W` 不一样，那一定算错了。用这个规则来检查你的推导。
+    反向传播中矩阵乘法的规则： **梯度的形状必须和参数本身相同** 。如果你算出来的 `dW` 形状和 `W` 不一样，那一定算错了。用这个规则来检查你的推导。
 
 ---
 
@@ -286,9 +286,9 @@ W2 梯度范数: 0.000000
 
 Softmax 配合交叉熵损失有一个极其优雅的梯度公式：
 
-$$\frac{\partial L}{\partial z_i} = \text{softmax}(z_i) - y_i$$
+$$\frac{\partial L}{\partial z_i} = \sigma(z_i) - y_i$$
 
-即：**预测概率 - 真实标签的 one-hot 编码**。这是深度学习中最漂亮的公式之一。
+即： **预测概率 - 真实标签的 one-hot 编码** 。这是深度学习中最漂亮的公式之一。
 
 ```python
 def softmax_crossentropy_gradient(z, y_true_class):
@@ -397,11 +397,11 @@ demonstrate_gradient_issues()
 
 ## 课后练习
 
-1. **手推反向传播**：对 $f(w_1, w_2, x) = w_2 \cdot \text{sigmoid}(w_1 \cdot x)$，写出 $\frac{\partial f}{\partial w_1}$ 和 $\frac{\partial f}{\partial w_2}$ 的完整链式法则展开式。
+1.  **手推反向传播** ：对 $f(w_1, w_2, x) = w_2 \cdot \sigma(w_1 \cdot x)$，写出 $\frac{\partial f}{\partial w_1}$ 和 $\frac{\partial f}{\partial w_2}$ 的完整链式法则展开式。
 
-2. **验证梯度**：用数值梯度 $\frac{f(w+\epsilon) - f(w-\epsilon)}{2\epsilon}$ 验证上面推导的解析梯度，确保误差小于 $10^{-6}$。
+2.  **验证梯度** ：用数值梯度 $\frac{f(w+\epsilon) - f(w-\epsilon)}{2\epsilon}$ 验证上面推导的解析梯度，确保误差小于 $10^{-6}$。
 
-3. **思考题**：为什么 ResNet 的残差连接能缓解梯度消失？从链式法则的角度给出解释。
+3.  **思考题** ：为什么 ResNet 的残差连接能缓解梯度消失？从链式法则的角度给出解释。
 
 ---
 
