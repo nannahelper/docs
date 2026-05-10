@@ -1,4 +1,9 @@
-document$.subscribe(() => {
+function renderMath() {
+  if (typeof renderMathInElement === 'undefined') {
+    setTimeout(renderMath, 100);
+    return;
+  }
+  
   renderMathInElement(document.body, {
     delimiters: [
       { left: "$", right: "$", display: false },
@@ -6,4 +11,10 @@ document$.subscribe(() => {
     ],
     throwOnError: false
   });
-});
+}
+
+document.addEventListener('DOMContentLoaded', renderMath);
+
+if (typeof document$ !== 'undefined') {
+  document$.subscribe(renderMath);
+}
