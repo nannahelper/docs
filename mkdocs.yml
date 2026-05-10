@@ -72,6 +72,34 @@ nav:
       - 第 2 章：让数据说话: matlab-from-zero/02-syntax.md
       - 第 3 章：自动化你的工作: matlab-from-zero/03-tips.md
       - 第 4 章：完成数据分析项目: matlab-from-zero/04-practice.md
+    - Java 新手指南:
+      - 首页: java-from-zero/index.md
+      - 第 1 章：认识 Java: java-from-zero/01-introduction.md
+      - 第 2 章：变量与数据类型: java-from-zero/02-variables-and-types.md
+      - 第 3 章：运算符与表达式: java-from-zero/03-operators.md
+      - 第 4 章：控制流程: java-from-zero/04-control-flow.md
+      - 第 5 章：方法与函数: java-from-zero/05-methods.md
+      - 第 6 章：数组与字符串: java-from-zero/06-arrays-and-strings.md
+      - 第 7 章：面向对象编程（上）: java-from-zero/07-oop-basics.md
+      - 第 8 章：面向对象编程（下）: java-from-zero/08-oop-advanced.md
+      - 第 9 章：异常处理: java-from-zero/09-exceptions.md
+      - 第 10 章：集合框架: java-from-zero/10-collections.md
+      - 第 11 章：文件输入输出: java-from-zero/11-file-io.md
+      - 第 12 章：综合项目实战: java-from-zero/12-final-project.md
+    - Rust 新手指南:
+      - 首页: rust-from-zero/index.md
+      - 第 1 章：认识 Rust: rust-from-zero/01-introduction.md
+      - 第 2 章：变量与数据类型: rust-from-zero/02-variables-and-types.md
+      - 第 3 章：所有权与借用: rust-from-zero/03-ownership.md
+      - 第 4 章：结构体与枚举: rust-from-zero/04-structs-and-enums.md
+      - 第 5 章：模式匹配: rust-from-zero/05-pattern-matching.md
+      - 第 6 章：函数与错误处理: rust-from-zero/06-functions-and-errors.md
+      - 第 7 章：集合类型: rust-from-zero/07-collections.md
+      - 第 8 章：泛型与 Trait: rust-from-zero/08-generics-and-traits.md
+      - 第 9 章：生命周期: rust-from-zero/09-lifetimes.md
+      - 第 10 章：模块与包管理: rust-from-zero/10-modules-and-crates.md
+      - 第 11 章：测试与文档: rust-from-zero/11-testing-and-docs.md
+      - 第 12 章：综合项目实战: rust-from-zero/12-final-project.md
   - 技术领域:
     - 分类概览: categories/technical-domains.md
     - 零基础入门 LLM API 开发与应用:

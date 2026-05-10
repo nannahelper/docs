@@ -31,6 +31,8 @@
 |:---|:---|:---|
 | [R 语言新手指南](r-from-zero/index.md) | 让数据说话，开启数据分析之旅 | 4~6 小时 |
 | [MATLAB 新手指南](matlab-from-zero/index.md) | 让数值计算触手可及 | 4~6 小时 |
+| [Java 新手指南](java-from-zero/index.md) | 从"你好，世界"到企业级应用 | 20 小时 |
+| [Rust 新手指南](rust-from-zero/index.md) | 从"安全第一"到系统编程 | 20 小时 |
 
 [查看全部编程语言教程 →](categories/programming-languages.md)
 
