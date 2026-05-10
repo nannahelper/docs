@@ -6,14 +6,19 @@ window.MathJax = {
     processEnvironments: true
   },
   options: {
-    ignoreHtmlClass: ".*|",
     processHtmlClass: "arithmatex"
   }
 };
 
 document$.subscribe(() => {
-  MathJax.startup.output.clearCache()
-  MathJax.typesetClear()
-  MathJax.texReset()
-  MathJax.typesetPromise()
-})
+  MathJax.startup.promise
+    .then(() => {
+      MathJax.startup.output.clearCache();
+      MathJax.typesetClear();
+      MathJax.texReset();
+      return MathJax.typesetPromise();
+    })
+    .catch((err) => {
+      console.warn("MathJax typeset failed:", err);
+    });
+});
