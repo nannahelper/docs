@@ -1,175 +1,285 @@
-# 第 3 章：常用技巧
+# 第 3 章：自动化你的工作
 
-> **数据可视化与文件操作** —— 用 MATLAB 绘制专业图表，读写各种格式的数据文件。
+> **场景：** 导师给了你 50 组实验数据文件，每组都要做同样的分析和绘图。手动处理会疯掉的——让我们用函数和流程控制来自动化这一切。
 
 ---
 
-## 3.1 二维绘图
+## 3.1 编写函数：封装可复用的逻辑
+
+把弹簧分析逻辑封装成函数 `analyze_spring.m`：
 
 ```matlab
-x = linspace(0, 2*pi, 100);
+function [k_mean, k_std, R2] = analyze_spring(F, x, plotFlag)
+% analyze_spring  分析弹簧实验数据
+%   输入：
+%     F - 拉力数据向量
+%     x - 伸长量数据向量
+%     plotFlag - 是否绘图（true/false）
+%   输出：
+%     k_mean - 弹性系数均值
+%     k_std  - 弹性系数标准差
+%     R2     - 拟合优度
 
-% 基本线图
-figure(1);
-plot(x, sin(x), 'b-', 'LineWidth', 2);    % 蓝色实线
-hold on;
-plot(x, cos(x), 'r--', 'LineWidth', 2);   % 红色虚线
-hold off;
+    if nargin < 3
+        plotFlag = false;        % 默认不绘图
+    end
 
-% 图形美化
-xlabel('x (弧度)', 'FontSize', 12);
-ylabel('函数值', 'FontSize', 12);
-title('正弦与余弦函数', 'FontSize', 14);
-legend('sin(x)', 'cos(x)', 'Location', 'northwest');
-grid on;
-axis([0 2*pi -1.5 1.5]);    % 设置坐标轴范围
+    % 线性拟合
+    p = polyfit(F, x, 1);
 
-% 散点图
-figure(2);
-x = randn(100, 1);
-y = randn(100, 1);
-scatter(x, y, 50, 'filled');    % 大小为 50，实心
-xlabel('X');
-ylabel('Y');
-title('随机散点图');
+    % 计算弹性系数
+    k = F(2:end) ./ x(2:end);
+    k_mean = mean(k);
+    k_std = std(k);
+
+    % 拟合优度
+    x_pred = polyval(p, F);
+    R2 = 1 - sum((x - x_pred).^2) / sum((x - mean(x)).^2);
+
+    % 可选绘图
+    if plotFlag
+        figure;
+        plot(F, x, 'ro', 'MarkerSize', 8, 'MarkerFaceColor', 'r');
+        hold on;
+        F_fit = linspace(min(F), max(F), 100);
+        plot(F_fit, polyval(p, F_fit), 'b-', 'LineWidth', 2);
+        xlabel('拉力 F (N)');
+        ylabel('伸长量 x (cm)');
+        title(sprintf('k = %.3f ± %.3f N/cm, R^2 = %.4f', k_mean, k_std, R2));
+        legend('数据', '拟合');
+        grid on;
+    end
+end
 ```
 
-**渲染效果：** 图形窗口 1 显示两条曲线，蓝色实线为正弦、红色虚线为余弦，有完整的标签和图例。图形窗口 2 显示实心散点图。
-
-**代码解读：**
-
-- `'b-'` 表示蓝色（b）实线（-），`'r--'` 表示红色（r）虚线（--）
-- `hold on` 保持当前图形，使后续绘图叠加在同一图上
-- `axis([xmin xmax ymin ymax])` 精确控制坐标轴范围
-
-## 3.2 子图与多图
+**使用方式：**
 
 ```matlab
-figure(3);
-
-% 2×2 子图布局
-subplot(2, 2, 1);
-plot(x, sin(x));
-title('sin(x)');
-
-subplot(2, 2, 2);
-plot(x, cos(x));
-title('cos(x)');
-
-subplot(2, 2, 3);
-plot(x, sin(2*x));
-title('sin(2x)');
-
-subplot(2, 2, 4);
-plot(x, cos(2*x));
-title('cos(2x)');
+% 调用函数
+F = [0, 1, 2, 3, 4, 5];
+x = [0, 1.2, 2.3, 3.5, 4.6, 5.8];
+[k_mean, k_std, R2] = analyze_spring(F, x, true);
 ```
 
-**渲染效果：** 一个图形窗口中排列 4 个子图（2 行 2 列），每个子图有独立的坐标轴和标题。
+**输出效果：** 命令窗口返回三个计算结果，同时弹出图形窗口显示数据和拟合线。
 
-## 3.3 三维绘图
+---
+
+## 3.2 流程控制
+
+### 条件判断
 
 ```matlab
-% 三维曲面
-[X, Y] = meshgrid(-2:0.1:2, -2:0.1:2);
-Z = X .* exp(-X.^2 - Y.^2);
+score = 85;
 
-figure(4);
-surf(X, Y, Z);              % 曲面图
-xlabel('X');
-ylabel('Y');
-zlabel('Z');
-title('三维曲面：z = x·e^{-x^2-y^2}');
-colormap('jet');            % 设置颜色映射
-colorbar;                   % 显示颜色条
+if score >= 90
+    grade = 'A';
+elseif score >= 80
+    grade = 'B';
+elseif score >= 70
+    grade = 'C';
+elseif score >= 60
+    grade = 'D';
+else
+    grade = 'F';
+end
 
-% 等高线图
-figure(5);
-contour(X, Y, Z, 20);       % 20 条等高线
-xlabel('X');
-ylabel('Y');
-title('等高线图');
-colorbar;
+fprintf('成绩等级：%s\n', grade);
 ```
 
-**渲染效果：** 曲面图以彩色三维表面展示函数形态，可旋转视角观察。等高线图以二维方式展示三维曲面的"海拔"信息。
+**输出效果：** `成绩等级：B`
+
+### for 循环
+
+```matlab
+% 计算斐波那契数列前 20 项
+n = 20;
+fib = zeros(1, n);
+fib(1) = 1;
+fib(2) = 1;
+
+for i = 3:n
+    fib(i) = fib(i-1) + fib(i-2);
+end
+
+disp(fib);
+```
+
+**输出效果：** 命令窗口显示 `1 1 2 3 5 8 13 21 34 55 ...`
+
+### while 循环
+
+```matlab
+% 找到第一个大于 1000 的 2 的幂
+n = 1;
+while 2^n <= 1000
+    n = n + 1;
+end
+fprintf('2^%d = %d > 1000\n', n, 2^n);
+```
+
+**输出效果：** `2^10 = 1024 > 1000`
+
+---
+
+## 3.3 向量化：MATLAB 的效率秘诀
+
+MATLAB 中，向量化代码比循环快得多：
+
+```matlab
+n = 1000000;
+
+% 慢：使用循环
+tic;
+result1 = zeros(1, n);
+for i = 1:n
+    result1(i) = sin(i) * cos(i);
+end
+t_loop = toc;
+
+% 快：向量化
+tic;
+i = 1:n;
+result2 = sin(i) .* cos(i);
+t_vec = toc;
+
+fprintf('循环耗时：%.4f 秒\n', t_loop);
+fprintf('向量化耗时：%.4f 秒\n', t_vec);
+fprintf('加速比：%.1f 倍\n', t_loop / t_vec);
+```
+
+**输出效果：** 向量化通常比循环快 10~100 倍。`tic`/`toc` 用于计时。
+
+---
 
 ## 3.4 文件读写
 
+### 读取 CSV 数据
+
 ```matlab
 % 读取 CSV 文件
-data = readtable('data.csv');       % 读取为 table 类型
-disp(data(1:5, :));                 % 显示前 5 行
+data = readmatrix('experiment_data.csv');
 
-% 读取 Excel 文件
-data = readtable('data.xlsx', 'Sheet', 'Sheet1');
-
-% 写入 CSV
-writetable(data, 'output.csv');
-
-% 读取文本文件
-fid = fopen('text.txt', 'r');
-content = fread(fid, '*char')';     % 读取全部内容
-fclose(fid);
-
-% 写入文本文件
-fid = fopen('output.txt', 'w');
-fprintf(fid, 'Hello, MATLAB!\n');
-fprintf(fid, '计算结果：%f\n', pi);
-fclose(fid);
-
-% 保存和加载 MATLAB 数据
-save('workspace.mat');              % 保存整个工作区
-save('data.mat', 'A', 'B');         % 保存指定变量
-load('data.mat');                   % 加载数据
+% 或使用 readtable（保留列名）
+T = readtable('experiment_data.csv');
+F = T.Force;     % 按列名访问
+x = T.Elongation;
 ```
 
-## 3.5 数据分析基础
+### 写入结果
 
 ```matlab
-data = randn(1000, 1);    % 1000 个正态分布随机数
+% 保存结果到文本文件
+results = table(F', x', k', 'VariableNames', {'Force', 'Elongation', 'k'});
+writetable(results, 'spring_results.csv');
 
-% 描述性统计
-mean(data)                % 均值
-median(data)              % 中位数
-std(data)                 % 标准差
-var(data)                 % 方差
-min(data)                 % 最小值
-max(data)                 % 最大值
-
-% 直方图
-figure(6);
-histogram(data, 30);      % 30 个区间
-xlabel('数值');
-ylabel('频数');
-title('数据分布直方图');
-
-% 曲线拟合
-x = linspace(0, 10, 50);
-y = 2*x + 1 + randn(1, 50);    % 带噪声的线性数据
-p = polyfit(x, y, 1);           % 一次多项式拟合
-y_fit = polyval(p, x);          % 计算拟合值
-
-figure(7);
-plot(x, y, 'o');                % 原始数据点
-hold on;
-plot(x, y_fit, 'r-', 'LineWidth', 2);  % 拟合直线
-legend('原始数据', '拟合直线');
-title('线性拟合');
+% 保存 MATLAB 数据格式
+save('spring_analysis.mat', 'F', 'x', 'k_mean', 'k_std');
 ```
 
-**渲染效果：** 直方图展示数据分布形态；拟合图显示原始散点和最佳拟合直线。
+---
+
+## 3.5 批量处理多组数据
+
+现在处理 50 组实验数据：
+
+```matlab
+% batch_analysis.m —— 批量分析弹簧实验数据
+clear; clc;
+
+% 存储所有结果
+all_results = table();
+
+for i = 1:50
+    % 读取第 i 组数据
+    filename = sprintf('data/experiment_%02d.csv', i);
+
+    if ~exist(filename, 'file')
+        fprintf('文件 %s 不存在，跳过\n', filename);
+        continue;
+    end
+
+    T = readtable(filename);
+    F = T.Force;
+    x = T.Elongation;
+
+    % 调用分析函数
+    [k_mean, k_std, R2] = analyze_spring(F, x, false);
+
+    % 保存结果
+    all_results.Group(i) = i;
+    all_results.k_mean(i) = k_mean;
+    all_results.k_std(i) = k_std;
+    all_results.R2(i) = R2;
+
+    fprintf('第 %d 组：k = %.3f ± %.3f, R² = %.4f\n', i, k_mean, k_std, R2);
+end
+
+% 保存汇总结果
+writetable(all_results, 'batch_results.csv');
+
+% 绘制汇总图
+figure;
+subplot(1, 3, 1);
+histogram(all_results.k_mean);
+xlabel('弹性系数 k (N/cm)');
+ylabel('频次');
+title('弹性系数分布');
+
+subplot(1, 3, 2);
+plot(all_results.k_mean, all_results.k_std, 'o');
+xlabel('弹性系数均值');
+ylabel('标准差');
+title('均值 vs 标准差');
+grid on;
+
+subplot(1, 3, 3);
+histogram(all_results.R2);
+xlabel('拟合优度 R²');
+ylabel('频次');
+title('拟合优度分布');
+
+fprintf('\n========== 汇总 ==========\n');
+fprintf('共处理 %d 组数据\n', i);
+fprintf('弹性系数总均值：%.4f N/cm\n', mean(all_results.k_mean));
+fprintf('平均拟合优度：%.4f\n', mean(all_results.R2));
+```
+
+**输出效果：** 命令窗口逐行显示每组数据的处理结果，最后输出汇总统计。图形窗口显示三个子图：弹性系数分布直方图、均值-标准差散点图、拟合优度分布直方图。
 
 ---
 
-## 本章要点总结
+## 3.6 调试技巧
 
-- [ ] 掌握 `plot`、`scatter` 等二维绘图函数
-- [ ] 会用 `subplot` 创建多子图布局
-- [ ] 了解 `surf`、`contour` 三维绘图
-- [ ] 掌握 `readtable`、`writetable` 文件读写
-- [ ] 了解 `polyfit` 曲线拟合
+```matlab
+% 设置断点：点击行号左侧的横杠
+% 调试命令
+dbstop if error     % 出错时自动停在出错行
+dbclear all         % 清除所有断点
+
+% 在命令窗口查看变量
+% 在断点处，命令窗口可以访问所有局部变量
+
+% 常用调试操作
+% F10 - 单步执行（不进入函数）
+% F11 - 单步执行（进入函数）
+% F5  - 继续运行到下一个断点
+```
 
 ---
 
-👉 [进入第 4 章：实战案例 →](04-practice.md)
+## 本章回顾
+
+你现在可以自动化处理大规模数据了！回顾掌握的技能：
+
+- [x] 编写函数封装可复用逻辑
+- [x] 使用 `if-elseif-else` 条件判断
+- [x] 使用 `for` 和 `while` 循环
+- [x] 理解向量化编程的性能优势
+- [x] 用 `readmatrix`/`readtable` 读取数据文件
+- [x] 用 `writetable`/`save` 保存结果
+- [x] 批量处理多组数据文件
+
+---
+
+👉 [进入第 4 章：完成数据分析项目 →](04-practice.md)

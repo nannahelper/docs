@@ -1,69 +1,12 @@
-# 第 4 章：实战案例
+# 第 4 章：发布你的作品
 
-> **学以致用** —— 撰写完整的项目 README、技术博客和会议纪要。
+> **场景：** 你学完了 Markdown，现在要把知识转化为实际产出——写一篇技术博客、整理一份会议纪要、甚至搭建一个文档站点。让我们把前面学到的所有技能融会贯通。
 
 ---
 
-## 4.1 案例一：项目 README 文档
+## 4.1 写一篇技术博客
 
-README 是开源项目的"门面"，好的 README 能让别人快速了解你的项目。
-
-### 标准 README 结构
-
-```markdown
-# 项目名称
-
-> 一句话描述项目的核心价值。
-
-[![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
-
-## 简介
-
-简要介绍项目的背景、目标和主要功能。
-
-## 快速开始
-
-### 环境要求
-
-- Node.js >= 16
-- npm >= 8
-
-### 安装
-
-​```bash
-git clone https://github.com/user/project.git
-cd project
-npm install
-​```
-
-### 运行
-
-​```bash
-npm start
-​```
-
-## 功能特性
-
-- 特性 1：描述
-- 特性 2：描述
-- 特性 3：描述
-
-## 文档
-
-详细文档请访问 [项目文档](https://example.com/docs)。
-
-## 贡献
-
-欢迎提交 Issue 和 Pull Request。详见 [CONTRIBUTING.md](CONTRIBUTING.md)。
-
-## 许可
-
-本项目采用 [MIT License](LICENSE)。
-```
-
-**渲染效果：** 顶部显示项目名称和一句话描述；徽章（badge）显示许可证等信息；各章节用二级标题分隔，代码块有语法高亮。
-
-## 4.2 案例二：技术博客文章
+假设你最近深入学习了 Python 列表推导式，想写一篇博客分享给同学：
 
 ```markdown
 # Python 列表推导式完全指南
@@ -73,6 +16,7 @@ npm start
 ## 什么是列表推导式？
 
 列表推导式（List Comprehension）是 Python 中创建列表的简洁方式。
+它将循环和条件判断浓缩在一行代码中。
 
 ## 基础语法
 
@@ -84,6 +28,7 @@ for i in range(10):
 
 # 列表推导式（一行搞定）
 squares = [i ** 2 for i in range(10)]
+# 结果：[0, 1, 4, 9, 16, 25, 36, 49, 64, 81]
 ​```
 
 ## 带条件的推导式
@@ -91,9 +36,11 @@ squares = [i ** 2 for i in range(10)]
 ​```python
 # 只保留偶数
 evens = [i for i in range(20) if i % 2 == 0]
+# 结果：[0, 2, 4, 6, 8, 10, 12, 14, 16, 18]
 
 # if-else 在表达式部分
 labels = ["偶数" if i % 2 == 0 else "奇数" for i in range(10)]
+# 结果：['偶数', '奇数', '偶数', '奇数', ...]
 ​```
 
 ## 嵌套推导式
@@ -115,12 +62,17 @@ flat = [num for row in matrix for num in row]
 
 ## 总结
 
-列表推导式不仅代码更简洁，执行效率也更高。但嵌套过深时建议用传统循环，保持可读性。
+列表推导式不仅代码更简洁，执行效率也更高。
+但嵌套过深时建议用传统循环，保持可读性。
 ```
 
-**渲染效果：** 文章有清晰的标题层级、代码块带 Python 语法高亮、表格展示性能对比数据。整体排版专业整洁。
+**渲染效果：** 文章有清晰的标题层级、代码块带 Python 语法高亮、表格展示性能对比数据。整体排版专业整洁，适合发布到博客平台。
 
-## 4.3 案例三：会议纪要
+---
+
+## 4.2 写一份会议纪要
+
+团队协作中，会议纪要是最常见的文档类型：
 
 ```markdown
 # 2026 年 5 月项目周会纪要
@@ -167,12 +119,64 @@ flat = [num for row in matrix for num in row]
 
 ---
 
-## 本章要点总结
+## 4.3 搭建文档站点
 
-- [ ] 掌握项目 README 的标准结构
-- [ ] 能撰写结构清晰的技术博客
-- [ ] 会用 Markdown 写会议纪要和周报
-- [ ] 理解不同场景下的排版策略
+如果你想把多篇 Markdown 文档组织成一个网站，推荐使用 **MkDocs**（正是本站使用的工具）：
+
+```yaml
+# mkdocs.yml —— 网站配置文件
+site_name: 我的文档站点
+theme:
+  name: material
+  features:
+    - navigation.sections
+
+nav:
+  - 首页: index.md
+  - Python 教程:
+    - 列表推导式: python/list-comprehension.md
+    - 装饰器: python/decorators.md
+  - 项目文档:
+    - API 文档: project/api.md
+    - 部署指南: project/deploy.md
+```
+
+```bash
+# 安装与运行
+pip install mkdocs-material
+mkdocs serve    # 启动本地预览
+mkdocs build    # 构建静态网站
+```
+
+**渲染效果：** 本地启动后浏览器打开 `http://localhost:8000`，看到带有侧边栏导航、搜索功能和深色模式切换的专业文档网站。
+
+---
+
+## 4.4 Markdown 变体与扩展
+
+随着 Markdown 的普及，出现了多种扩展版本：
+
+| 变体 | 扩展功能 | 使用场景 |
+|:---|:---|:---|
+| **GitHub Flavored Markdown (GFM)** | 表格、任务列表、删除线、自动链接 | GitHub 平台 |
+| **CommonMark** | 标准化语法规范 | 跨平台兼容 |
+| **MDX** | 嵌入 JSX 组件 | React 文档站点 |
+| **R Markdown** | 嵌入 R 代码 | 数据分析报告 |
+
+本教程以 **GitHub Flavored Markdown** 为主要标准，这也是最广泛使用的 Markdown 变体。
+
+---
+
+## 本章回顾
+
+你已经能够独立产出专业的 Markdown 文档了！回顾整个学习旅程：
+
+| 章节 | 场景 | 核心技能 |
+|:---|:---|:---|
+| 第 1 章 | 写课程笔记 | 标题、段落、文字格式、引用、分隔线 |
+| 第 2 章 | 打造项目主页 | 列表、链接、图片、代码块 |
+| 第 3 章 | 团队协作文档 | 表格、任务列表、脚注、HTML 混用 |
+| 第 4 章 | 发布你的作品 | 技术博客、会议纪要、文档站点 |
 
 ---
 

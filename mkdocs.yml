@@ -105,6 +105,16 @@ nav:
       - 第 4 章：JavaScript 基础语法: frontend-from-zero/04-javascript-basics.md
       - 第 5 章：DOM 操作与事件处理: frontend-from-zero/05-dom-events.md
       - 第 6 章：综合实战——打造个人主页: frontend-from-zero/06-final-project.md
+    - 神经网络与深度学习新手指南:
+      - 首页: neural-network-from-zero/index.md
+      - 第 1 章：什么是神经网络: neural-network-from-zero/01-what-are-neural-networks.md
+      - 第 2 章：梯度下降算法: neural-network-from-zero/02-gradient-descent.md
+      - 第 3 章：反向传播直觉理解: neural-network-from-zero/03-backpropagation-intuition.md
+      - 第 4 章：反向传播数学原理: neural-network-from-zero/04-backpropagation-math.md
+      - 第 5 章：大语言模型介绍: neural-network-from-zero/05-llm-introduction.md
+      - 第 6 章：Transformer 架构: neural-network-from-zero/06-transformer-architecture.md
+      - 第 7 章：注意力机制: neural-network-from-zero/07-attention-mechanism.md
+      - 第 8 章：LLM 如何记忆: neural-network-from-zero/08-how-llms-memorize.md
   - 工程实践:
     - 分类概览: categories/engineering-practice.md
     - 《人月神话》软件工程入门:

@@ -1,131 +1,155 @@
-# 第 4 章：实战案例
+# 第 4 章：完成数据分析项目
 
-> **综合实战** —— 信号处理、图像处理和数值分析三个经典案例。
+> **场景：** 你掌握了 MATLAB 的核心技能，现在来完成一个端到端的数据分析项目——从原始数据到可视化报告，展示你的完整能力。
 
 ---
 
-## 4.1 案例一：信号处理 —— 音频频谱分析
+## 4.1 项目：心电信号分析
+
+假设你有一份心电信号（ECG）数据，需要完成：去噪、峰值检测、心率计算和可视化。
 
 ```matlab
-% 生成一个复合信号
-fs = 1000;                    % 采样频率 1000 Hz
-t = 0:1/fs:1;                 % 1 秒的时间向量
+% ecg_analysis.m —— 心电信号分析项目
+clear; clc; close all;
 
-% 合成信号：50 Hz + 120 Hz + 噪声
-signal = sin(2*pi*50*t) + 0.5*sin(2*pi*120*t) + 0.3*randn(size(t));
+% ========== 1. 生成模拟 ECG 信号 ==========
+fs = 500;                        % 采样率 500 Hz
+t = 0:1/fs:10;                   % 10 秒数据
+f_heart = 1.2;                   % 心率 72 bpm (1.2 Hz)
 
-% 时域波形
-figure(1);
-subplot(2, 1, 1);
-plot(t, signal);
+% 生成 ECG 波形（简化模型）
+ecg_clean = 2.5 * sin(2*pi*f_heart*t);
+ecg_clean(ecg_clean < 0) = 0;    % 只保留正向波
+ecg_clean = ecg_clean .^ 2;      % 锐化峰值
+
+% 添加噪声
+noise = 0.3 * randn(size(t));     % 高斯噪声
+noise = noise + 0.1 * sin(2*pi*50*t);  % 50 Hz 工频干扰
+ecg_noisy = ecg_clean + noise;
+
+% ========== 2. 信号去噪 ==========
+% 低通滤波器设计
+fc = 30;                         % 截止频率 30 Hz
+[b, a] = butter(4, fc/(fs/2), 'low');
+ecg_filtered = filtfilt(b, a, ecg_noisy);
+
+% ========== 3. 峰值检测 ==========
+min_peak_height = 0.5 * max(ecg_filtered);
+min_peak_distance = 0.3 * fs;    % 最小间隔 0.3 秒
+[pks, locs] = findpeaks(ecg_filtered, 'MinPeakHeight', min_peak_height, ...
+                        'MinPeakDistance', min_peak_distance);
+
+% ========== 4. 计算心率 ==========
+rr_intervals = diff(locs) / fs;  % RR 间期（秒）
+heart_rate = 60 ./ rr_intervals; % 瞬时心率（bpm）
+hr_mean = mean(heart_rate);
+hr_std = std(heart_rate);
+
+% ========== 5. 可视化 ==========
+figure('Position', [100, 100, 1000, 700]);
+
+% 子图 1：原始信号 vs 去噪信号
+subplot(3, 1, 1);
+plot(t, ecg_noisy, 'Color', [0.7, 0.7, 0.7]);
+hold on;
+plot(t, ecg_filtered, 'b-', 'LineWidth', 1.5);
 xlabel('时间 (s)');
-ylabel('幅度');
-title('复合信号时域波形');
+ylabel('幅值 (mV)');
+title('ECG 信号去噪');
+legend('含噪信号', '去噪后信号');
 grid on;
+xlim([0, 5]);
 
-% 频谱分析（FFT）
-N = length(signal);
-Y = fft(signal);
-P2 = abs(Y/N);
-P1 = P2(1:N/2+1);
-P1(2:end-1) = 2*P1(2:end-1);
-f = fs*(0:(N/2))/N;
-
-% 频谱图
-subplot(2, 1, 2);
-plot(f, P1);
-xlabel('频率 (Hz)');
-ylabel('幅度');
-title('信号频谱');
-xlim([0 200]);                % 只显示 0~200 Hz
+% 子图 2：峰值检测结果
+subplot(3, 1, 2);
+plot(t, ecg_filtered, 'b-', 'LineWidth', 1);
+hold on;
+plot(t(locs), pks, 'ro', 'MarkerSize', 6, 'MarkerFaceColor', 'r');
+xlabel('时间 (s)');
+ylabel('幅值 (mV)');
+title(sprintf('R 波峰值检测（共检测到 %d 个峰值）', length(pks)));
 grid on;
+xlim([0, 5]);
+
+% 子图 3：心率变化
+subplot(3, 1, 3);
+plot(t(locs(2:end)), heart_rate, 'g-o', 'LineWidth', 1.5, 'MarkerSize', 4);
+hold on;
+yline(hr_mean, 'r--', sprintf('均值 = %.1f bpm', hr_mean), 'LineWidth', 1.5);
+xlabel('时间 (s)');
+ylabel('心率 (bpm)');
+title('瞬时心率变化');
+grid on;
+xlim([0, 10]);
+ylim([hr_mean - 20, hr_mean + 20]);
+
+% ========== 6. 输出报告 ==========
+fprintf('========== ECG 分析报告 ==========\n');
+fprintf('采样率：%d Hz\n', fs);
+fprintf('数据时长：%.1f 秒\n', t(end));
+fprintf('检测到 R 波数量：%d\n', length(pks));
+fprintf('平均心率：%.1f bpm\n', hr_mean);
+fprintf('心率标准差：%.1f bpm\n', hr_std);
+fprintf('心率变异性 (HRV)：%.1f ms\n', std(rr_intervals) * 1000);
 ```
 
-**渲染效果：** 上图显示复合信号的时域波形（杂乱无章），下图显示频谱（在 50 Hz 和 120 Hz 处有两个清晰的峰值），直观展示了傅里叶变换"从时域到频域"的魔力。
+**渲染效果：** 一个图窗包含三个子图：信号去噪对比（灰色含噪 vs 蓝色去噪）、R 波峰值检测（红色标记）、瞬时心率变化（绿色折线+红色均值线）。命令窗口输出完整分析报告。
 
-## 4.2 案例二：图像处理 —— 边缘检测
+---
+
+## 4.2 项目：图像处理
 
 ```matlab
+% image_processing.m —— 图像处理示例
+clear; clc; close all;
+
 % 读取图像
-img = imread('cameraman.tif');    % MATLAB 内置示例图像
-img = double(img) / 255;           % 归一化到 [0, 1]
+img = imread('sample.jpg');
+if size(img, 3) == 3
+    img_gray = rgb2gray(img);
+else
+    img_gray = img;
+end
 
-% 显示原图
-figure(2);
+% 边缘检测
+edges_canny = edge(img_gray, 'canny');
+edges_sobel = edge(img_gray, 'sobel');
+
+% 图像增强
+img_enhanced = imadjust(img_gray);
+
+% 可视化
+figure('Position', [100, 100, 900, 600]);
+
 subplot(2, 2, 1);
-imshow(img);
-title('原始图像');
+imshow(img_gray);
+title('原始灰度图像');
 
-% 添加高斯噪声
-noisy = img + 0.05 * randn(size(img));
-noisy = max(0, min(1, noisy));     % 限制在 [0, 1]
 subplot(2, 2, 2);
-imshow(noisy);
-title('添加噪声后');
+imshow(img_enhanced);
+title('对比度增强');
 
-% 高斯滤波去噪
-h = fspecial('gaussian', [5 5], 1);
-denoised = imfilter(noisy, h);
 subplot(2, 2, 3);
-imshow(denoised);
-title('高斯滤波去噪');
+imshow(edges_canny);
+title('Canny 边缘检测');
 
-% Sobel 边缘检测
-sobel_x = [-1 0 1; -2 0 2; -1 0 1];    % 水平边缘
-sobel_y = [-1 -2 -1; 0 0 0; 1 2 1];    % 垂直边缘
-edges_x = imfilter(denoised, sobel_x);
-edges_y = imfilter(denoised, sobel_y);
-edges = sqrt(edges_x.^2 + edges_y.^2);   % 梯度幅值
 subplot(2, 2, 4);
-imshow(edges);
+imshow(edges_sobel);
 title('Sobel 边缘检测');
 ```
 
-**渲染效果：** 四宫格展示图像处理流水线：原图 → 加噪 → 去噪 → 边缘检测。边缘检测结果中白色线条勾勒出物体的轮廓。
-
-## 4.3 案例三：数值分析 —— 求解微分方程
-
-```matlab
-% 洛伦兹吸引子（混沌系统的经典例子）
-% dx/dt = sigma*(y - x)
-% dy/dt = x*(rho - z) - y
-% dz/dt = x*y - beta*z
-
-sigma = 10;
-beta = 8/3;
-rho = 28;
-
-% 定义微分方程
-lorenz = @(t, y) [
-    sigma * (y(2) - y(1));
-    y(1) * (rho - y(3)) - y(2);
-    y(1) * y(2) - beta * y(3)
-];
-
-% 求解
-[t, Y] = ode45(lorenz, [0 50], [1; 1; 1]);
-
-% 三维轨迹图
-figure(3);
-plot3(Y(:,1), Y(:,2), Y(:,3), 'b-', 'LineWidth', 0.5);
-xlabel('X');
-ylabel('Y');
-zlabel('Z');
-title('洛伦兹吸引子');
-grid on;
-view(30, 30);    % 设置视角
-```
-
-**渲染效果：** 三维空间中显示著名的"蝴蝶形"轨迹——洛伦兹吸引子。轨迹在两个"翅膀"之间来回切换，展示了确定性系统中的混沌行为。
+**渲染效果：** 2×2 子图布局，分别显示原始灰度图、对比度增强图、Canny 边缘检测结果和 Sobel 边缘检测结果。
 
 ---
 
-## 本章要点总结
+## 4.3 学习旅程回顾
 
-- [ ] 掌握 FFT 频谱分析的基本流程
-- [ ] 理解图像处理流水线：读取 → 滤波 → 边缘检测
-- [ ] 了解 ODE 求解器 `ode45` 的用法
-- [ ] 能综合运用 MATLAB 解决实际工程问题
+| 章节 | 场景 | 核心技能 |
+|:---|:---|:---|
+| 第 1 章 | 分析实验数据 | 变量、矩阵、基本运算、脚本 |
+| 第 2 章 | 绘制专业图表 | 二维/三维绘图、子图、标注 |
+| 第 3 章 | 批量处理数据 | 函数、流程控制、文件读写 |
+| 第 4 章 | 端到端项目 | 信号处理、图像处理、报告生成 |
 
 ---
 
@@ -133,13 +157,13 @@ view(30, 30);    % 设置视角
 
 ### 基础练习
 
-1. 生成一个包含 100 Hz 和 200 Hz 分量的信号，用 FFT 分析其频谱。
-2. 读取一张自己的照片，尝试不同的滤波和边缘检测方法。
+1. 用 MATLAB 分析一组实验数据，完成线性拟合和可视化。
+2. 编写一个函数，输入矩阵返回其转置、逆矩阵和行列式。
 
 ### 进阶挑战
 
-3. 用 MATLAB 实现一个简单的音频均衡器（调整不同频段的增益）。
-4. 求解单摆的运动方程，并制作动画展示摆动过程。
+3. 下载一份公开数据集（如气温数据），完成从导入到可视化的完整分析流程。
+4. 用 App Designer 创建一个简单的数据导入和绘图 GUI。
 
 ---
 

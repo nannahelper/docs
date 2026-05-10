@@ -1,134 +1,239 @@
-# 第 3 章：常用技巧
+# 第 3 章：数据清洗与变换
 
-> **数据分析三板斧** —— 数据清洗（dplyr）、可视化（ggplot2）、统计分析。
+> **场景：** 老师又给了你一份新的数据——来自不同班级、格式不统一、有缺失值、有重复记录。真实世界的数据从来不是干净的。让我们用 tidyverse 工具包把杂乱数据整理成分析就绪的格式。
 
 ---
 
-## 3.1 数据清洗：dplyr 核心操作
+## 3.1 tidyverse：数据科学的瑞士军刀
 
-`dplyr` 是 R 中最强大的数据操作包，提供五个核心动词：
+tidyverse 是 R 最强大的数据处理生态，核心包包括：
+
+| 包 | 用途 | 核心函数 |
+|:---|:---|:---|
+| **dplyr** | 数据变换 | `filter`, `select`, `mutate`, `summarise`, `arrange` |
+| **tidyr** | 数据重塑 | `pivot_longer`, `pivot_wider`, `separate` |
+| **ggplot2** | 数据可视化 | `ggplot`, `geom_*` |
+| **readr** | 数据读取 | `read_csv`, `write_csv` |
+| **stringr** | 字符串处理 | `str_detect`, `str_replace` |
+
+```r
+library(tidyverse)  # 一次性加载所有核心包
+```
+
+---
+
+## 3.2 管道操作符：`%>%` 和 `|>`
+
+管道让代码从左到右流动，像流水线一样清晰：
+
+```r
+# 不用管道：嵌套函数，从内向外读
+summarise(group_by(filter(scores, 总评 >= 60), 性别), 平均分 = mean(总评))
+
+# 用管道：从左到右，逻辑清晰
+scores %>%
+    filter(总评 >= 60) %>%
+    group_by(性别) %>%
+    summarise(平均分 = mean(总评))
+```
+
+**输出效果：** 两种写法结果相同，但管道版本每一步都清晰可读：筛选 → 分组 → 汇总。
+
+---
+
+## 3.3 dplyr 五大核心操作
 
 ```r
 library(dplyr)
 
-# 示例数据
-students <- data.frame(
-    name = c("张三", "李四", "王五", "赵六", "钱七"),
-    class = c("A", "B", "A", "B", "A"),
-    math = c(85, 92, 78, 88, 95),
-    english = c(90, 85, 82, 91, 88)
-)
+# 1. filter() —— 筛选行
+scores %>% filter(总评 >= 85)                    # 成绩 ≥ 85
+scores %>% filter(性别 == "女", 总评 >= 80)      # 女生且成绩 ≥ 80
 
-# filter()：筛选行
-students %>% filter(math > 85)
+# 2. select() —— 选择列
+scores %>% select(姓名, 总评)                    # 只保留两列
+scores %>% select(-学号)                         # 删除学号列
+scores %>% select(starts_with("期"))             # 选择以"期"开头的列
 
-# select()：选择列
-students %>% select(name, math)
+# 3. mutate() —— 创建/修改列
+scores %>%
+    mutate(
+        总评 = 平时 * 0.3 + 期中 * 0.3 + 期末 * 0.4,
+        是否及格 = ifelse(总评 >= 60, "是", "否"),
+        排名 = rank(-总评)                       # 降序排名
+    )
 
-# mutate()：创建新列
-students %>% mutate(total = math + english)
+# 4. arrange() —— 排序
+scores %>% arrange(总评)                         # 升序
+scores %>% arrange(desc(总评))                   # 降序
 
-# arrange()：排序
-students %>% arrange(desc(math))
-
-# summarise()：汇总统计
-students %>% summarise(
-    avg_math = mean(math),
-    max_math = max(math)
-)
-
-# group_by() + summarise()：分组汇总
-students %>%
-    group_by(class) %>%
+# 5. summarise() + group_by() —— 分组汇总
+scores %>%
+    group_by(性别) %>%
     summarise(
-        count = n(),
-        avg_math = mean(math),
-        avg_english = mean(english)
+        人数 = n(),
+        平均分 = mean(总评),
+        最高分 = max(总评),
+        最低分 = min(总评),
+        标准差 = sd(总评)
     )
 ```
 
-**运行效果：** `%>%` 是管道操作符，将左侧结果传递给右侧函数。代码从左到右读，逻辑清晰。分组汇总自动按班级计算各科平均分。
-
-## 3.2 数据可视化：ggplot2
-
-`ggplot2` 基于"图形语法"（Grammar of Graphics），用统一的语法构建各种图表。
-
-```r
-library(ggplot2)
-
-# 散点图
-ggplot(mtcars, aes(x = wt, y = mpg)) +
-    geom_point(color = "blue", size = 3) +
-    labs(title = "汽车重量与油耗关系",
-         x = "重量（吨）", y = "油耗（英里/加仑）") +
-    theme_minimal()
-
-# 柱状图
-ggplot(diamonds, aes(x = cut, fill = cut)) +
-    geom_bar() +
-    labs(title = "钻石切割质量分布") +
-    theme_minimal()
-
-# 箱线图
-ggplot(mpg, aes(x = class, y = hwy, fill = class)) +
-    geom_boxplot() +
-    labs(title = "不同车型的高速油耗分布") +
-    theme_minimal() +
-    theme(axis.text.x = element_text(angle = 45, hjust = 1))
-
-# 分面图
-ggplot(mpg, aes(x = displ, y = hwy)) +
-    geom_point(alpha = 0.5) +
-    facet_wrap(~ class) +
-    labs(title = "不同车型的排量与油耗") +
-    theme_minimal()
-```
-
-**渲染效果：** 散点图展示两个连续变量的关系；柱状图展示分类变量的频数；箱线图展示分布的中位数、四分位数和异常值；分面图按类别拆分为多个子图。
-
-**代码解读：**
-
-- `ggplot(data, aes(...))` 指定数据和美学映射（x 轴、y 轴、颜色等）
-- `geom_*()` 添加几何图层（点、线、柱、箱线等）
-- `labs()` 设置标题和轴标签
-- `theme_*()` 设置主题样式
-- 图层用 `+` 号叠加
-
-## 3.3 统计分析
-
-```r
-# t 检验：比较两组均值是否有显著差异
-t.test(math ~ class, data = students)
-
-# 线性回归
-model <- lm(mpg ~ wt + hp, data = mtcars)
-summary(model)
-
-# 查看回归结果
-coefficients(model)    # 回归系数
-fitted(model)          # 拟合值
-residuals(model)       # 残差
-
-# 方差分析（ANOVA）
-aov_result <- aov(mpg ~ factor(cyl), data = mtcars)
-summary(aov_result)
-
-# 相关性分析
-cor(mtcars$mpg, mtcars$wt)           # 单个相关系数
-cor(mtcars[, c("mpg", "wt", "hp")])  # 相关系数矩阵
-```
-
-**运行效果：** `summary(model)` 输出回归系数、标准误、t 值、p 值、R² 等完整统计量。R 的统计输出格式是学术论文的标准格式。
+**输出效果：** 分组汇总结果以 tibble（增强型数据框）形式显示，列对齐美观，自动显示数据类型。
 
 ---
 
-## 本章要点总结
+## 3.4 处理缺失值
 
-- [ ] 掌握 dplyr 五大核心操作：filter、select、mutate、arrange、summarise
-- [ ] 理解管道操作符 `%>%` 的用法
-- [ ] 能用 ggplot2 绘制散点图、柱状图、箱线图
-- [ ] 了解 t 检验、线性回归、ANOVA 的基本用法
+```r
+# 模拟含缺失值的数据
+df <- data.frame(
+    姓名 = c("张三", "李四", "王五", "赵六", "孙七"),
+    成绩 = c(85, NA, 78, 92, NA),
+    年龄 = c(20, 21, NA, 22, 19)
+)
+
+# 查看缺失值
+is.na(df)                    # 每个位置是否为 NA
+colSums(is.na(df))           # 每列缺失值数量
+
+# 删除含缺失值的行
+df %>% drop_na()
+
+# 填充缺失值
+df %>%
+    mutate(
+        成绩 = replace_na(成绩, mean(成绩, na.rm = TRUE)),
+        年龄 = replace_na(年龄, median(年龄, na.rm = TRUE))
+    )
+```
+
+**输出效果：** `colSums(is.na(df))` 显示每列缺失值计数。`replace_na` 用均值/中位数填充缺失值。
 
 ---
 
-👉 [进入第 4 章：实战案例 →](04-practice.md)
+## 3.5 数据重塑：宽表 ↔ 长表
+
+```r
+library(tidyr)
+
+# 宽表（常见格式）
+scores_wide <- data.frame(
+    姓名 = c("张三", "李四", "王五"),
+    平时 = c(85, 92, 78),
+    期中 = c(78, 88, 82),
+    期末 = c(82, 95, 75)
+)
+
+# 宽表 → 长表（ggplot2 喜欢长表格式）
+scores_long <- scores_wide %>%
+    pivot_longer(
+        cols = c(平时, 期中, 期末),
+        names_to = "考试类型",
+        values_to = "成绩"
+    )
+
+# 长表 → 宽表
+scores_long %>%
+    pivot_wider(
+        names_from = "考试类型",
+        values_from = "成绩"
+    )
+```
+
+**输出效果：** 长表中每个学生的三次考试变成三行，新增"考试类型"和"成绩"两列。这种格式更适合 ggplot2 分组绘图。
+
+---
+
+## 3.6 实战：清洗真实数据
+
+```r
+library(tidyverse)
+
+# 读取杂乱数据
+raw <- read_csv("messy_scores.csv")
+
+# 数据清洗流水线
+clean <- raw %>%
+    # 1. 重命名列（去掉空格和特殊字符）
+    rename(
+        学号 = `学生 ID`,
+        姓名 = `姓名 `,
+        平时成绩 = `平时 成绩`,
+        期中成绩 = `期中 成绩`,
+        期末成绩 = `期末 成绩`
+    ) %>%
+
+    # 2. 去除首尾空格
+    mutate(across(where(is.character), str_trim)) %>%
+
+    # 3. 处理缺失值
+    mutate(across(ends_with("成绩"), ~ replace_na(.x, 0))) %>%
+
+    # 4. 删除重复行
+    distinct(学号, .keep_all = TRUE) %>%
+
+    # 5. 计算总评
+    mutate(总评 = 平时成绩 * 0.3 + 期中成绩 * 0.3 + 期末成绩 * 0.4) %>%
+
+    # 6. 添加等级
+    mutate(等级 = case_when(
+        总评 >= 90 ~ "优秀",
+        总评 >= 80 ~ "良好",
+        总评 >= 70 ~ "中等",
+        总评 >= 60 ~ "及格",
+        TRUE ~ "不及格"
+    ))
+
+# 查看清洗结果
+glimpse(clean)
+summary(clean)
+```
+
+**输出效果：** `glimpse(clean)` 横向显示每列的名称、数据类型和前几个值。`summary(clean)` 显示每列的统计摘要。
+
+---
+
+## 3.7 连接多个数据表
+
+```r
+# 学生信息表
+students <- data.frame(
+    学号 = c("001", "002", "003", "004"),
+    姓名 = c("张三", "李四", "王五", "赵六"),
+    班级 = c("1班", "1班", "2班", "2班")
+)
+
+# 成绩表
+scores <- data.frame(
+    学号 = c("001", "002", "003", "004"),
+    成绩 = c(85, 92, 78, 88)
+)
+
+# 左连接：保留 students 的所有行
+students %>%
+    left_join(scores, by = "学号")
+
+# 内连接：只保留两表都有的行
+students %>%
+    inner_join(scores, by = "学号")
+```
+
+**输出效果：** 连接后的数据框包含两表的所有列，按学号匹配。
+
+---
+
+## 本章回顾
+
+你现在可以处理真实世界的杂乱数据了！回顾掌握的技能：
+
+- [x] 用 `%>%` 管道构建数据处理流水线
+- [x] 用 `filter`/`select`/`mutate`/`arrange`/`summarise` 变换数据
+- [x] 用 `group_by` + `summarise` 做分组汇总
+- [x] 用 `drop_na`/`replace_na` 处理缺失值
+- [x] 用 `pivot_longer`/`pivot_wider` 重塑数据
+- [x] 用 `left_join`/`inner_join` 连接多表
+
+---
+
+👉 [进入第 4 章：完成数据分析报告 →](04-practice.md)

@@ -46,6 +46,7 @@
 | [Linux 新手入门指南](linux_from_zero/00-linux-index.md) | 用生活比喻轻松掌握命令行 | 4~6 小时 |
 | [网络爬虫新手指南](web-crawler-from-zero/index.md) | 从 HTTP 协议到工程化实战 | 6~8 小时 |
 | [前端入门指南](frontend-from-zero/index.md) | 以"看懂代码"为核心目标 | 8~10 小时 |
+| [神经网络与深度学习新手指南](neural-network-from-zero/index.md) | 从感知机到 Transformer，用直觉理解 AI | 15 小时 |
 
 [查看全部技术领域教程 →](categories/technical-domains.md)
 
