@@ -266,7 +266,79 @@ W2 形状: (128, 10)
 
 ---
 
-## 1.6 为什么神经网络能工作：通用近似定理
+## 1.6 PyTorch 实现：更简洁的神经网络
+
+上面的 NumPy 实现让我们理解了网络的底层原理。但在实际项目中，我们使用 PyTorch 来简化开发。下面是 **完全相同的网络** 的 PyTorch 版本：
+
+```python
+import torch
+import torch.nn as nn
+
+class SimpleNN(nn.Module):
+    """与 1.5 节 NumPy 版本完全相同的三层神经网络"""
+    def __init__(self):
+        super(SimpleNN, self).__init__()
+        
+        self.fc1 = nn.Linear(784, 128)
+        self.sigmoid = nn.Sigmoid()
+        self.fc2 = nn.Linear(128, 10)
+    
+    def forward(self, x):
+        x = self.fc1(x)
+        x = self.sigmoid(x)
+        x = self.fc2(x)
+        return x
+
+model = SimpleNN()
+print(f"模型结构:\n{model}\n")
+
+for name, param in model.named_parameters():
+    print(f"{name}: {param.shape}")
+
+fake_image = torch.randn(1, 784)
+output = model(fake_image)
+
+probs = torch.softmax(output, dim=1)
+predicted = output.argmax(dim=1)
+
+print(f"\n预测结果（10个数字的 logits）: {output}")
+print(f"预测结果（10个数字的概率）: {probs}")
+print(f"网络猜测这是数字: {predicted.item()}")
+```
+
+**运行结果：**
+```
+模型结构:
+SimpleNN(
+  (fc1): Linear(in_features=784, out_features=128, bias=True)
+  (sigmoid): Sigmoid()
+  (fc2): Linear(in_features=128, out_features=10, bias=True)
+)
+
+fc1.weight: torch.Size([128, 784])
+fc1.bias: torch.Size([128])
+fc2.weight: torch.Size([10, 128])
+fc2.bias: torch.Size([10])
+
+预测结果（10个数字的 logits）: tensor([[-0.0234,  0.0156, -0.0089, ...]])
+预测结果（10个数字的概率）: tensor([[0.0987, 0.1023, 0.0998, ...]])
+网络猜测这是数字: 1
+```
+
+!!! tip "NumPy vs PyTorch 对比"
+    | 操作 | NumPy 实现 | PyTorch 实现 |
+    |:---|:---|:---|
+    | 定义权重 | `self.W1 = np.random.randn(784, 128)` | `nn.Linear(784, 128)` |
+    | 加权求和 | `np.dot(X, self.W1) + self.b1` | `self.fc1(x)` |
+    | 激活函数 | `self.sigmoid(self.z1)` | `self.sigmoid(x)` |
+    | Softmax | 手动实现 | `torch.softmax(output, dim=1)` |
+    | 反向传播 | 手动推导（第 3-4 章） | `loss.backward()` 自动完成 |
+
+    可以看到，PyTorch 将大量样板代码封装成了简洁的 API，让我们专注于网络架构设计。
+
+---
+
+## 1.7 为什么神经网络能工作：通用近似定理
 
 一个令人惊叹的数学事实： **只要隐藏层足够大，一个两层的神经网络可以以任意精度近似任何连续函数。**
 

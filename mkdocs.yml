@@ -115,6 +115,16 @@ nav:
       - 第 6 章：Transformer 架构: neural-network-from-zero/06-transformer-architecture.md
       - 第 7 章：注意力机制: neural-network-from-zero/07-attention-mechanism.md
       - 第 8 章：LLM 如何记忆: neural-network-from-zero/08-how-llms-memorize.md
+    - PyTorch 入门指南:
+      - 首页: pytorch-from-zero/index.md
+      - 第 1 章：张量基础操作: pytorch-from-zero/01-tensor-basics.md
+      - 第 2 章：自动求导机制: pytorch-from-zero/02-autograd.md
+      - 第 3 章：构建神经网络: pytorch-from-zero/03-building-models.md
+      - 第 4 章：完整训练流程: pytorch-from-zero/04-training-pipeline.md
+      - 第 5 章：数据加载与预处理: pytorch-from-zero/05-data-loading.md
+      - 第 6 章：优化器与损失函数: pytorch-from-zero/06-optimization.md
+      - 第 7 章：GPU 训练与性能优化: pytorch-from-zero/07-gpu-training.md
+      - 第 8 章：完整项目实战: pytorch-from-zero/08-complete-project.md
     - 线性规划与优化方法新手指南:
       - 首页: linear-programming-from-zero/index.md
       - 第 1 章：运筹学与线性规划概述: linear-programming-from-zero/01-introduction.md

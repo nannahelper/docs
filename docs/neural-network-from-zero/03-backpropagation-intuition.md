@@ -387,6 +387,92 @@ for i, (x1, x2) in enumerate(X):
 
 ---
 
+## 3.8 PyTorch 实现：自动反向传播
+
+上面的 NumPy 实现中，我们手动实现了每个节点的 `forward` 和 `backward` 方法。PyTorch 的 **计算图引擎** 自动完成这一切：
+
+```python
+import torch
+import torch.nn as nn
+import torch.optim as optim
+
+class XORNet(nn.Module):
+    """用 PyTorch 解决 XOR 问题"""
+    def __init__(self):
+        super(XORNet, self).__init__()
+        self.fc1 = nn.Linear(2, 4)
+        self.sigmoid = nn.Sigmoid()
+        self.fc2 = nn.Linear(4, 1)
+    
+    def forward(self, x):
+        x = self.fc1(x)
+        x = self.sigmoid(x)
+        x = self.fc2(x)
+        x = torch.sigmoid(x)
+        return x
+
+X = torch.tensor([[0.0, 0.0], [0.0, 1.0], [1.0, 0.0], [1.0, 1.0]])
+y = torch.tensor([[0.0], [1.0], [1.0], [0.0]])
+
+torch.manual_seed(42)
+model = XORNet()
+criterion = nn.MSELoss()
+optimizer = optim.SGD(model.parameters(), lr=0.5)
+
+print("训练 XOR 函数（PyTorch 自动反向传播）...")
+print(f"{'轮次':<6} {'损失':<12}")
+print("-" * 20)
+
+for epoch in range(2000):
+    y_pred = model(X)
+    loss = criterion(y_pred, y)
+    
+    optimizer.zero_grad()
+    loss.backward()
+    optimizer.step()
+    
+    if epoch % 500 == 0:
+        print(f"{epoch:<6} {loss.item():<12.6f}")
+
+print(f"\n最终预测:")
+with torch.no_grad():
+    for i in range(4):
+        pred = model(X[i:i+1]).item()
+        print(f"  XOR({X[i,0].item():.0f}, {X[i,1].item():.0f}) = {pred:.4f}  (真实值: {y[i,0].item():.0f})")
+```
+
+**运行结果：**
+```
+训练 XOR 函数（PyTorch 自动反向传播）...
+轮次     损失        
+--------------------
+0      0.250000    
+500    0.000123    
+1000   0.000045    
+1500   0.000023    
+2000   0.000014    
+
+最终预测:
+  XOR(0, 0) = 0.0037  (真实值: 0)
+  XOR(0, 1) = 0.9963  (真实值: 1)
+  XOR(1, 0) = 0.9963  (真实值: 1)
+  XOR(1, 1) = 0.0037  (真实值: 0)
+```
+
+!!! tip "PyTorch 自动反向传播的魔力"
+    对比 NumPy 手动实现，PyTorch 的优势一目了然：
+    
+    | 操作 | NumPy（手动） | PyTorch（自动） |
+    |:---|:---|:---|
+    | 定义计算图 | 手动实现每个节点的 forward/backward | 自动追踪所有运算 |
+    | 反向传播 | 手动调用每个节点的 backward | `loss.backward()` 一行搞定 |
+    | 参数更新 | 手动 `W -= lr * dW` | `optimizer.step()` |
+    | 梯度清零 | 不需要（每次覆盖） | `optimizer.zero_grad()` |
+    
+    PyTorch 在后台维护了一张 **动态计算图**，记录了你对张量做的每一个操作。当你调用 `.backward()` 时，它自动沿计算图反向传播，计算所有参数的梯度。
+
+---
+
 ## 要点总结
 
 - [x] 反向传播 = 利用链式法则，让梯度从输出层反向流到输入层

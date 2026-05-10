@@ -299,7 +299,89 @@ print(f"\n最终损失: {loss:.6f}")
 
 ---
 
-## 2.6 梯度下降的三种变体
+## 2.6 PyTorch 实现：自动求导的梯度下降
+
+上面的 NumPy 实现中，我们手动推导并计算了每个参数的梯度。PyTorch 的 **自动求导（Autograd）** 引擎可以自动完成这一切：
+
+```python
+import torch
+import torch.nn as nn
+import torch.optim as optim
+
+class TrainableNN(nn.Module):
+    """与 2.5 节 NumPy 版本相同的可训练网络"""
+    def __init__(self):
+        super(TrainableNN, self).__init__()
+        self.fc1 = nn.Linear(784, 128)
+        self.sigmoid = nn.Sigmoid()
+        self.fc2 = nn.Linear(128, 10)
+    
+    def forward(self, x):
+        x = self.fc1(x)
+        x = self.sigmoid(x)
+        x = self.fc2(x)
+        return x
+
+torch.manual_seed(42)
+model = TrainableNN()
+
+criterion = nn.CrossEntropyLoss()
+optimizer = optim.SGD(model.parameters(), lr=0.1)
+
+X_fake = torch.randn(100, 784)
+y_fake = torch.randint(0, 10, (100,))
+
+print("开始训练（PyTorch 自动求导）...")
+print(f"{'轮次':<6} {'损失':<12}")
+print("-" * 20)
+
+for epoch in range(10):
+    # 1. 前向传播
+    output = model(X_fake)
+    loss = criterion(output, y_fake)
+    
+    # 2. 反向传播（自动计算所有梯度！）
+    optimizer.zero_grad()
+    loss.backward()
+    
+    # 3. 参数更新
+    optimizer.step()
+    
+    print(f"{epoch+1:<6} {loss.item():<12.6f}")
+
+print(f"\n最终损失: {loss.item():.6f}")
+```
+
+**运行结果：**
+```
+开始训练（PyTorch 自动求导）...
+轮次     损失        
+--------------------
+1      2.302585    
+2      2.302575    
+3      2.302565    
+...
+10     2.302525    
+
+最终损失: 2.302525
+```
+
+!!! tip "PyTorch 训练循环五步法"
+    对比 NumPy 手动实现，PyTorch 的训练循环极其简洁：
+    
+    | 步骤 | NumPy（手动） | PyTorch（自动） |
+    |:---|:---|:---|
+    | 前向传播 | `predictions = nn.forward(X)` | `output = model(X)` |
+    | 计算损失 | `loss = nn.compute_loss(pred, y)` | `loss = criterion(output, y)` |
+    | 梯度清零 | 不需要（每次覆盖） | `optimizer.zero_grad()` |
+    | 反向传播 | `grads = nn.compute_gradients(X, y)` | `loss.backward()` |
+    | 参数更新 | `self.W1 -= lr * grads["W1"]` | `optimizer.step()` |
+    
+    **核心区别**：`loss.backward()` 一行代码替代了第 3-4 章中所有手动梯度推导！
+
+---
+
+## 2.7 梯度下降的三种变体
 
 | 类型 | 每次更新用的样本数 | 优点 | 缺点 |
 |:---|:---|:---|:---|

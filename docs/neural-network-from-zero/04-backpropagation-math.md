@@ -384,6 +384,124 @@ demonstrate_gradient_issues()
 
 ---
 
+## 4.7 PyTorch 实现：完整的训练流程
+
+上面的数学推导展示了反向传播的底层原理。在实际项目中，PyTorch 自动处理所有梯度计算。下面是一个 **完整的 MNIST 训练流程**，整合了前四章的所有概念：
+
+```python
+import torch
+import torch.nn as nn
+import torch.optim as optim
+from torch.utils.data import DataLoader
+from torchvision import datasets, transforms
+
+BATCH_SIZE = 64
+LEARNING_RATE = 0.001
+NUM_EPOCHS = 5
+DEVICE = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+
+transform = transforms.Compose([
+    transforms.ToTensor(),
+    transforms.Normalize((0.1307,), (0.3081,))
+])
+
+train_dataset = datasets.MNIST(
+    root='./data', train=True, download=True, transform=transform
+)
+test_dataset = datasets.MNIST(
+    root='./data', train=False, download=True, transform=transform
+)
+
+train_loader = DataLoader(train_dataset, batch_size=BATCH_SIZE, shuffle=True)
+test_loader = DataLoader(test_dataset, batch_size=BATCH_SIZE, shuffle=False)
+
+class MNISTNet(nn.Module):
+    def __init__(self):
+        super(MNISTNet, self).__init__()
+        self.network = nn.Sequential(
+            nn.Flatten(),
+            nn.Linear(784, 256),
+            nn.ReLU(),
+            nn.Dropout(0.2),
+            nn.Linear(256, 128),
+            nn.ReLU(),
+            nn.Dropout(0.2),
+            nn.Linear(128, 10)
+        )
+    
+    def forward(self, x):
+        return self.network(x)
+
+model = MNISTNet().to(DEVICE)
+criterion = nn.CrossEntropyLoss()
+optimizer = optim.Adam(model.parameters(), lr=LEARNING_RATE)
+
+print(f"使用设备: {DEVICE}")
+print(f"训练集: {len(train_dataset)} 样本, 测试集: {len(test_dataset)} 样本\n")
+
+for epoch in range(NUM_EPOCHS):
+    model.train()
+    train_loss = 0.0
+    
+    for data, target in train_loader:
+        data, target = data.to(DEVICE), target.to(DEVICE)
+        
+        output = model(data)
+        loss = criterion(output, target)
+        
+        optimizer.zero_grad()
+        loss.backward()
+        optimizer.step()
+        
+        train_loss += loss.item()
+    
+    model.eval()
+    correct = 0
+    total = 0
+    
+    with torch.no_grad():
+        for data, target in test_loader:
+            data, target = data.to(DEVICE), target.to(DEVICE)
+            output = model(data)
+            _, predicted = output.max(1)
+            total += target.size(0)
+            correct += predicted.eq(target).sum().item()
+    
+    accuracy = 100. * correct / total
+    avg_loss = train_loss / len(train_loader)
+    print(f"Epoch {epoch+1}: Loss={avg_loss:.4f}, Accuracy={accuracy:.2f}%")
+
+print(f"\n训练完成！")
+```
+
+**运行结果：**
+```
+使用设备: cpu
+训练集: 60000 样本, 测试集: 10000 样本
+
+Epoch 1: Loss=0.3572, Accuracy=94.87%
+Epoch 2: Loss=0.1678, Accuracy=96.58%
+Epoch 3: Loss=0.1245, Accuracy=97.12%
+Epoch 4: Loss=0.1002, Accuracy=97.45%
+Epoch 5: Loss=0.0856, Accuracy=97.68%
+
+训练完成！
+```
+
+!!! tip "前四章知识整合"
+    这个完整的训练流程整合了前四章的所有核心概念：
+    
+    | 章节 | 概念 | 在代码中的体现 |
+    |:---|:---|:---|
+    | 第 1 章 | 神经网络结构 | `nn.Linear`、`nn.ReLU`、`nn.Dropout` |
+    | 第 2 章 | 梯度下降 | `optimizer = Adam(...)`、`optimizer.step()` |
+    | 第 3 章 | 反向传播直觉 | `loss.backward()` 自动计算所有梯度 |
+    | 第 4 章 | 链式法则数学 | PyTorch 自动求导引擎在后台应用链式法则 |
+    
+    **一行 `loss.backward()` 背后**，PyTorch 自动完成了第 4 章中所有手动推导的链式法则计算。
+
+---
+
 ## 要点总结
 
 - [x] 链式法则 = 反向传播的数学基础：$\frac{df}{dx} = \frac{df}{dg} \cdot \frac{dg}{dx}$
