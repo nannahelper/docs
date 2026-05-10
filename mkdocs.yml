@@ -150,12 +150,9 @@ nav:
       - 学习目标对照表: mythical_man_month/learning_map.md
       - 质量评估报告: mythical_man_month/quality_report.md
 
-extra_css:
-  - https://cdn.jsdelivr.net/npm/katex@0.16.10/dist/katex.min.css
 extra_javascript:
-  - https://cdn.jsdelivr.net/npm/katex@0.16.10/dist/katex.min.js
-  - https://cdn.jsdelivr.net/npm/katex@0.16.10/dist/contrib/auto-render.min.js
-  - js/katex-config.js
+  - js/mathjax-config.js
+  - https://unpkg.com/mathjax@3/es5/tex-mml-chtml.js
 
 markdown_extensions:
   - abbr
