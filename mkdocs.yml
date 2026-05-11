@@ -172,6 +172,38 @@ nav:
       - 第 6 章：网络管理: docker-from-zero/06-networks.md
       - 第 7 章：Docker Compose: docker-from-zero/07-docker-compose.md
       - 第 8 章：综合实战: docker-from-zero/08-final-project.md
+  - 计算机等级考试:
+    - 分类概览: categories/cert-exams.md
+    - 三级网络技术:
+      - 首页: cert3-network/index.md
+      - 第 1 章：网络体系结构: cert3-network/01-network-architecture.md
+      - 第 2 章：物理层与数据链路层: cert3-network/02-physical-and-datalink.md
+      - 第 3 章：网络层（上）—— IP 地址: cert3-network/03-network-layer-ip.md
+      - 第 4 章：网络层（下）—— 路由协议: cert3-network/04-network-layer-routing.md
+      - 第 5 章：传输层: cert3-network/05-transport-layer.md
+      - 第 6 章：应用层: cert3-network/06-application-layer.md
+      - 第 7 章：局域网与无线网络: cert3-network/07-lan-and-wireless.md
+      - 第 8 章：网络安全与模拟测试: cert3-network/08-security-and-mock.md
+    - 三级信息安全:
+      - 首页: cert3-security/index.md
+      - 第 1 章：信息安全概述: cert3-security/01-security-overview.md
+      - 第 2 章：密码学基础: cert3-security/02-cryptography.md
+      - 第 3 章：身份认证与访问控制: cert3-security/03-authentication.md
+      - 第 4 章：网络安全: cert3-security/04-network-security.md
+      - 第 5 章：系统安全: cert3-security/05-system-security.md
+      - 第 6 章：应用安全: cert3-security/06-application-security.md
+      - 第 7 章：安全管理: cert3-security/07-security-management.md
+      - 第 8 章：综合实战与模拟测试: cert3-security/08-mock-exam.md
+    - 三级嵌入式系统:
+      - 首页: cert3-embedded/index.md
+      - 第 1 章：嵌入式系统概述: cert3-embedded/01-embedded-overview.md
+      - 第 2 章：嵌入式处理器: cert3-embedded/02-embedded-processor.md
+      - 第 3 章：嵌入式操作系统: cert3-embedded/03-embedded-os.md
+      - 第 4 章：嵌入式软件开发: cert3-embedded/04-embedded-software.md
+      - 第 5 章：接口与通信技术: cert3-embedded/05-interfaces.md
+      - 第 6 章：嵌入式网络与物联网: cert3-embedded/06-iot-networking.md
+      - 第 7 章：低功耗与可靠性设计: cert3-embedded/07-low-power.md
+      - 第 8 章：综合实战与模拟测试: cert3-embedded/08-mock-exam.md
   - 工程实践:
     - 分类概览: categories/engineering-practice.md
     - 《人月神话》软件工程入门:
