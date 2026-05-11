@@ -162,6 +162,16 @@ nav:
       - 第 5 章：标准形式与灵敏度分析: linear-programming-from-zero/05-standard-form-sensitivity.md
       - 第 6 章：单纯形法原理: linear-programming-from-zero/06-simplex-method.md
       - 第 7 章：表格单纯形法与进阶: linear-programming-from-zero/07-simplex-tableau-advanced.md
+    - Docker 新手指南:
+      - 首页: docker-from-zero/index.md
+      - 第 1 章：认识 Docker: docker-from-zero/01-introduction.md
+      - 第 2 章：环境搭建: docker-from-zero/02-installation.md
+      - 第 3 章：镜像与容器: docker-from-zero/03-images-and-containers.md
+      - 第 4 章：Dockerfile: docker-from-zero/04-dockerfile.md
+      - 第 5 章：数据管理: docker-from-zero/05-volumes.md
+      - 第 6 章：网络管理: docker-from-zero/06-networks.md
+      - 第 7 章：Docker Compose: docker-from-zero/07-docker-compose.md
+      - 第 8 章：综合实战: docker-from-zero/08-final-project.md
   - 工程实践:
     - 分类概览: categories/engineering-practice.md
     - 《人月神话》软件工程入门:

@@ -87,6 +87,25 @@
 
 ---
 
+### Docker 新手指南
+
+从"在我机器上能跑"到"到处都能跑"。掌握 Docker 容器技术，用集装箱思维解决环境一致性难题，开启现代化部署之旅。
+
+| 章节 | 内容 |
+|:---|:---|
+| 认识 Docker | 容器 vs 虚拟机、镜像/容器/仓库三大核心概念 |
+| 环境搭建 | Docker Desktop 安装、Hello World 验证、Nginx 初体验 |
+| 镜像与容器 | pull、run、ps、logs、exec、cp——日常操作全掌握 |
+| Dockerfile | FROM、RUN、COPY、CMD——编写镜像的"配方说明书" |
+| 数据管理 | Volume、Bind Mount——让数据"活"在容器之外 |
+| 网络管理 | Bridge 网络、自定义网络、容器间 DNS 解析 |
+| Docker Compose | 一键编排多容器应用，告别手动逐个启动 |
+| 综合实战 | Nginx + Flask + MySQL 全栈应用容器化部署 |
+
+[进入教程 →](../docker-from-zero/index.md)
+
+---
+
 ## 学习建议
 
 技术领域类教程建议按以下路径学习：
