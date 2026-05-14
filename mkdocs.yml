@@ -202,6 +202,16 @@ nav:
       - 第 6 章：网络管理: docker-from-zero/06-networks.md
       - 第 7 章：Docker Compose: docker-from-zero/07-docker-compose.md
       - 第 8 章：综合实战: docker-from-zero/08-final-project.md
+    - Verilog 零基础入门指南:
+      - 首页: verilog-from-zero/index.md
+      - 第 1 章：数字逻辑基础与 Verilog 概述: verilog-from-zero/01-digital-logic-basics.md
+      - 第 2 章：开发环境搭建与第一个程序: verilog-from-zero/02-environment-setup.md
+      - 第 3 章：数据类型与运算符: verilog-from-zero/03-data-types-operators.md
+      - 第 4 章：模块与端口: verilog-from-zero/04-modules-ports.md
+      - 第 5 章：组合逻辑设计: verilog-from-zero/05-combinational-logic.md
+      - 第 6 章：时序逻辑设计: verilog-from-zero/06-sequential-logic.md
+      - 第 7 章：状态机设计: verilog-from-zero/07-state-machine.md
+      - 第 8 章：综合实战项目——数字钟: verilog-from-zero/08-digital-clock-project.md
   - 计算机等级考试:
     - 分类概览: categories/cert-exams.md
     - 三级网络技术:

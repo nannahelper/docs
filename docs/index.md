@@ -55,6 +55,7 @@
 | [PyTorch 入门指南](pytorch-from-zero/index.md) | 基于 PyTorch 中文文档，系统学习深度学习框架 | 15 小时 |
 | [线性规划与优化方法新手指南](linear-programming-from-zero/index.md) | 从资源分配到单纯形法，用数学思维找到最优解 | 10 小时 |
 | [Docker 新手指南](docker-from-zero/index.md) | 从"在我机器上能跑"到"到处都能跑"，掌握容器技术 | 8~10 小时 |
+| [Verilog 零基础入门指南](verilog-from-zero/index.md) | 用乐高积木的视角理解数字电路设计，掌握硬件描述语言 | 20~25 小时 |
 
 [查看全部技术领域教程 →](categories/technical-domains.md)
 
