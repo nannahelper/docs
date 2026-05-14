@@ -58,6 +58,36 @@ nav:
       - 第 4 章：内容创作: mkdocs-from-zero/04-content-creation.md
       - 第 5 章：主题定制: mkdocs-from-zero/05-theme-customization.md
       - 第 6 章：部署上线: mkdocs-from-zero/06-deployment.md
+    - Microsoft Word 高效使用指南:
+      - 首页: office-word-from-zero/index.md
+      - 第 1 章：文档结构与样式: office-word-from-zero/01-document-structure.md
+      - 第 2 章：排版与页面设置: office-word-from-zero/02-layout-page-setup.md
+      - 第 3 章：表格与图表: office-word-from-zero/03-tables-charts.md
+      - 第 4 章：引用与目录: office-word-from-zero/04-references-toc.md
+      - 第 5 章：审阅与协作: office-word-from-zero/05-review-collaboration.md
+      - 第 6 章：邮件合并: office-word-from-zero/06-mail-merge.md
+      - 第 7 章：模板与自动化: office-word-from-zero/07-templates-automation.md
+      - 第 8 章：综合实战项目: office-word-from-zero/08-final-project.md
+    - Microsoft Excel 高效使用指南:
+      - 首页: office-excel-from-zero/index.md
+      - 第 1 章：数据输入与格式化: office-excel-from-zero/01-data-entry-formatting.md
+      - 第 2 章：公式与函数基础: office-excel-from-zero/02-formulas-functions.md
+      - 第 3 章：数据分析工具: office-excel-from-zero/03-data-analysis.md
+      - 第 4 章：图表与可视化: office-excel-from-zero/04-charts-visualization.md
+      - 第 5 章：数据透视表: office-excel-from-zero/05-pivot-tables.md
+      - 第 6 章：高级函数与数组公式: office-excel-from-zero/06-advanced-functions.md
+      - 第 7 章：宏与 VBA 入门: office-excel-from-zero/07-macros-vba.md
+      - 第 8 章：综合实战项目: office-excel-from-zero/08-final-project.md
+    - Microsoft PowerPoint 高效使用指南:
+      - 首页: office-powerpoint-from-zero/index.md
+      - 第 1 章：幻灯片基础与设计原则: office-powerpoint-from-zero/01-slide-basics.md
+      - 第 2 章：母版与模板: office-powerpoint-from-zero/02-master-templates.md
+      - 第 3 章：图形与多媒体: office-powerpoint-from-zero/03-graphics-multimedia.md
+      - 第 4 章：动画与过渡: office-powerpoint-from-zero/04-animations-transitions.md
+      - 第 5 章：数据图表展示: office-powerpoint-from-zero/05-data-charts.md
+      - 第 6 章：演讲者工具与演示技巧: office-powerpoint-from-zero/06-presenter-tools.md
+      - 第 7 章：协作与共享: office-powerpoint-from-zero/07-collaboration-sharing.md
+      - 第 8 章：综合实战项目: office-powerpoint-from-zero/08-final-project.md
   - 编程语言:
     - 分类概览: categories/programming-languages.md
     - R 语言新手指南:

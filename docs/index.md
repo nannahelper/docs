@@ -18,6 +18,9 @@
 | [Markdown 新手指南](markdown-from-zero/index.md) | 让文档写作像聊天一样简单 | 4~6 小时 |
 | [LaTeX 新手指南](latex-from-zero/index.md) | 让学术写作变得优雅 | 4~6 小时 |
 | [MkDocs 与 GitHub Pages 部署指南](mkdocs-from-zero/index.md) | 从零搭建专业文档网站 | 4~6 小时 |
+| [Microsoft Word 高效使用指南](office-word-from-zero/index.md) | 从文档排版到自动化，掌握专业文档制作 | 6~8 小时 |
+| [Microsoft Excel 高效使用指南](office-excel-from-zero/index.md) | 从数据处理到仪表盘，成为数据分析高手 | 8~10 小时 |
+| [Microsoft PowerPoint 高效使用指南](office-powerpoint-from-zero/index.md) | 从幻灯片设计到演讲呈现，打造专业演示 | 6~8 小时 |
 
 [查看全部基础技能教程 →](categories/basic-skills.md)
 
