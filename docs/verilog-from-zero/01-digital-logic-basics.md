@@ -216,3 +216,5 @@ assign y2 = a | b;   // 假设 b = 0
 ---
 
 **下一章预告：** 在第 2 章中，我们将搭建 Verilog 开发环境，安装 Icarus Verilog 仿真器和 GTKWave 波形查看器，并编写运行第一个 Verilog 程序——一个简单的与门电路。
+
+[继续第 2 章：开发环境搭建与第一个程序 →](02-environment-setup.md)
