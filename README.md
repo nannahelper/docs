@@ -126,6 +126,19 @@
 | 协作与共享 | 共同创作、导出选项、打包演示 |
 | 综合实战 | 完整商业演示文稿从零到交付 |
 
+#### Dog-Skills 智能技能系统使用指南
+
+掌握 AI 编程助手的技能系统：发现技能、创建技能、使用技能。让 AI 助手从"通用助手"升级为"领域专家"。
+
+| 章节 | 内容 |
+|:---|:---|
+| 认识 Dog-Skills | 设计理念、核心概念、技能生态 |
+| 安装与环境配置 | 克隆仓库、技能安装、激活验证 |
+| Dog-Tutor 教程生成 | 6 阶段流程、受众风格、从零生成教程 |
+| Dog-Frontier 前端设计 | 设计令牌、响应式布局、组件开发 |
+| Find-Skills 技能发现 | 搜索技能、安装技能、扩展能力 |
+| 最佳实践与进阶 | 多技能协同、自定义技能、社区贡献 |
+
 ---
 
 ### 编程语言
@@ -436,7 +449,8 @@ docs/
     ├── latex-from-zero/             # LaTeX 新手指南
     ├── r-from-zero/                 # R 语言新手指南
     ├── matlab-from-zero/            # MATLAB 新手指南
-    └── mkdocs-from-zero/            # MkDocs 与 GitHub Pages 部署指南
+    ├── mkdocs-from-zero/            # MkDocs 与 GitHub Pages 部署指南
+    ├── dog-skills-from-zero/        # Dog-Skills 智能技能系统使用指南
 ```
 
 ### 架构设计
