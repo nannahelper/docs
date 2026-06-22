@@ -1,203 +1,243 @@
-# 第 2 章：安装与环境配置
+# 第 2 章：技能的获取与管理
 
-> **工欲善其事，必先利其器** —— 克隆 Dog-Skills 仓库，在 AI 助手中完成技能安装与激活。
+> **工欲善其事，必先利其器** —— 掌握在不同 AI 助手中获取、安装和管理技能的方法。
 
 ---
 
 ## 2.1 前置要求
 
-在安装 Dog-Skills 之前，请确保：
+在开始使用技能之前，请确认：
 
 | 要求 | 说明 |
 |:---|:---|
-| **Git** | 用于克隆仓库，版本 2.0+ |
-| **AI 编程助手** | 支持 Skills 机制的 IDE（如 Trae IDE） |
-| **网络连接** | 能够访问 GitHub |
+| **AI 编程助手** | Claude Code、Cursor、Trae IDE 等支持技能的 IDE |
+| **Git**（可选） | 用于从 GitHub 获取技能，版本 2.0+ |
+| **网络连接** | 能够访问技能源（npm、GitHub 等） |
 
 ---
 
-## 2.2 克隆仓库
+## 2.2 技能的获取渠道
 
-打开终端（PowerShell / Terminal），执行以下命令：
+技能可以从多种渠道获取：
+
+### 社区技能市场
+
+许多 AI 助手平台拥有自己的技能市场或注册中心：
+
+- **Claude Code**：通过 `npx skills` 命令搜索和安装，或访问 [skills.sh](https://skills.sh) 浏览排行榜
+- **Trae IDE**：社区通过 GitHub 仓库分享技能包
+- **Cursor**：社区通过 Rules 模板分享
+
+### GitHub 仓库
+
+大量开源技能托管在 GitHub 上。直接搜索 `skills` 或 `claude-skills` 等关键词即可找到：
 
 ```bash
-# 克隆 Dog-Skills 仓库到本地
-git clone https://github.com/ZhouYinLong-lab/Dog-Skills.git
-
-# 进入仓库目录
-cd Dog-Skills
+# 示例：搜索技能仓库
+# 在 GitHub 搜索框中输入：
+#   skills topic:claude-code
+#   skills topic:cursor
 ```
 
-克隆完成后，你会看到以下目录结构：
+### 自行创建
 
-```
-Dog-Skills/
-├── README.md
-├── dog-tutor/
-│   ├── SKILL.md
-│   ├── ATTRIBUTIONS.md
-│   ├── references/
-│   └── assets/
-├── dog-frontier/
-│   ├── SKILL.md
-│   └── ...
-├── find-skills/
-│   ├── SKILL.md
-│   └── ...
-└── skill-creator/
-    ├── SKILL.md
-    └── ...
-```
-
-每个技能目录下的 `SKILL.md` 是技能的核心文件，包含了该技能的完整定义和提示词。
+当现有技能无法满足需求时，你可以自行创建。详见[第 4 章：创作自定义技能](04-create-skills.md)。
 
 ---
 
-## 2.3 在 Trae IDE 中安装技能
+## 2.3 在 Claude Code 中安装技能
 
-Trae IDE 原生支持 Skills 机制。安装步骤如下：
+Claude Code 提供了最便捷的技能安装体验。
+
+### 方式一：通过 npx skills 安装
+
+```bash
+# 搜索技能
+npx skills search <关键词>
+
+# 安装技能
+npx skills install <技能名>
+```
+
+安装后的技能存放在 `.claude/skills/` 目录下，Claude Code 会自动识别。
+
+### 方式二：手动复制
+
+从 GitHub 克隆或下载技能文件后，放入技能目录：
+
+```bash
+# 克隆技能仓库
+git clone https://github.com/<作者>/<技能仓库>.git
+
+# 将技能目录复制到 Claude Code 技能路径
+cp -r <技能仓库> ~/.claude/skills/<技能名>
+```
+
+### 方式三：通过 /skill-creator 引导安装
+
+在 Claude Code 对话中，某些技能可以引导你完成安装流程。
+
+---
+
+## 2.4 在 Trae IDE 中安装技能
+
+Trae IDE 原生支持 Skills 机制：
 
 ### 步骤 1：找到技能目录
 
 Trae IDE 的技能目录通常在：
 
-- **Windows**：`C:\Users\<你的用户名>\.agents\skills\`
+- **Windows**：`C:\Users\<用户名>\.agents\skills\`
 - **macOS / Linux**：`~/.agents/skills/`
 
 ### 步骤 2：复制技能文件
 
-将 Dog-Skills 中的技能目录复制到 Trae IDE 的技能目录：
+将从 GitHub 或其他渠道获取的技能目录复制到该路径：
 
 ```bash
 # Windows PowerShell
-# 假设 Dog-Skills 克隆在 D:\Projects\Dog-Skills
-Copy-Item -Path "D:\Projects\Dog-Skills\dog-tutor" -Destination "$env:USERPROFILE\.agents\skills\dog-tutor" -Recurse
-Copy-Item -Path "D:\Projects\Dog-Skills\dog-frontier" -Destination "$env:USERPROFILE\.agents\skills\dog-frontier" -Recurse
-Copy-Item -Path "D:\Projects\Dog-Skills\find-skills" -Destination "$env:USERPROFILE\.agents\skills\find-skills" -Recurse
-Copy-Item -Path "D:\Projects\Dog-Skills\skill-creator" -Destination "$env:USERPROFILE\.agents\skills\skill-creator" -Recurse
+Copy-Item -Path "D:\Projects\<技能目录>" -Destination "$env:USERPROFILE\.agents\skills\<技能名>" -Recurse
+
+# macOS / Linux
+cp -r ~/Downloads/<技能目录> ~/.agents/skills/<技能名>
 ```
 
-### 步骤 3：验证安装
+### 步骤 3：重启验证
 
-重启 Trae IDE，在与 AI 对话时输入触发词（如"生成教程"），如果 AI 响应中加载了对应的技能，说明安装成功。
-
----
-
-## 2.4 在其他 AI 助手中使用
-
-### Cursor
-
-Cursor 使用 Rules 功能来模拟 Skills 机制。你可以将 `SKILL.md` 的内容作为 Rule 添加到 Cursor 中：
-
-1. 打开 Cursor Settings → Rules
-2. 新建 Rule，将 `SKILL.md` 的内容粘贴进去
-3. 设置 Rule 的描述和触发条件
-
-### 通用方法
-
-即使你的 AI 助手不完全支持 Skills 机制，你也可以：
-
-1. 打开 `SKILL.md` 文件
-2. 将其内容作为**系统提示词**或**角色设定**粘贴到对话中
-3. 按照技能定义的流程与 AI 交互
+重启 Trae IDE，输入技能的触发关键词，如果加载成功说明安装完成。
 
 ---
 
-## 2.5 技能激活方式
+## 2.5 在 Cursor 中使用技能
 
-Dog-Skills 的技能有两种激活方式：
+Cursor 通过 **Rules** 功能模拟技能机制：
 
-### 方式一：关键词触发
+1. 打开 **Cursor Settings → Rules**
+2. 点击 **Add new rule**
+3. 将技能的核心提示词内容粘贴进去
+4. 设置触发条件（如文件类型匹配、目录匹配等）
+5. 保存规则
 
-每个技能都有预定义的触发关键词，当用户输入包含这些关键词时，AI 助手会自动加载对应的技能。
+你也可以将技能内容作为**项目级的 `.cursorrules`** 文件使用，这样整个团队的 AI 助手都会遵循相同的技能规范。
 
-| 技能 | 触发关键词示例 |
-|:---|:---|
-| **dog-tutor** | "生成教程"、"创建教程"、"编制学习材料"、"写入门指南" |
-| **dog-frontier** | "前端设计"、"UI 设计"、"落地页"、"dashboard"、"组件开发" |
-| **find-skills** | "找技能"、"发现技能"、"安装技能"、"how do I" |
-| **skill-creator** | "创建技能"、"新建技能"、"make a skill" |
+---
+
+## 2.6 技能的激活方式
+
+### 方式一：关键词自动触发
+
+每种技能都定义了触发关键词，当你的输入匹配到这些关键词时，AI 助手会自动加载对应技能。
+
+例如：
+- 输入"生成教程" → 自动加载教程生成类技能
+- 输入"审查代码" → 自动加载代码审查类技能
 
 ### 方式二：手动调用
 
-在 Trae IDE 中，可以通过 `Skill` 工具手动调用指定技能：
+在 Claude Code 中，通过 `/skill-name` 的方式手动调用指定技能；在 Trae IDE 中，可以通过 `Skill` 工具手动调用。
 
 ```
-请使用 dog-tutor 技能帮我生成一个 Python 教程
+请使用 pdf 技能帮我提取这份文档的文字内容
 ```
 
 ---
 
-## 2.6 验证安装
+## 2.7 技能目录结构
 
-完成安装后，用以下方式验证各技能是否正常工作：
-
-### 验证 Dog-Tutor
+一个标准的技能通常包含以下文件：
 
 ```
-请帮我生成一个"Git 基础入门"教程，4 小时，零基础
+my-skill/
+├── SKILL.md           # 技能核心定义（必需）
+│                       #   - 元数据（名称、描述、触发词）
+│                       #   - 系统提示词（领域知识、工作流程）
+│                       #   - 输出规范（格式要求、质量标准）
+├── references/        # 参考资料（可选）
+│   ├── workflow.md    #   详细工作流程
+│   └── examples.md    #   示例输出
+├── assets/            # 辅助资源（可选）
+│   └── templates/     #   模板文件
+└── ATTRIBUTIONS.md    # 归属声明（可选）
 ```
 
-AI 应该按照 Dog-Tutor 的 6 阶段流程开始工作。
-
-### 验证 Dog-Frontier
-
-```
-请帮我设计一个博客网站的落地页
-```
-
-AI 应该按照 Dog-Frontier 的设计流程开始工作。
-
-### 验证 Find-Skills
-
-```
-我想找一个能帮我处理 PDF 的技能
-```
-
-AI 应该启动 Find-Skills 技能进行搜索。
+`SKILL.md` 是技能的心脏——它包含了该技能的完整定义和核心提示词。
 
 ---
 
-## 2.7 常见问题
+## 2.8 技能管理
 
-### Q：技能没有自动加载？
+### 查看已安装技能
+
+- **Claude Code**：`npx skills list` 或查看 `.claude/skills/` 目录
+- **Trae IDE**：查看 `~/.agents/skills/` 目录
+- **Cursor**：Settings → Rules 中查看
+
+### 更新技能
+
+从原始渠道重新获取最新版本并覆盖：
+
+```bash
+# GitHub 方式
+cd <技能仓库目录>
+git pull
+
+# 然后重新复制到技能目录
+```
+
+### 移除技能
+
+直接删除对应的技能目录即可：
+
+```bash
+# Claude Code
+rm -rf ~/.claude/skills/<技能名>
+
+# Trae IDE
+rm -rf ~/.agents/skills/<技能名>
+```
+
+---
+
+## 2.9 常见问题
+
+### Q：安装后技能没有生效？
 
 确保：
-1. 技能文件已正确复制到技能目录
-2. 已重启 AI 助手
+1. 技能文件已放入正确的目录
+2. 已重启 AI 助手（部分平台需要）
 3. 输入包含了正确的触发关键词
 
-### Q：技能目录不存在？
+### Q：技能目录不存在怎么办？
 
-手动创建技能目录即可：
+手动创建即可：
 ```bash
+# Claude Code
+mkdir -p ~/.claude/skills
+
+# Trae IDE
 mkdir -p ~/.agents/skills
 ```
 
-### Q：如何更新技能？
+### Q：多个技能触发词冲突怎么办？
 
-重新拉取 Dog-Skills 仓库并覆盖技能目录：
-```bash
-cd Dog-Skills
-git pull
-# 然后重新复制技能文件
-```
+检查各技能的触发词定义，手动调整触发词或指定使用哪个技能。
 
 ---
 
-## 2.8 本章小结
+## 2.10 本章小结
 
-- 克隆 Dog-Skills 仓库获取技能文件
-- 将技能目录复制到 AI 助手的技能目录中
-- 通过关键词触发或手动调用激活技能
-- 验证各技能是否正常工作
+- 技能可以从社区市场、GitHub 仓库获取，也可以自行创建
+- Claude Code 通过 `npx skills` 提供便捷的安装体验
+- Trae IDE 和 Cursor 各有一套技能配置方式
+- 技能的激活支持关键词触发和手动调用两种方式
+- 每个技能的核心是 `SKILL.md` 文件
 
 ---
 
 ## 实践任务
 
-1. 克隆 Dog-Skills 仓库到本地
-2. 将至少两个技能安装到你的 AI 助手中
-3. 用触发词验证技能是否正常加载
+1. 在你的 AI 助手中安装至少一个技能
+2. 查看该技能的 `SKILL.md` 文件，了解其结构
+3. 用触发词验证技能是否正常工作
 
 ---

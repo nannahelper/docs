@@ -88,14 +88,14 @@ nav:
       - 第 6 章：演讲者工具与演示技巧: office-powerpoint-from-zero/06-presenter-tools.md
       - 第 7 章：协作与共享: office-powerpoint-from-zero/07-collaboration-sharing.md
       - 第 8 章：综合实战项目: office-powerpoint-from-zero/08-final-project.md
-    - Dog-Skills 智能技能系统使用指南:
+    - AI 编程助手技能系统：从发现到创作:
       - 首页: dog-skills-from-zero/index.md
-      - 第 1 章：认识 Dog-Skills: dog-skills-from-zero/01-introduction.md
-      - 第 2 章：安装与环境配置: dog-skills-from-zero/02-installation-and-setup.md
-      - 第 3 章：Dog-Tutor 教程生成实战: dog-skills-from-zero/03-dog-tutor.md
-      - 第 4 章：Dog-Frontier 前端设计实战: dog-skills-from-zero/04-dog-frontier.md
-      - 第 5 章：Find-Skills 技能发现: dog-skills-from-zero/05-find-skills.md
-      - 第 6 章：最佳实践与进阶技巧: dog-skills-from-zero/06-best-practices.md
+      - 第 1 章：认识 AI 技能系统: dog-skills-from-zero/01-introduction.md
+      - 第 2 章：技能的获取与管理: dog-skills-from-zero/02-installation-and-setup.md
+      - 第 3 章：发现与选择技能: dog-skills-from-zero/03-find-skills.md
+      - 第 4 章：创作自定义技能: dog-skills-from-zero/04-create-skills.md
+      - 第 5 章：技能实战工作流: dog-skills-from-zero/05-skill-workflows.md
+      - 第 6 章：最佳实践与社区生态: dog-skills-from-zero/06-best-practices.md
   - 编程语言:
     - 分类概览: categories/programming-languages.md
     - R 语言新手指南:

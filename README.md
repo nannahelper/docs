@@ -126,18 +126,18 @@
 | 协作与共享 | 共同创作、导出选项、打包演示 |
 | 综合实战 | 完整商业演示文稿从零到交付 |
 
-#### Dog-Skills 智能技能系统使用指南
+#### AI 编程助手技能系统：从发现到创作
 
 掌握 AI 编程助手的技能系统：发现技能、创建技能、使用技能。让 AI 助手从"通用助手"升级为"领域专家"。
 
 | 章节 | 内容 |
 |:---|:---|
-| 认识 Dog-Skills | 设计理念、核心概念、技能生态 |
-| 安装与环境配置 | 克隆仓库、技能安装、激活验证 |
-| Dog-Tutor 教程生成 | 6 阶段流程、受众风格、从零生成教程 |
-| Dog-Frontier 前端设计 | 设计令牌、响应式布局、组件开发 |
-| Find-Skills 技能发现 | 搜索技能、安装技能、扩展能力 |
-| 最佳实践与进阶 | 多技能协同、自定义技能、社区贡献 |
+| 认识 AI 技能系统 | 设计理念、核心概念、技能生态 |
+| 技能的获取与管理 | 克隆仓库、技能安装、激活验证 |
+| 发现与选择技能 | 搜索技能、评估质量、安装与扩展能力 |
+| 创作自定义技能 | 从零编写技能、调试优化、发布分享 |
+| 技能实战工作流 | 多技能协同、常用工作流模式、效率提升 |
+| 最佳实践与社区生态 | 版本管理、贡献上游、社区资源 |
 
 ---
 
@@ -322,8 +322,6 @@
 | Docker Compose | 一键编排多容器应用，告别手动逐个启动 |
 | 综合实战 | Nginx + Flask + MySQL 全栈应用容器化部署 |
 
----
-
 #### Verilog 零基础入门指南
 
 从"软件思维"到"硬件思维"——用乐高积木的视角理解数字电路设计。系统学习 Verilog 硬件描述语言，掌握组合逻辑、时序逻辑、状态机设计，最终完成一个完整的数字钟项目。
@@ -425,32 +423,57 @@
 ### 项目结构
 
 ```
-docs/
-├── mkdocs.yml                  # MkDocs 配置文件（站点导航、主题、插件）
-├── requirements.txt            # Python 依赖清单
-├── README.md                   # 项目说明文档
-├── .gitignore                  # Git 忽略规则
-├── prompt.md                   # AI 辅助写作的 Prompt 模板
-└── docs/                       # 文档内容目录
-    ├── index.md                # 站点首页
-    ├── categories/             # 分类索引页面
+.
+├── mkdocs.yml                       # MkDocs 配置文件（站点导航、主题、插件）
+├── requirements.txt                 # Python 依赖清单
+├── README.md                        # 项目说明文档
+├── prompt.md                        # AI 辅助写作的 Prompt 模板
+├── .gitignore                       # Git 忽略规则
+├── .github/workflows/               # GitHub Actions CI/CD
+└── docs/                            # 文档内容目录
+    ├── index.md                     # 站点首页
+    ├── categories/                  # 分类概览页面
     │   ├── basic-skills.md
     │   ├── programming-languages.md
     │   ├── technical-domains.md
+    │   ├── cert-exams.md
     │   └── engineering-practice.md
-    ├── assets/                 # 静态资源（截图、图片等）
-    ├── llm_from_zero_with_python/   # LLM API 开发教程
-    ├── git_github_from_zero/        # Git 与 GitHub 教程
-    ├── linux_from_zero/             # Linux 入门教程
-    ├── web-crawler-from-zero/       # 网络爬虫教程
-    ├── frontend-from-zero/          # 前端入门指南
-    ├── mythical_man_month/          # 《人月神话》解读
+    ├── assets/                      # 静态资源（截图、图片等）
+    │
+    │   # === 基础技能 ===
+    ├── git_github_from_zero/        # Git 与 GitHub 团队协作
     ├── markdown-from-zero/          # Markdown 新手指南
     ├── latex-from-zero/             # LaTeX 新手指南
+    ├── mkdocs-from-zero/            # MkDocs 与 GitHub Pages 部署
+    ├── office-word-from-zero/       # Microsoft Word 高效使用
+    ├── office-excel-from-zero/      # Microsoft Excel 高效使用
+    ├── office-powerpoint-from-zero/ # Microsoft PowerPoint 高效使用
+    ├── dog-skills-from-zero/        # AI 编程助手技能系统
+    │
+    │   # === 编程语言 ===
     ├── r-from-zero/                 # R 语言新手指南
     ├── matlab-from-zero/            # MATLAB 新手指南
-    ├── mkdocs-from-zero/            # MkDocs 与 GitHub Pages 部署指南
-    ├── dog-skills-from-zero/        # Dog-Skills 智能技能系统使用指南
+    ├── java-from-zero/              # Java 新手指南
+    ├── rust-from-zero/              # Rust 新手指南
+    │
+    │   # === 技术领域 ===
+    ├── llm_from_zero_with_python/   # LLM API 开发与应用
+    ├── linux_from_zero/             # Linux 新手入门
+    ├── web-crawler-from-zero/       # 网络爬虫新手指南
+    ├── frontend-from-zero/          # 前端入门指南
+    ├── neural-network-from-zero/    # 神经网络与深度学习
+    ├── pytorch-from-zero/           # PyTorch 入门指南
+    ├── linear-programming-from-zero/# 线性规划与优化方法
+    ├── docker-from-zero/            # Docker 新手指南
+    ├── verilog-from-zero/           # Verilog 零基础入门
+    │
+    │   # === 计算机等级考试 ===
+    ├── cert3-network/               # 三级网络技术
+    ├── cert3-security/              # 三级信息安全
+    ├── cert3-embedded/              # 三级嵌入式系统
+    │
+    │   # === 工程实践 ===
+    └── mythical_man_month/          # 《人月神话》软件工程入门
 ```
 
 ### 架构设计
