@@ -35,6 +35,7 @@ MkDocs 是 Python 生态中最流行的静态文档站点生成器，配合 Mate
 | [第 4 章：内容创作](04-content-creation.md) | Markdown 写作、弹窗组件、代码块、表格 | 60 分钟 |
 | [第 5 章：主题定制](05-theme-customization.md) | Material 主题配色、字体、Logo、自定义 CSS | 45 分钟 |
 | [第 6 章：部署上线](06-deployment.md) | GitHub 仓库创建、GitHub Actions CI/CD、发布上线 | 60 分钟 |
+| [第 7 章：格式规范检查清单](07-formatting-checklist.md) | 粗体间距、代码块、列表等常见渲染问题的排查与预防 | 30 分钟 |
 
 ---
 

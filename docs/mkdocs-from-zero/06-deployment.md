@@ -284,4 +284,6 @@ docs.example.com
 
 ---
 
+👉 [下一章：第 7 章 · 格式规范检查清单 →](07-formatting-checklist.md)
+
 👉 [返回教程首页 →](index.md)
