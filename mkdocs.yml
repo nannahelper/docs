@@ -142,6 +142,20 @@ nav:
       - 第 10 章：模块与包管理: rust-from-zero/10-modules-and-crates.md
       - 第 11 章：测试与文档: rust-from-zero/11-testing-and-docs.md
       - 第 12 章：综合项目实战: rust-from-zero/12-final-project.md
+    - Go 语言新手指南:
+      - 首页: go-from-zero/index.md
+      - 第 1 章：认识 Go: go-from-zero/01-introduction.md
+      - 第 2 章：变量与数据类型: go-from-zero/02-variables-and-types.md
+      - 第 3 章：控制流程: go-from-zero/03-control-flow.md
+      - 第 4 章：函数: go-from-zero/04-functions.md
+      - 第 5 章：复合类型: go-from-zero/05-composite-types.md
+      - 第 6 章：方法与接口: go-from-zero/06-methods-and-interfaces.md
+      - 第 7 章：指针与内存: go-from-zero/07-pointers-and-memory.md
+      - 第 8 章：包与模块: go-from-zero/08-packages-and-modules.md
+      - 第 9 章：错误处理: go-from-zero/09-error-handling.md
+      - 第 10 章：并发编程: go-from-zero/10-concurrency.md
+      - 第 11 章：标准库概览: go-from-zero/11-standard-library.md
+      - 第 12 章：综合实战: go-from-zero/12-final-project.md
   - 技术领域:
     - 分类概览: categories/technical-domains.md
     - 零基础入门 LLM API 开发与应用:
