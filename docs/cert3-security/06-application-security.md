@@ -125,7 +125,7 @@ SELECT * FROM users WHERE username = 'admin' --' AND password = '';
 
 ---
 
-## 6.6 常见考试题型
+## 6.6 常见题型
 
 **例题 1：** 以下攻击中，属于注入攻击的是（ ）。
 
@@ -177,7 +177,7 @@ A. 服务器漏洞　　B. 浏览器自动携带 Cookie 的机制　　C. 数据
     $result = mysql_query($sql);
     ```
 
-3.  **真题演练** ：设置 Cookie 的（　　）属性可以防止 JavaScript 读取 Cookie，从而减轻 XSS 攻击的危害。
+3.  **思考题** ：设置 Cookie 的（　　）属性可以防止 JavaScript 读取 Cookie，从而减轻 XSS 攻击的危害。
 
 ---
 
