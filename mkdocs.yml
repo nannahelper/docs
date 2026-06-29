@@ -224,7 +224,7 @@ nav:
       - 第 6 章：时序逻辑设计: verilog-from-zero/06-sequential-logic.md
       - 第 7 章：状态机设计: verilog-from-zero/07-state-machine.md
       - 第 8 章：综合实战项目——数字钟: verilog-from-zero/08-digital-clock-project.md
-    - 三级网络技术教程:
+    - 网络技术教程:
       - 首页: cert3-network/index.md
       - 第 1 章：网络体系结构: cert3-network/01-network-architecture.md
       - 第 2 章：物理层与数据链路层: cert3-network/02-physical-and-datalink.md
@@ -234,7 +234,7 @@ nav:
       - 第 6 章：应用层: cert3-network/06-application-layer.md
       - 第 7 章：局域网与无线网络: cert3-network/07-lan-and-wireless.md
       - 第 8 章：网络安全与模拟测试: cert3-network/08-security-and-mock.md
-    - 三级信息安全教程:
+    - 信息安全教程:
       - 首页: cert3-security/index.md
       - 第 1 章：信息安全概述: cert3-security/01-security-overview.md
       - 第 2 章：密码学基础: cert3-security/02-cryptography.md
@@ -244,7 +244,7 @@ nav:
       - 第 6 章：应用安全: cert3-security/06-application-security.md
       - 第 7 章：安全管理: cert3-security/07-security-management.md
       - 第 8 章：综合实战与模拟测试: cert3-security/08-mock-exam.md
-    - 三级嵌入式系统教程:
+    - 嵌入式系统教程:
       - 首页: cert3-embedded/index.md
       - 第 1 章：嵌入式系统概述: cert3-embedded/01-embedded-overview.md
       - 第 2 章：嵌入式处理器: cert3-embedded/02-embedded-processor.md

@@ -57,9 +57,9 @@
 | [线性规划与优化方法新手指南](linear-programming-from-zero/index.md) | 从资源分配到单纯形法，用数学思维找到最优解 | 10 小时 |
 | [Docker 新手指南](docker-from-zero/index.md) | 从"在我机器上能跑"到"到处都能跑"，掌握容器技术 | 8~10 小时 |
 | [Verilog 零基础入门指南](verilog-from-zero/index.md) | 用乐高积木的视角理解数字电路设计，掌握硬件描述语言 | 20~25 小时 |
-| [三级网络技术教程](cert3-network/index.md) | 从"两台电脑怎么通信"到"全球互联网如何运转" | 10~12 小时 |
-| [三级信息安全教程](cert3-security/index.md) | 从"我的密码安全吗"到"如何构建纵深防御体系" | 10~12 小时 |
-| [三级嵌入式系统教程](cert3-embedded/index.md) | 从"单片机是什么"到"设计一个完整的嵌入式系统" | 10~12 小时 |
+| [网络技术教程](cert3-network/index.md) | 从"两台电脑怎么通信"到"全球互联网如何运转" | 10~12 小时 |
+| [信息安全教程](cert3-security/index.md) | 从"我的密码安全吗"到"如何构建纵深防御体系" | 10~12 小时 |
+| [嵌入式系统教程](cert3-embedded/index.md) | 从"单片机是什么"到"设计一个完整的嵌入式系统" | 10~12 小时 |
 
 [查看全部技术领域教程 →](categories/technical-domains.md)
 
