@@ -20,7 +20,7 @@
 
 ### 5.1.1 DOM 的本质
 
-**DOM（Document Object Model，文档对象模型）** 是浏览器将 HTML 文档解析后生成的一个**树状结构对象**。通过 DOM，JavaScript 可以访问和修改页面上的任何元素。
+**DOM（Document Object Model，文档对象模型）** 是浏览器将 HTML 文档解析后生成的一个 **树状结构对象**。通过 DOM，JavaScript 可以访问和修改页面上的任何元素。
 
 ```
 HTML 文档                          DOM 树
@@ -40,8 +40,8 @@ HTML 文档                          DOM 树
 **代码解读：**
 
 - `document` 是整个 DOM 树的根节点，代表整个网页。
-- 每个 HTML 标签都对应 DOM 树中的一个**节点（Node）**。
-- 标签之间的嵌套关系变成了 DOM 树中的**父子关系**。
+- 每个 HTML 标签都对应 DOM 树中的一个 **节点（Node）**。
+- 标签之间的嵌套关系变成了 DOM 树中的 **父子关系**。
 - JavaScript 通过操作这些节点，就能改变网页的内容、结构和样式。
 
 !!! info "DOM 不是 JavaScript 的一部分"
@@ -300,7 +300,7 @@ window.addEventListener('scroll', handler);        // 页面滚动
 
 ### 5.4.4 事件对象
 
-每个事件处理函数都会收到一个**事件对象（Event Object）**，它包含了事件的详细信息：
+每个事件处理函数都会收到一个 **事件对象（Event Object）**，它包含了事件的详细信息：
 
 ```javascript
 document.addEventListener('click', (event) => {
@@ -319,7 +319,7 @@ document.addEventListener('click', (event) => {
 
 ### 5.5.1 事件冒泡
 
-当一个元素上的事件被触发时，该事件会**向上冒泡**到父元素：
+当一个元素上的事件被触发时，该事件会 **向上冒泡** 到父元素：
 
 ```html
 <div class="outer">
@@ -350,7 +350,7 @@ document.querySelector('.btn').addEventListener('click', (event) => {
 
 ### 5.5.2 事件委托——性能优化的利器
 
-**事件委托**利用事件冒泡机制，将事件监听器绑定在**父元素**上，而不是每个子元素上：
+**事件委托** 利用事件冒泡机制，将事件监听器绑定在 **父元素** 上，而不是每个子元素上：
 
 ```html
 <ul class="todo-list">
@@ -447,7 +447,7 @@ emailInput.addEventListener('input', () => {
 
 ### 任务要求
 
-下面是一个完整的 Todo 待办事项应用代码。你的任务是**逐段阅读 JavaScript 部分，理解 DOM 操作和事件委托的实现**，回答以下问题：
+下面是一个完整的 Todo 待办事项应用代码。你的任务是 **逐段阅读 JavaScript 部分，理解 DOM 操作和事件委托的实现**，回答以下问题：
 
 - `addTodo()` 函数中，`createElement('li')` 和 `appendChild(li)` 分别做了什么？
 - 为什么使用事件委托（在 `todoList` 上监听）而不是给每个按钮单独绑定事件？
