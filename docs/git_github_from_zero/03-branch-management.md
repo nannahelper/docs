@@ -80,7 +80,7 @@ bugfix/login（Bob 的分支）
 
 !!! example "举个例子 / 类比理解"
     
-    分支就像一个**平行宇宙小说**：
+    分支就像一个 **平行宇宙小说**：
     
     - 🌍 **主世界（main）**：现实中正在发生的事
     - 🌌 **平行世界 1（feature/dragon）**：假如世界上出现了龙会怎样？
@@ -247,7 +247,7 @@ git checkout main
 
 !!! warning "重要警告"
     
-    切换分支前，**必须提交或存储**所有改动。否则 Git 会拒绝切换：
+    切换分支前，**必须提交或存储** 所有改动。否则 Git 会拒绝切换：
     
     ```
     error: Your local changes to the following files would be overwritten by checkout:

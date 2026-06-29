@@ -230,7 +230,7 @@ public class LogicalDemo {
 
 ## 3.6 运算符优先级
 
-当多个运算符出现在同一个表达式中，Java 按照优先级决定计算顺序。如果不确定，**加括号**是最稳妥的做法：
+当多个运算符出现在同一个表达式中，Java 按照优先级决定计算顺序。如果不确定，**加括号** 是最稳妥的做法：
 
 ```java
 public class PrecedenceDemo {

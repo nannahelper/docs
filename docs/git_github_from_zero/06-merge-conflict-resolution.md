@@ -34,7 +34,7 @@ Alice 的分支 (feature/payment)：
 
 !!! info "名词解释：Merge Conflict"
     
-    **Merge Conflict**（合并冲突）= 当合并两个分支时，Git 发现同一个文件的同一行有**不同的改动**，无法自动决定保留哪一个。
+    **Merge Conflict**（合并冲突）= 当合并两个分支时，Git 发现同一个文件的同一行有 **不同的改动**，无法自动决定保留哪一个。
 
 ---
 
@@ -250,7 +250,7 @@ Alice 改了：
 ### 解决方法
 
 1. **用 VSCode 的冲突解决**，或者
-2. **手动编辑**为一个完整的 import：
+2. **手动编辑** 为一个完整的 import：
 
 ```python
 from flask import Flask, render_template, session, request
@@ -377,7 +377,7 @@ git merge origin/main
 
 ### 4️⃣ 使用编辑器的自动格式化
 
-某些情况下（如调整空格），自动格式化会产生噪音冲突。使用一致的 formatter（如 `black` for Python）**在 commit 前**自动格式化。
+某些情况下（如调整空格），自动格式化会产生噪音冲突。使用一致的 formatter（如 `black` for Python）**在 commit 前** 自动格式化。
 
 ---
 

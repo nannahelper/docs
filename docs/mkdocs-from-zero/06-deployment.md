@@ -58,7 +58,7 @@ git commit -m "初始化 MkDocs 项目"
 1. 打开 **https://github.com/new**
 2. 填写仓库名称（例如 `my-docs`）
 3. 选择 **Public**（公开仓库，GitHub Pages 免费）
-4. **不要**勾选 "Add a README file"（我们已有本地代码）
+4. **不要** 勾选 "Add a README file"（我们已有本地代码）
 5. 点击 **"Create repository"**
 
 创建后，GitHub 会显示推送命令，复制并执行：

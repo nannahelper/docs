@@ -88,7 +88,7 @@ flowchart LR
 !!! info "名词解释：Commit"
     **Commit** = 一次提交。当你按下 "发送" 按钮时，Git 就创建了一个 commit。每个 commit 都有：
     
-    - 一个**唯一 ID**（你以后可以用这个 ID 回到这个时间点）
+    - 一个 **唯一 ID**（你以后可以用这个 ID 回到这个时间点）
     - **作者信息**（是谁做的）
     - **时间戳**（什么时候做的）
     - **改动内容**（改了什么）
@@ -315,7 +315,7 @@ Date:   Mon Mar 15 14:23:45 2024 +0800
 
 1. **包含 API Key 或密码的文件**（`.env` 文件）
    - 如果你把 `.env` 提交到 GitHub，坏人可以看到你的 API Key，盗用你的账户
-   - 这是一个**安全灾难**
+   - 这是一个 **安全灾难**
 
 2. **虚拟环境文件夹**（`venv/`、`env/` 等）
    - 虚拟环境可能有几千个文件，太大了
@@ -413,7 +413,7 @@ htmlcov/
     DB_PASSWORD = os.getenv("DB_PASSWORD")
     ```
     
-    然后在 `.env` 里写密钥**（并把 `.env` 加到 `.gitignore`）**：
+    然后在 `.env` 里写密钥 **（并把 `.env` 加到 `.gitignore`）**：
     ```
     OPENAI_API_KEY=sk-xxxx....
     DB_PASSWORD=admin123

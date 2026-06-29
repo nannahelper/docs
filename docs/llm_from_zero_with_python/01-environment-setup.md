@@ -27,9 +27,9 @@
 ## 2. 下载与安装 VSCode
 
 !!! tip "区分 VSCode 和 Visual Studio"
-    **VSCode**（Visual Studio Code）是微软出品的**轻量级代码编辑器**，完全免费开源。
+    **VSCode**（Visual Studio Code）是微软出品的 **轻量级代码编辑器**，完全免费开源。
     
-    **Visual Studio**（不带 Code）是微软的**企业级 IDE**，功能更强大但更笨重，主要用于 C#/.NET 开发。
+    **Visual Studio**（不带 Code）是微软的 **企业级 IDE**，功能更强大但更笨重，主要用于 C#/.NET 开发。
     
     本课程使用的是 **VSCode**，需要从 `https://code.visualstudio.com` 下载。
 
@@ -110,7 +110,7 @@ VSCode 本身只是一个文本编辑器，需要安装插件才能"理解" Pyth
 1. 打开 [https://www.python.org/downloads/](https://www.python.org/downloads/)
 2. 点击黄色按钮 **"Download Python 3.x.x"**（最新稳定版）
 3. 双击下载的 `.exe` 文件
-4. 在安装界面**必须勾选** ⚠️：
+4. 在安装界面 **必须勾选** ⚠️：
 
     ![Python 安装界面](assets/python-install-path.png)
 
@@ -184,7 +184,7 @@ VSCode 的 Python 插件内置了虚拟环境管理功能：
 
 ### 激活虚拟环境
 
-VSCode 会在打开项目时**自动激活**虚拟环境。你也可以在集成终端（或新建的终端窗口）中手动激活：
+VSCode 会在打开项目时 **自动激活** 虚拟环境。你也可以在集成终端（或新建的终端窗口）中手动激活：
 
 === "Windows (PowerShell)"
 
@@ -217,7 +217,7 @@ pip 是 Python 的包管理器，相当于"应用商店"——通过一条命令
     
     写出来的好多函数 → 组织成模块 → 多个模块组成包 → 发布出去就是库。
     
-    当你 `pip install openai` 时，安装的就是一个**库**（或叫**包**），包含了许多函数和工具供你使用。
+    当你 `pip install openai` 时，安装的就是一个 **库**（或叫 **包**），包含了许多函数和工具供你使用。
 
 
 ### 安装你的第一个库
