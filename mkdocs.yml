@@ -4,6 +4,14 @@ site_author: NannaHelper
 site_url: https://nannahelper.github.io/docs/
 docs_dir: docs
 
+extra:
+  announce:
+    content: |
+      <p style="text-align:center; margin:0; font-size:1.05em">
+        🎉 <strong>欢迎 2026 届新生！</strong> 🎉
+      </p>
+    dismiss: true
+
 theme:
   name: material
   language: zh

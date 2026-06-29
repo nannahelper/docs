@@ -4,16 +4,6 @@
 
 欢迎来到南哪助手教程汇总站点！这里汇集了多个零基础入门教程，帮助你从小白快速入门。
 
-<p align="center">
-  <strong style="
-    background: linear-gradient(135deg, #667eea 0%, #f093fb 50%, #f5576c 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    font-size: 1.6em;
-  ">🎉 欢迎 2026 届新生！🎉</strong>
-</p>
-
 ---
 
 ## 教程导航
