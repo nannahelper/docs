@@ -64,13 +64,13 @@ nav:
       - 第 6 章：部署上线: mkdocs-from-zero/06-deployment.md
     - Microsoft Word 高效使用指南:
       - 首页: office-word-from-zero/index.md
-      - 第 1 章：文档结构与样式: office-word-from-zero/01-document-structure.md
-      - 第 2 章：排版与页面设置: office-word-from-zero/02-layout-page-setup.md
-      - 第 3 章：表格与图表: office-word-from-zero/03-tables-charts.md
-      - 第 4 章：引用与目录: office-word-from-zero/04-references-toc.md
-      - 第 5 章：审阅与协作: office-word-from-zero/05-review-collaboration.md
-      - 第 6 章：邮件合并: office-word-from-zero/06-mail-merge.md
-      - 第 7 章：模板与自动化: office-word-from-zero/07-templates-automation.md
+      - 第 1 章：文档基础操作: office-word-from-zero/01-document-basics.md
+      - 第 2 章：样式与模板: office-word-from-zero/02-styles-and-templates.md
+      - 第 3 章：表格与图表: office-word-from-zero/03-tables-and-graphics.md
+      - 第 4 章：长文档编排: office-word-from-zero/04-long-documents.md
+      - 第 5 章：邮件合并: office-word-from-zero/05-mail-merge.md
+      - 第 6 章：协作与审阅: office-word-from-zero/06-collaboration.md
+      - 第 7 章：进阶技巧: office-word-from-zero/07-advanced-tips.md
       - 第 8 章：综合实战项目: office-word-from-zero/08-final-project.md
     - Microsoft Excel 高效使用指南:
       - 首页: office-excel-from-zero/index.md
