@@ -35,6 +35,9 @@ jobs:
       - name: Install dependencies
         run: pip install zensical
 
+      - name: Check file references
+        run: python check_references.py --files
+
       - name: Build documentation
         run: zensical build --clean
 
