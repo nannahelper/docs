@@ -5,7 +5,7 @@
 ## 按方向浏览
 
 <div class="course-grid course-grid--index">
-  <a class="course-card" href="categories/programming-languages.md"><span class="course-tag">5 门课程</span><h3>编程语言</h3><p>Java、Go、Rust，以及规划中的 Python、C。</p><span class="course-meta">查看分类 →</span></a>
+  <a class="course-card" href="categories/programming-languages.md"><span class="course-tag">7 门课程</span><h3>编程语言</h3><p>Python、C、Java、Go、Rust，以及数据与科学计算语言。</p><span class="course-meta">查看分类 →</span></a>
   <a class="course-card" href="categories/data-and-computing.md"><span class="course-tag">4 门课程</span><h3>数据与计算</h3><p>SQL、R、MATLAB 和线性规划。</p><span class="course-meta">查看分类 →</span></a>
   <a class="course-card" href="categories/web-and-data.md"><span class="course-tag">2 门课程</span><h3>Web 与数据采集</h3><p>前端基础、HTTP 和合规数据采集。</p><span class="course-meta">查看分类 →</span></a>
   <a class="course-card" href="categories/ai-and-ml.md"><span class="course-tag">3 门课程</span><h3>AI 与机器学习</h3><p>LLM API、神经网络和 PyTorch。</p><span class="course-meta">查看分类 →</span></a>

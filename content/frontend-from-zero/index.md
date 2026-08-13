@@ -1,5 +1,17 @@
 # 前端入门指南
 
+| 课程信息 | 内容 |
+|:---|:---|
+| 预计时长 | 约 10 小时（包含练习） |
+| 适用版本 | HTML Living Standard、现代浏览器、ES2022+ |
+| 维护状态 | 维护中 |
+| 最后更新 | 2026-08-13 |
+
+## 推荐教材
+
+- [HTML5+CSS3+JavaScript 从入门到精通](https://lilybre.lilystudio.space/book/803)
+- [Data Visualization with Python and JavaScript](https://lilybre.lilystudio.space/book/56)
+
 ## 📺 教程简介
 
 欢迎来到前端世界！在 AI 工具日益普及的今天，一个重要的趋势正在发生：**从零手写每一行代码的场景越来越少，但阅读、理解和修改前端代码的能力比以往任何时候都更加重要。**

@@ -1,5 +1,17 @@
 # PyTorch 深度学习新手指南
 
+| 课程信息 | 内容 |
+|:---|:---|
+| 预计时长 | 约 15 小时（包含实验） |
+| 适用版本 | PyTorch 2.x、Python 3.10+ |
+| 维护状态 | 维护中 |
+| 最后更新 | 2026-08-13 |
+
+## 推荐教材
+
+- [Machine Learning with PyTorch and Scikit-Learn](https://lilybre.lilystudio.space/book/484)
+- [Deep Learning with PyTorch Lightning](https://lilybre.lilystudio.space/book/62)
+
 > **从张量操作到模型部署，用 PyTorch 构建你的第一个深度学习项目**
 
 欢迎来到 PyTorch 深度学习的世界！本教程专为 **有 Python 基础的初学者** 设计，用生活化的比喻和完整的代码示例，带你从张量的基本操作一路走到完整的深度学习项目实战。

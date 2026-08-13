@@ -1,5 +1,17 @@
 # Docker 新手指南
 
+| 课程信息 | 内容 |
+|:---|:---|
+| 预计时长 | 8–10 小时（包含实践） |
+| 适用版本 | Docker Engine 24+ / Docker Compose v2 |
+| 维护状态 | 维护中 |
+| 最后更新 | 2026-08-13 |
+
+## 推荐教材
+
+- [Hands-On Docker for Microservices with Python](https://lilybre.lilystudio.space/book/1037)
+- [DevOps 原理、方法与实践](https://lilybre.lilystudio.space/book/421)
+
 > **从"在我机器上能跑"到"到处都能跑"** —— 掌握 Docker 容器技术，用集装箱思维解决环境一致性难题，开启现代化部署之旅。
 
 ---

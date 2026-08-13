@@ -1,5 +1,17 @@
 # 《人月神话》完整梳理 v3
 
+| 课程信息 | 内容 |
+|:---|:---|
+| 预计时长 | 约 15 小时（包含阅读与讨论） |
+| 适用版本 | 软件工程通用思想；示例涉及现代协作实践 |
+| 维护状态 | 维护中 |
+| 最后更新 | 2026-08-13 |
+
+## 推荐教材
+
+- [The Mythical Man-Month](https://lilybre.lilystudio.space/book/454)
+- [The Phoenix Project](https://lilybre.lilystudio.space/book/469)
+
 > **基于 Frederick P. Brooks, Jr. 原著 · 二十周年纪念版**
 > 教学版教材 | 面向初次接触软件工程的青年学生
 

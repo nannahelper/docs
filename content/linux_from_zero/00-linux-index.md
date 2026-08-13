@@ -1,4 +1,16 @@
 # Linux新手入门指南
+
+| 课程信息 | 内容 |
+|:---|:---|
+| 预计时长 | 4–6 小时（包含练习） |
+| 适用版本 | Ubuntu 22.04+ / WSL2 |
+| 维护状态 | 维护中 |
+| 最后更新 | 2026-08-13 |
+
+## 推荐教材
+
+- [Harley Hahn's Guide to Unix and Linux](https://lilybre.lilystudio.space/book/463)
+- [Understanding the Linux Kernel](https://lilybre.lilystudio.space/book/452)
 ### 用生活比喻轻松掌握命令行
 
 > **如果你觉得命令行像是外星语，这个教程就是你的翻译器。**

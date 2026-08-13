@@ -1,5 +1,17 @@
 # 🚀 零基础 LLM API 开发入门：从安装到实战
 
+| 课程信息 | 内容 |
+|:---|:---|
+| 预计时长 | 约 4 小时（包含实践） |
+| 适用版本 | Python 3.11+、OpenAI 兼容 API |
+| 维护状态 | 维护中 |
+| 最后更新 | 2026-08-13 |
+
+## 推荐教材
+
+- [Build a Large Language Model (From Scratch)](https://lilybre.lilystudio.space/book/483)
+- [Deep Learning with Python](https://lilybre.lilystudio.space/book/61)
+
 欢迎来到本教程！这是一份专为 **零基础初学者** 设计的实战课程。
 
 ## 你将学到什么

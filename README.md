@@ -140,6 +140,15 @@
 | 技能实战工作流 | 多技能协同、常用工作流模式、效率提升 |
 | 最佳实践与社区生态 | 版本管理、贡献上游、社区资源 |
 
+#### 新增基础课程
+
+| 教程 | 简介 | 学习时长 |
+|:---|:---|:---|
+| [Python 新手指南](content/python-from-zero/index.md) | 从运行第一段代码到完成命令行记账本 | 8~10 小时 |
+| [SQL 新手指南](content/sql-from-zero/index.md) | 从第一条查询到学习记录数据库 | 8~10 小时 |
+| [C 语言新手指南](content/c-from-zero/index.md) | 从编译、指针到内存和通讯录项目 | 10~12 小时 |
+| [调试与测试指南](content/debugging-testing-from-zero/index.md) | 从读懂错误到 pytest 和持续集成 | 6~8 小时 |
+
 ---
 
 ### 编程语言
