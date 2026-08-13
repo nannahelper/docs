@@ -1,112 +1,60 @@
-# 南哪助手应用教程汇总
+<div class="home-hero">
+  <div class="hero-copy">
+    <span class="eyebrow">NANNA HELPER · LEARNING SPACE</span>
+    <h1>把复杂知识，学成自己的工具</h1>
+    <p>从代码、数据到工程实践，找到适合你的学习路径。</p>
+    <div class="hero-actions">
+      <a class="md-button md-button--primary" href="categories/learning-map.md">浏览学习地图</a>
+      <a class="md-button" href="categories/tools-and-productivity.md">从工具开始</a>
+    </div>
+  </div>
+  <div class="hero-art" aria-hidden="true">
+    <div class="hero-orbit hero-orbit--one"></div>
+    <div class="hero-orbit hero-orbit--two"></div>
+    <div class="hero-terminal"><span>›_</span><code>learn --build</code></div>
+    <div class="hero-node hero-node--one">{ }</div>
+    <div class="hero-node hero-node--two">∑</div>
+    <div class="hero-node hero-node--three">✦</div>
+  </div>
+</div>
 
-> **小破手今天搓代码了吗？**
+<div class="home-stats">
+  <div><strong>9</strong><span>学习方向</span></div>
+  <div><strong>20+</strong><span>套教程</span></div>
+  <div><strong>235</strong><span>篇文档</span></div>
+  <div><strong>持续</strong><span>维护更新</span></div>
+</div>
 
-欢迎来到南哪助手教程汇总站点！这里汇集了多个零基础入门教程，帮助你从小白快速入门。
+## 学习地图
 
----
+按你要解决的问题选择方向，而不是在一长串技术名词里迷路。
 
-## 教程导航
+<div class="category-grid category-grid--home">
+  <a class="category-card category-card--indigo" href="categories/programming-languages.md"><span class="category-icon">&lt;/&gt;</span><strong>编程语言</strong><span>Python、C、Java、Go、Rust</span></a>
+  <a class="category-card category-card--orange" href="categories/data-and-computing.md"><span class="category-icon">∑</span><strong>数据与计算</strong><span>SQL、R、MATLAB、优化方法</span></a>
+  <a class="category-card category-card--teal" href="categories/web-and-data.md"><span class="category-icon">◎</span><strong>Web 与数据采集</strong><span>前端、HTTP、网页解析</span></a>
+  <a class="category-card category-card--violet" href="categories/ai-and-ml.md"><span class="category-icon">✦</span><strong>AI 与机器学习</strong><span>LLM、神经网络、PyTorch</span></a>
+  <a class="category-card category-card--slate" href="categories/systems-and-platforms.md"><span class="category-icon">⌘</span><strong>系统与平台</strong><span>Linux、Docker、运行环境</span></a>
+  <a class="category-card category-card--rose" href="categories/networks-and-security.md"><span class="category-icon">⌁</span><strong>网络与安全</strong><span>网络协议、密码学、安全实践</span></a>
+  <a class="category-card category-card--cyan" href="categories/embedded-and-hardware.md"><span class="category-icon">▦</span><strong>嵌入式与硬件</strong><span>Verilog、嵌入式系统、底层思维</span></a>
+  <a class="category-card category-card--green" href="categories/software-quality.md"><span class="category-icon">✓</span><strong>软件工程与质量</strong><span>调试、测试、协作、工程方法</span></a>
+  <a class="category-card category-card--sand" href="categories/tools-and-productivity.md"><span class="category-icon">✎</span><strong>工具与生产力</strong><span>Git、文档、Office、AI 工具</span></a>
+</div>
 
-### 基础技能
+## 推荐课程
 
-> **工欲善其事，必先利其器** —— 软件开发的基础工具和文档写作方法。
+先从几门覆盖面广、能够马上动手的课程开始。
 
-| 教程 | 简介 | 学习时长 |
-|:---|:---|:---|
-| [Git 与 GitHub 团队协作指南](git_github_from_zero/01-git-github-intro.md) | 版本控制与团队协作，从单机操作到项目管理 | 8~10 小时 |
-| [Markdown 新手指南](markdown-from-zero/index.md) | 让文档写作像聊天一样简单 | 4~6 小时 |
-| [LaTeX 新手指南](latex-from-zero/index.md) | 让学术写作变得优雅 | 4~6 小时 |
-| [MkDocs 与 GitHub Pages 部署指南](mkdocs-from-zero/index.md) | 从零搭建专业文档网站 | 4~6 小时 |
-| [Microsoft Word 高效使用指南](office-word-from-zero/index.md) | 从文档排版到自动化，掌握专业文档制作 | 6~8 小时 |
-| [Microsoft Excel 高效使用指南](office-excel-from-zero/index.md) | 从数据处理到仪表盘，成为数据分析高手 | 8~10 小时 |
-| [Microsoft PowerPoint 高效使用指南](office-powerpoint-from-zero/index.md) | 从幻灯片设计到演讲呈现，打造专业演示 | 6~8 小时 |
-| [Dog-Skills 智能技能系统使用指南](dog-skills-from-zero/index.md) | 发现技能、创建技能、使用技能，让 AI 助手成为领域专家 | 3~4 小时 |
+<div class="course-grid course-grid--featured">
+  <a class="course-card course-card--featured" href="git_github_from_zero/01-git-github-intro.md"><span class="course-tag">协作基础</span><h3>Git 与 GitHub 团队协作</h3><p>从本地版本控制到分支、协作和代码审查。</p><span class="course-meta">8 章 · 约 8–10 小时 <b>→</b></span></a>
+  <a class="course-card course-card--featured" href="linux_from_zero/00-linux-index.md"><span class="course-tag">系统基础</span><h3>Linux 新手入门指南</h3><p>用生活化比喻掌握命令行、文件、权限和脚本。</p><span class="course-meta">6 章 · 约 4–6 小时 <b>→</b></span></a>
+  <a class="course-card course-card--featured" href="llm_from_zero_with_python/00-llm_api_dev_index.md"><span class="course-tag">AI 应用</span><h3>零基础入门 LLM API</h3><p>从第一个 API 调用，到可运行的聊天应用。</p><span class="course-meta">6 章 · 约 6–8 小时 <b>→</b></span></a>
+</div>
 
-[查看全部基础技能教程 →](categories/basic-skills.md)
+!!! note "本站怎么使用？"
+    **学习地图** 适合按方向浏览，**课程索引** 适合查找具体章节。每门课程会逐步补充适用版本、学习时长、维护状态和反馈入口。
 
----
-
-### 编程语言
-
-> **用代码表达思想** —— 系统学习编程语言的语法、核心概念和应用场景。
-
-| 教程 | 简介 | 学习时长 |
-|:---|:---|:---|
-| [R 语言新手指南](r-from-zero/index.md) | 让数据说话，开启数据分析之旅 | 4~6 小时 |
-| [MATLAB 新手指南](matlab-from-zero/index.md) | 让数值计算触手可及 | 4~6 小时 |
-| [Java 新手指南](java-from-zero/index.md) | 从"你好，世界"到企业级应用 | 20 小时 |
-| [Rust 新手指南](rust-from-zero/index.md) | 从"安全第一"到系统编程 | 20 小时 |
-| [Go 语言新手指南](go-from-zero/index.md) | 简洁高效，并发至上，云原生时代的首选语言 | 12~15 小时 |
-
-[查看全部编程语言教程 →](categories/programming-languages.md)
-
----
-
-### 技术领域
-
-> **深入技术核心** —— 聚焦特定技术方向，掌握解决实际问题的技术栈。
-
-| 教程 | 简介 | 学习时长 |
-|:---|:---|:---|
-| [零基础入门 LLM API 开发与应用](llm_from_zero_with_python/00-llm_api_dev_index.md) | 从零学习大语言模型 API 开发 | 6~8 小时 |
-| [Linux 新手入门指南](linux_from_zero/00-linux-index.md) | 用生活比喻轻松掌握命令行 | 4~6 小时 |
-| [网络爬虫新手指南](web-crawler-from-zero/index.md) | 从 HTTP 协议到工程化实战 | 6~8 小时 |
-| [前端入门指南](frontend-from-zero/index.md) | 以"看懂代码"为核心目标 | 8~10 小时 |
-| [神经网络与深度学习新手指南](neural-network-from-zero/index.md) | 从感知机到 Transformer，用直觉理解 AI | 15 小时 |
-| [PyTorch 入门指南](pytorch-from-zero/index.md) | 基于 PyTorch 中文文档，系统学习深度学习框架 | 15 小时 |
-| [线性规划与优化方法新手指南](linear-programming-from-zero/index.md) | 从资源分配到单纯形法，用数学思维找到最优解 | 10 小时 |
-| [Docker 新手指南](docker-from-zero/index.md) | 从"在我机器上能跑"到"到处都能跑"，掌握容器技术 | 8~10 小时 |
-| [Verilog 零基础入门指南](verilog-from-zero/index.md) | 用乐高积木的视角理解数字电路设计，掌握硬件描述语言 | 20~25 小时 |
-| [网络技术教程](cert3-network/index.md) | 从"两台电脑怎么通信"到"全球互联网如何运转" | 10~12 小时 |
-| [信息安全教程](cert3-security/index.md) | 从"我的密码安全吗"到"如何构建纵深防御体系" | 10~12 小时 |
-| [嵌入式系统教程](cert3-embedded/index.md) | 从"单片机是什么"到"设计一个完整的嵌入式系统" | 10~12 小时 |
-
-[查看全部技术领域教程 →](categories/technical-domains.md)
-
----
-
-### 工程实践
-
-> **从写代码到做工程** —— 掌握软件工程方法论，提升项目管理和团队协作能力。
-
-| 教程 | 简介 | 学习时长 |
-|:---|:---|:---|
-| [《人月神话》软件工程入门](mythical_man_month/index.md) | 以经典著作为蓝本，系统讲解软件工程 | 8~10 小时 |
-
-[查看全部工程实践教程 →](categories/engineering-practice.md)
-
----
-
-## 学习建议
-
-1. **按顺序学习** — 每套教程都是循序渐进的
-2. **动手实践** — 每个命令和代码都要自己敲一遍
-3. **不怕犯错** — 教程中的环境都是安全的，可以大胆尝试
-4. **随时复习** — 忘记概念时可以随时回来查阅
-
----
-
-## 关于本站点
-
-本站点使用 [MkDocs](https://www.mkdocs.org/) 构建，采用 [Material](https://squidfunk.github.io/mkdocs-material/) 主题。
-
-**免责声明：**
-
-1. **内容准确性**：本站点内容仅供学习参考，我们尽力确保内容的准确性和时效性，但不对因使用本站内容而产生的任何损失或损害承担责任。
-
-2. **第三方链接**：本站点可能包含指向第三方网站的链接，这些链接仅为方便用户而提供，我们不对第三方网站的内容或服务负责。
-
-3. **版权声明**：除另有说明外，本站点所有原创内容均采用 [MIT 许可证](https://opensource.org/licenses/MIT) 进行许可。转载或引用时请注明出处。
-
-4. **观点独立**：本教程中的观点和经验分享仅代表作者个人意见，不构成任何投资、决策或专业建议。
-
-**作者：** NannaHelper  (南哪助手团队)
-
-**联系邮箱：** nannadev at 163.com
-
-**项目地址：** [GitHub](https://github.com/nannahelper/docs)
-
----
-
-**准备好开始你的学习之旅了吗？选择一个教程开始吧！**
+<div class="home-footer-links">
+  <a href="https://github.com/nannahelper/docs">在 GitHub 查看源码 ↗</a>
+  <a href="https://github.com/nannahelper/docs/issues">提交问题或建议 ↗</a>
+</div>
