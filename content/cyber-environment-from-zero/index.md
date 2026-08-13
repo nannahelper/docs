@@ -37,7 +37,7 @@
 | [第 4 章：包管理器与常用开发工具](04-package-managers.md) | winget、Scoop、Homebrew、APT | 软件商店的命令行收银台 | 35 分钟 |
 | [第 5 章：Node.js、npm 与前端工具链](05-node-and-npm.md) | npm、npx、pnpm、Bun | 清单、小票与工具箱 | 35 分钟 |
 | [第 6 章：Git 与 Shell](04-git-and-shell.md) | 给项目装上存档和遥控器 | 版本库与命令组合 | 30 分钟 |
-| [第 7 章：小黄鸭原则与排错](06-duck-principle.md) | 用证据描述和缩小问题 | 给不会回答的小黄鸭讲清楚 | 25 分钟 |
+| [第 7 章：问题描述与排错实践](06-duck-principle.md) | 用证据描述和缩小问题 | 把报修单写清楚 | 25 分钟 |
 | [第 8 章：综合验收与排错](05-environment-check.md) | 完成一次开机自检 | 把工具串成可复现环境 | 40 分钟 |
 
 ## 🚀 快速开始

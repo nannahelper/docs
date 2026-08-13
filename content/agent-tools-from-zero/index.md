@@ -36,7 +36,7 @@
 | [第 3 章：OpenCode CLI](03-opencode-cli.md) | CLI、项目上下文与任务 | 用工单交代任务 | 35 分钟 |
 | [第 4 章：权限、安全与成本](04-permissions-and-safety.md) | 权限、密钥与费用边界 | 给协作者划安全边界 | 30 分钟 |
 | [第 5 章：工具选型与综合任务](05-tool-selection-project.md) | 诊断、验收与回滚 | 选择合适的工作台 | 35 分钟 |
-| [第 6 章：小黄鸭原则与第一份 Agent 任务](06-duck-principle-and-first-task.md) | 零基础任务卡与只读实践 | 先向小黄鸭讲清楚 | 35 分钟 |
+| [第 6 章：任务描述与第一份 Agent 任务](06-duck-principle-and-first-task.md) | 零基础任务卡与只读实践 | 先把任务交代清楚 | 35 分钟 |
 | [第 7 章：其他 Agent 工具与协作方式](07-other-agent-tools.md) | GUI、CLI、IDE 与任务矩阵 | 不同任务用不同工作台 | 30 分钟 |
 
 ## 🔭 追更：2026-08-13，DeepSeek Harness 进入公开开发者预览
