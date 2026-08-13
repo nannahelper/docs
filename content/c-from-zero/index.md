@@ -9,13 +9,29 @@ C 语言让你更接近程序运行的底层：类型如何占用内存，指针
 | 适用版本 | C17；GCC 13+ 或 Clang 16+ |
 | 维护状态 | 维护中 |
 | 最后更新 | 2026-08-13 |
+| 反馈入口 | [GitHub Issues](https://github.com/nannahelper/docs/issues) |
 
-## 推荐教材
+## 🎯 学习目标
+
+- 能使用编译器构建并运行 C 程序。
+- 能解释类型、数组、指针和动态内存的基本关系。
+- 能按职责拆分头文件和源文件。
+- 完成一个带文件持久化的命令行通讯录。
+
+## 📋 前置要求
+
+- 会使用终端进入目录和运行命令。
+- 了解变量、条件和循环等基本编程概念。
+- 准备 GCC 13+ 或 Clang 16+。
+
+## 📚 推荐教材
 
 - [C Programming: A Modern Approach](https://lilybre.lilystudio.space/book/233) —— 体系完整，适合主线学习
 - [The C Programming Language](https://lilybre.lilystudio.space/book/994) —— C 语言经典参考
 
-## 学习路径
+## 🗺️ 学习路线
+
+本课程使用“从编译器到内存，再到可交付项目”的递进路线。
 
 1. [编译、类型与输入输出](01-compile-types-io.md)
 2. [流程、数组与字符串](02-control-arrays-strings.md)
