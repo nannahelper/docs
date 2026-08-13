@@ -1,6 +1,6 @@
 # 教程更新工作流
 
-> **改一处，查三处** —— 本项目的核心文件引用分布在 `mkdocs.yml`、`README.md`、`docs/categories/*.md` 三个位置，
+> **改一处，查三处** —— 本项目的核心文件引用分布在 `mkdocs.yml`、`README.md`、`content/categories/*.md` 三个位置，
 > 任何教程的新增、修改、重命名都必须同步更新这三处，否则会导致引用断裂。
 
 ---
@@ -13,7 +13,7 @@
 |---|------|------|-----------|
 | 1 | `mkdocs.yml` | 网站导航配置 | 新增/删除/重命名章节文件 |
 | 2 | `README.md` | 项目首页教程目录 | 新增/删除/重命名章节 **或章节名/内容变化** |
-| 3 | `docs/categories/*.md` | 分类概览页的教程表格 | 新增/删除/重命名章节 **或章节名/内容变化** |
+| 3 | `content/categories/*.md` | 分类概览页的教程表格 | 新增/删除/重命名章节 **或章节名/内容变化** |
 
 ---
 
@@ -23,7 +23,7 @@
 
 ```bash
 # 1. 创建教程目录和文件
-mkdir docs/my-tutorial-from-zero/
+mkdir content/my-tutorial-from-zero/
 # 创建 index.md + 各章节 .md 文件
 
 # 2. 更新 mkdocs.yml — 在对应分类下添加 nav 条目
@@ -36,11 +36,11 @@ mkdir docs/my-tutorial-from-zero/
 # 3. 更新 README.md — 在对应分类下添加教程表格
 # 在 README.md 的对应章节区域添加教程表格（参考已有教程的格式）
 
-# 4. 更新分类概览页 — 在 docs/categories/xxx.md 添加教程表格
-# 基础技能 → docs/categories/basic-skills.md
-# 编程语言 → docs/categories/programming-languages.md
-# 技术领域 → docs/categories/technical-domains.md
-# 工程实践 → docs/categories/engineering-practice.md
+# 4. 更新分类概览页 — 在 content/categories/xxx.md 添加教程表格
+# 基础技能 → content/categories/basic-skills.md
+# 编程语言 → content/categories/programming-languages.md
+# 技术领域 → content/categories/technical-domains.md
+# 工程实践 → content/categories/engineering-practice.md
 
 # 5. 运行验证
 python check_references.py          # 验证所有引用正确
@@ -58,7 +58,7 @@ mkdocs serve
 - [ ] 新教程目录名使用小写字母 + 连字符（如 `my-tutorial-from-zero`）
 - [ ] 新教程包含 `index.md` 作为首页
 - [ ] README.md 中已添加对应的教程章节表格
-- [ ] `docs/categories/xxx.md` 中已添加对应的教程章节表格
+- [ ] `content/categories/xxx.md` 中已添加对应的教程章节表格
 - [ ] README.md 和 category 页中的章节名与 mkdocs.yml 保持一致
 - [ ] `mkdocs build --strict` 无错误
 - [ ] 所有章节页面的"下一篇"导航链接指向正确
@@ -73,7 +73,7 @@ mkdocs serve
 
 ```bash
 # 千万不要只做这一件事！
-mv docs/office-word-from-zero/01-document-structure.md docs/office-word-from-zero/01-document-basics.md
+mv content/office-word-from-zero/01-document-structure.md content/office-word-from-zero/01-document-basics.md
 # 如果只 rename 文件而不更新 mkdocs.yml → 网站导航断裂！
 ```
 
@@ -86,7 +86,7 @@ mv docs/office-word-from-zero/01-document-structure.md docs/office-word-from-zer
 mv old-name.md new-name.md
 
 # 2. 搜索所有引用旧文件名的地方
-grep -r "old-name.md" docs/ mkdocs.yml README.md
+grep -r "old-name.md" content/ mkdocs.yml README.md
 
 # 3. 逐一更新找到的引用：
 #    a. mkdocs.yml — 更新 nav 路径
@@ -95,7 +95,7 @@ grep -r "old-name.md" docs/ mkdocs.yml README.md
 
 # 4. 如果章节名/标题也变了，更新：
 #    a. README.md 中的教程表格
-#    b. docs/categories/xxx.md 中的教程表格
+#    b. content/categories/xxx.md 中的教程表格
 
 # 5. 运行验证
 python check_references.py
@@ -129,16 +129,16 @@ git grep -n "旧章节标题"
 
 ```bash
 # 1. 删除文件
-rm docs/some-tutorial/obsolete-chapter.md
+rm content/some-tutorial/obsolete-chapter.md
 
 # 2. 从 mkdocs.yml 移除对应的 nav 条目
 
 # 3. 从 README.md 移除对应的教程/章节行
 
-# 4. 从 docs/categories/xxx.md 移除对应的教程/章节行
+# 4. 从 content/categories/xxx.md 移除对应的教程/章节行
 
 # 5. 搜索其他教程中是否有指向被删页面的链接
-grep -r "obsolete-chapter.md" docs/
+grep -r "obsolete-chapter.md" content/
 
 # 6. 验证
 python check_references.py
@@ -161,7 +161,7 @@ mkdocs build --strict
 检查项：
   1. mkdocs.yml nav 中引用的所有 .md/.js 文件是否存在
   2. README.md 和 categories/*.md 中的教程章节表是否与 mkdocs.yml 一致
-  3. docs/ 目录下是否有未被 mkdocs.yml 引用的孤立文件
+  3. content/ 目录下是否有未被 mkdocs.yml 引用的孤立文件
 
 用法：
   python check_references.py           # 检查所有
@@ -174,7 +174,7 @@ import re
 import sys
 
 ROOT = os.path.dirname(os.path.abspath(__file__))
-DOCS = os.path.join(ROOT, 'docs')
+CONTENT = os.path.join(ROOT, 'content')
 
 # ── 1. 提取 mkdocs.yml 中所有文件引用 ──
 
@@ -193,10 +193,10 @@ def extract_mkdocs_refs():
 # ── 2. 检查文件存在性 ──
 
 def check_files_exist(refs):
-    """检查所有引用的文件是否存在于 docs/ 目录"""
+    """检查所有引用的文件是否存在于 content/ 目录"""
     missing = []
     for ref in sorted(refs):
-        full = os.path.join(DOCS, ref)
+        full = os.path.join(CONTENT, ref)
         if not os.path.exists(full):
             missing.append(ref)
     return missing
@@ -204,14 +204,14 @@ def check_files_exist(refs):
 # ── 3. 检查孤立文件 ──
 
 def find_dangling_files(refs):
-    """检查 docs/ 下是否有未被 mkdocs.yml 引用的 .md 文件"""
+    """检查 content/ 下是否有未被 mkdocs.yml 引用的 .md 文件"""
     dangling = []
-    for dirpath, _, filenames in os.walk(DOCS):
+    for dirpath, _, filenames in os.walk(CONTENT):
         for f in filenames:
             if not f.endswith('.md'):
                 continue
             full = os.path.join(dirpath, f)
-            rel = os.path.relpath(full, DOCS).replace('\\', '/')
+            rel = os.path.relpath(full, CONTENT).replace('\\', '/')
             if rel not in refs:
                 dangling.append(rel)
     return dangling
@@ -254,7 +254,7 @@ def main():
         if missing:
             print(f"❌ 发现 {len(missing)} 个缺失文件：")
             for m in missing:
-                print(f"   MISSING: docs/{m}")
+                print(f"   MISSING: content/{m}")
             errors += len(missing)
         else:
             print("✅ 所有引用的文件都存在")
@@ -267,15 +267,15 @@ def main():
             js_section = js_match.group(0)
             local_js = re.findall(r'^\s*-\s*([\w/]+\.js)', js_section, re.MULTILINE)
             for js_file in local_js:
-                full = os.path.join(DOCS, js_file)
+                full = os.path.join(CONTENT, js_file)
                 if not os.path.exists(full):
-                    print(f"   MISSING JS: docs/{js_file}")
+                    print(f"   MISSING JS: content/{js_file}")
                     errors += 1
         print()
 
     if mode in ('all', '--dangling'):
         print("=" * 60)
-        print("2. 检查孤立文件（在 docs/ 但未被 mkdocs.yml 引用）")
+        print("2. 检查孤立文件（在 content/ 但未被 mkdocs.yml 引用）")
         print("=" * 60)
         dangling = find_dangling_files(refs)
         # 过滤常见排除项
@@ -285,9 +285,9 @@ def main():
             if d.startswith('assets/'):
                 excluded.append(d)
                 continue
-            print(f"   ⚠ DANGLING: docs/{d}")
+            print(f"   ⚠ DANGLING: content/{d}")
         for e in excluded:
-            print(f"   ℹ SKIPPED (assets): docs/{e}")
+            print(f"   ℹ SKIPPED (assets): content/{e}")
         active_dangling = [d for d in dangling if d not in excluded]
         if not active_dangling:
             print("   ✅ 无活跃孤立文件")
@@ -329,7 +329,7 @@ if __name__ == '__main__':
 ### 三处同步
 
 - [ ] `mkdocs.yml` 中的章节标题变化已同步到 `README.md`
-- [ ] `mkdocs.yml` 中的章节标题变化已同步到 `docs/categories/*.md`
+- [ ] `mkdocs.yml` 中的章节标题变化已同步到 `content/categories/*.md`
 - [ ] 教程数量变化（新增/删除教程）已在三处全部更新
 
 ### 内容质量
@@ -369,12 +369,13 @@ if __name__ == '__main__':
 
 **症状**：新教程在导航栏可见，但在分类总览页找不到入口。
 
-**预防**：检查对应分类页（`docs/categories/xxx.md`）是否已更新。
+**预防**：检查对应分类页（`content/categories/xxx.md`）是否已更新。
 
 ---
 
 ## 参考链接
 
-- [MkDocs 格式规范检查清单](docs/mkdocs-from-zero/07-formatting-checklist.md)
+- [MkDocs 格式规范检查清单](content/mkdocs-from-zero/07-formatting-checklist.md)
 - [AI 写作辅助 Prompt](prompt.md)
 - [项目 README](README.md)
+

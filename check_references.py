@@ -4,7 +4,7 @@
 
 检查项：
   1. mkdocs.yml nav 中引用的所有 .md/.js 文件是否存在
-  2. docs/ 目录下是否有未被 mkdocs.yml 引用的孤立文件
+  2. content/ 目录下是否有未被 mkdocs.yml 引用的孤立文件
 
 用法：
   python check_references.py           # 检查所有
@@ -17,7 +17,7 @@ import re
 import sys
 
 ROOT = os.path.dirname(os.path.abspath(__file__))
-DOCS = os.path.join(ROOT, 'docs')
+CONTENT = os.path.join(ROOT, 'content')
 
 # ── 1. 提取 mkdocs.yml 中所有文件引用 ──
 
@@ -36,10 +36,10 @@ def extract_mkdocs_refs():
 # ── 2. 检查文件存在性 ──
 
 def check_files_exist(refs):
-    """检查所有引用的文件是否存在于 docs/ 目录"""
+    """检查所有引用的文件是否存在于 content/ 目录"""
     missing = []
     for ref in sorted(refs):
-        full = os.path.join(DOCS, ref)
+        full = os.path.join(CONTENT, ref)
         if not os.path.exists(full):
             missing.append(ref)
     return missing
@@ -47,14 +47,14 @@ def check_files_exist(refs):
 # ── 3. 检查孤立文件 ──
 
 def find_dangling_files(refs):
-    """检查 docs/ 下是否有未被 mkdocs.yml 引用的 .md 文件"""
+    """检查 content/ 下是否有未被 mkdocs.yml 引用的 .md 文件"""
     dangling = []
-    for dirpath, _, filenames in os.walk(DOCS):
+    for dirpath, _, filenames in os.walk(CONTENT):
         for f in filenames:
             if not f.endswith('.md'):
                 continue
             full = os.path.join(dirpath, f)
-            rel = os.path.relpath(full, DOCS).replace('\\', '/')
+            rel = os.path.relpath(full, CONTENT).replace('\\', '/')
             if rel not in refs:
                 dangling.append(rel)
     return dangling
@@ -76,7 +76,7 @@ def main():
         if missing:
             print(f"\n  FAIL  发现 {len(missing)} 个缺失文件：")
             for m in missing:
-                print(f"         MISSING: docs/{m}")
+                print(f"         MISSING: content/{m}")
             errors += len(missing)
         else:
             print("\n  PASS  所有引用的文件都存在")
@@ -91,15 +91,15 @@ def main():
             for js_file in local_js:
                 if js_file.startswith('http'):
                     continue
-                full = os.path.join(DOCS, js_file)
+                full = os.path.join(CONTENT, js_file)
                 if not os.path.exists(full):
-                    print(f"         MISSING JS: docs/{js_file}")
+                    print(f"         MISSING JS: content/{js_file}")
                     errors += 1
         print()
 
     if mode in ('all', '--dangling'):
         print("=" * 60)
-        print("2. 检查孤立文件（在 docs/ 但未被 mkdocs.yml 引用）")
+        print("2. 检查孤立文件（在 content/ 但未被 mkdocs.yml 引用）")
         print("=" * 60)
         dangling = find_dangling_files(refs)
         # 过滤常见排除项
@@ -111,9 +111,9 @@ def main():
             else:
                 active.append(d)
         for d in active:
-            print(f"         DANGLING: docs/{d}")
+            print(f"         DANGLING: content/{d}")
         for e in excluded:
-            print(f"         SKIPPED (assets): docs/{e}")
+            print(f"         SKIPPED (assets): content/{e}")
         if not active:
             print("\n  PASS  无活跃孤立文件")
         else:

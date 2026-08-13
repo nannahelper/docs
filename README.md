@@ -444,7 +444,7 @@
 ├── prompt.md                        # AI 辅助写作的 Prompt 模板
 ├── .gitignore                       # Git 忽略规则
 ├── .github/workflows/               # GitHub Actions CI/CD
-└── docs/                            # 文档内容目录
+└── content/                            # 文档内容目录
     ├── index.md                     # 站点首页
     ├── categories/                  # 分类概览页面
     │   ├── basic-skills.md
@@ -574,7 +574,7 @@ cd docs
 git checkout -b feature/my-tutorial
 
 # 4. 编写内容
-# 在 docs/ 目录下创建新的教程文件夹
+# 在 content/ 目录下创建新的教程文件夹
 # 在 mkdocs.yml 的 nav 部分添加导航配置
 
 # 5. 本地预览
@@ -659,7 +659,7 @@ mkdocs build --strict
 
 - 提交信息格式：`docs: 简短描述` 或 `fix: 简短描述` 或 `feat: 简短描述`
 - 一个 PR 只做一件事，保持变更聚焦
-- 新增教程需同步更新 `mkdocs.yml`、`README.md`、`docs/categories/*.md` 三处
+- 新增教程需同步更新 `mkdocs.yml`、`README.md`、`content/categories/*.md` 三处
 - 确保本地 `mkdocs serve` 预览无报错
 - **重命名文件时必须用 `git grep` 全局搜索旧文件名并更新所有引用**
 
@@ -690,3 +690,4 @@ mkdocs build --strict
 ---
 
 **准备好开始你的学习之旅了吗？** [进入教程首页 →](https://nannahelper.github.io/docs/)
+
