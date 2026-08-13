@@ -26,7 +26,6 @@ theme:
         name: 切换至浅色模式
   features:
     - navigation.instant
-    - navigation.sections
     - navigation.path
     - navigation.top
     - navigation.footer
