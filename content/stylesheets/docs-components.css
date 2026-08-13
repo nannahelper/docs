@@ -1,0 +1,104 @@
+/* Stable content components used by category and resource pages. */
+.map-intro,
+.section-lead {
+  margin: 1rem 0 2rem;
+  padding: 1.25rem 1.5rem;
+  border-left: 0.25rem solid var(--md-primary-fg-color);
+  background: var(--md-code-bg-color);
+}
+
+.map-intro h2,
+.section-lead h2 {
+  margin: 0.35rem 0;
+}
+
+.map-intro p,
+.section-lead p {
+  margin-bottom: 0;
+}
+
+.eyebrow,
+.course-tag {
+  color: var(--md-primary-fg-color);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.category-grid,
+.course-grid,
+.resource-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1rem;
+  margin: 1.5rem 0 2rem;
+}
+
+.category-card,
+.course-card,
+.resource-card {
+  display: flex;
+  flex-direction: column;
+  min-height: 9rem;
+  padding: 1.15rem;
+  border: 1px solid var(--md-default-fg-color--lightest);
+  border-radius: 0.5rem;
+  background: var(--md-default-bg-color);
+  color: var(--md-default-fg-color) !important;
+  text-decoration: none !important;
+  transition: border-color 160ms ease, box-shadow 160ms ease, transform 160ms ease;
+}
+
+.category-card:hover,
+.course-card:hover,
+.resource-card:hover {
+  border-color: var(--md-primary-fg-color);
+  box-shadow: var(--md-shadow-z1);
+  transform: translateY(-2px);
+}
+
+.category-card strong,
+.course-card h3,
+.resource-card strong {
+  margin: 0.55rem 0 0.35rem;
+  color: var(--md-default-fg-color);
+}
+
+.category-card span:last-child,
+.course-card p,
+.resource-card span {
+  color: var(--md-default-fg-color--light);
+  font-size: 0.9rem;
+  line-height: 1.6;
+}
+
+.category-icon {
+  color: var(--md-primary-fg-color);
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+
+.course-meta {
+  margin-top: auto;
+  padding-top: 0.75rem;
+  color: var(--md-primary-fg-color);
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+@media screen and (max-width: 60em) {
+  .category-grid,
+  .course-grid,
+  .resource-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media screen and (max-width: 40em) {
+  .category-grid,
+  .course-grid,
+  .resource-grid {
+    grid-template-columns: 1fr;
+  }
+}
