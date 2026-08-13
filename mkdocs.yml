@@ -288,9 +288,6 @@ nav:
   - 资源中心:
       - 全部课程: course-index.md
       - 资源与反馈: resources-and-feedback.md
-  - 资源中心:
-      - 全部课程: course-index.md
-      - 资源与反馈: resources-and-feedback.md
 
 extra_javascript:
   - js/mathjax-config.js
