@@ -1,56 +1,67 @@
-# 南哪助手应用教程汇总
+# 南哪助手应用教程
 
-> 一份面向实践的技术学习资料库：找到方向，选一门课，开始动手。
+> 面向实践的技术学习资料库，帮助你从概念理解走到动手验证，再走到完成一个可交付的小项目。
 
-## 先从你要解决的问题开始
+## 我们的定位
 
-| 你的目标 | 推荐入口 |
-|:---|:---|
-| 想学会编程基础 | [Python](python-from-zero/index.md)、[C 语言](c-from-zero/index.md) |
-| 想处理数据、查询数据库 | [SQL](sql-from-zero/index.md)、[R 语言](r-from-zero/index.md) |
-| 想做网站或采集公开数据 | [前端](frontend-from-zero/index.md)、[网络爬虫](web-crawler-from-zero/index.md) |
-| 想学习 AI 应用和深度学习 | [LLM API](llm_from_zero_with_python/00-llm_api_dev_index.md)、[PyTorch](pytorch-from-zero/index.md) |
-| 想掌握开发环境和部署 | [Linux](linux_from_zero/00-linux-index.md)、[Docker](docker-from-zero/index.md) |
-| 想提升工程质量 | [调试与测试](debugging-testing-from-zero/index.md)、[Git 协作](git_github_from_zero/01-git-github-intro.md) |
+南哪助手不是课程广告页，也不是把链接堆在一起的收藏夹。这里更关注一件事：把值得学习的技术内容整理成可以执行的学习路径。
 
-## 课程分类
+本站内容遵循三个原则：
 
-按主题分类浏览课程，不需要先知道具体技术名称。
+- **以实践为中心**：每门教程都尽量包含环境准备、可运行示例、练习和验证步骤。
+- **从基础逐步递进**：先解释必要概念，再引入工具、工程方法和综合项目。
+- **保持可维护**：教程首页标注适用版本、维护状态、最后更新时间和反馈入口。
 
-- [编程语言](categories/programming-languages.md) —— Python、C、Java、Go、Rust、R、MATLAB
-- [数据与计算](categories/data-and-computing.md) —— SQL、统计分析、数值计算和优化
-- [Web 与数据采集](categories/web-and-data.md) —— HTML、CSS、JavaScript、HTTP 和网页解析
-- [AI 与机器学习](categories/ai-and-ml.md) —— LLM、神经网络和 PyTorch
-- [系统与平台](categories/systems-and-platforms.md) —— Linux、Docker 和运行环境
-- [网络与安全](categories/networks-and-security.md) —— 网络协议、密码学和安全实践
-- [嵌入式与硬件](categories/embedded-and-hardware.md) —— C、Verilog 和嵌入式系统
-- [软件工程与质量](categories/software-quality.md) —— 调试、测试、协作和工程方法
-- [工具与生产力](categories/tools-and-productivity.md) —— Git、文档、Office 和 AI 工具
-
-[打开课程分类总览 →](categories/learning-map.md)
-
-## 最近补充的基础课程
-
-| 课程 | 适合解决的问题 | 状态 |
-|:---|:---|:---:|
-| [Python 新手指南](python-from-zero/index.md) | 从零建立编程思维，完成命令行记账本 | 维护中 |
-| [SQL 新手指南](sql-from-zero/index.md) | 从表和查询开始，学会连接、事务和索引 | 维护中 |
-| [C 语言新手指南](c-from-zero/index.md) | 理解编译、指针、内存和底层程序结构 | 维护中 |
-| [调试与测试指南](debugging-testing-from-zero/index.md) | 学会读错误、做复现、写测试和持续集成 | 维护中 |
-
-[浏览全部课程 →](course-index.md)
+本站适合想系统补基础、准备转向某个技术领域，或希望把零散资料整理成学习计划的人。
 
 ## 如何使用本站
 
-1. 通过上面的目标或[课程分类](categories/learning-map.md)找到合适的领域。
-2. 进入一门课程的首页，先看适用版本、时长、维护状态和推荐教材。
-3. 从左侧课程目录按顺序学习章节，边读边运行示例。
-4. 发现错误或链接失效时，到[资源中心](resources-and-feedback.md)反馈。
+### 1. 先判断自己的学习目标
+
+不确定从哪里开始时，先打开[课程分类总览](categories/learning-map.md)，按照主题查看内容边界和推荐顺序。
+
+已经知道要学什么，可以直接进入左侧的[课程库](course-index.md)，在折叠分类中找到对应课程。
+
+### 2. 先看课程首页，再开始章节
+
+每门教程的首页都会说明：
+
+- 适合人群和前置要求。
+- 学习目标、预计时长和学习路线。
+- 适用版本、维护状态和最后更新日期。
+- 推荐教材以及反馈入口。
+
+先确认这门课适合当前环境，再按章节顺序学习，可以减少中途更换工具或版本造成的阻塞。
+
+### 3. 用“阅读—运行—修改—验证”完成每一章
+
+不要只浏览文字。建议每一章都经历以下循环：
+
+1. 阅读概念解释，明确本章要解决的问题。
+2. 运行示例，确认环境和命令没有问题。
+3. 修改一个小地方，观察结果如何变化。
+4. 完成本章练习和验证步骤，留下自己的运行结果。
+
+遇到错误时，先记录输入、命令、实际结果和预期结果，再进入[资源中心](resources-and-feedback.md)查找或反馈。
+
+### 4. 根据需要组合多门教程
+
+教程不是必须一次学完的线性课程。你可以先补一项基础能力，再回到目标领域；也可以围绕一个项目，把编程、数据库、系统和工程质量等内容组合起来学习。
+
+## 内容组织
+
+左侧导航按三个层次组织：
+
+- **首页**：了解本站定位和使用方法。
+- **课程库**：按主题折叠课程，进入分类总览、课程首页和具体章节。
+- **资源中心**：查找全部课程索引、推荐资源和反馈入口。
+
+## 反馈与共建
+
+如果发现内容过时、命令无法运行、链接失效或章节顺序不合理，欢迎通过[资源中心](resources-and-feedback.md)反馈，也可以直接提交 [GitHub Issue](https://github.com/nannahelper/docs/issues)。
+
+教程源码位于 [GitHub](https://github.com/nannahelper/docs)，配套教材可从[南哪图书馆](https://lilybre.lilystudio.space/)查找。
 
 ## 站点信息
 
 本站使用 [MkDocs](https://www.mkdocs.org/) 和 [Material for MkDocs](https://squidfunk.github.io/mkdocs-material/) 构建。
-
-- 教程源码：[GitHub](https://github.com/nannahelper/docs)
-- 教材入口：[南哪图书馆](https://lilybre.lilystudio.space/)
-- 问题反馈：[GitHub Issues](https://github.com/nannahelper/docs/issues)
