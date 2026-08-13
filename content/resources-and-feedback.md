@@ -17,4 +17,4 @@
 
 ## 写作与构建
 
-教程正文位于 `docs/`，导航配置位于 `mkdocs.yml`。本地预览和构建方式请参考 [MkDocs 与 GitHub Pages 部署指南](mkdocs-from-zero/index.md)。
+教程正文位于 `content/`，导航配置位于 `mkdocs.yml`。本地预览和构建方式请参考 [MkDocs 与 GitHub Pages 部署指南](mkdocs-from-zero/index.md)。
