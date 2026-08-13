@@ -34,59 +34,10 @@ theme:
 
 nav:
   - 首页: index.md
-  - 学习方向:
-      - 总览: categories/learning-map.md
+  - 课程库:
+      - 课程分类总览: categories/learning-map.md
       - 编程语言:
           - 分类概览: categories/programming-languages.md
-          - Python 新手指南: python-from-zero/index.md
-          - C 语言新手指南: c-from-zero/index.md
-          - Java 新手指南: java-from-zero/index.md
-          - Go 语言新手指南: go-from-zero/index.md
-          - Rust 新手指南: rust-from-zero/index.md
-      - 数据与计算:
-          - 分类概览: categories/data-and-computing.md
-          - SQL 新手指南: sql-from-zero/index.md
-          - R 语言新手指南: r-from-zero/index.md
-          - MATLAB 新手指南: matlab-from-zero/index.md
-          - 线性规划与优化方法: linear-programming-from-zero/index.md
-      - Web 与数据采集:
-          - 分类概览: categories/web-and-data.md
-          - 前端入门指南: frontend-from-zero/index.md
-          - 网络爬虫新手指南: web-crawler-from-zero/index.md
-      - AI 与机器学习:
-          - 分类概览: categories/ai-and-ml.md
-          - LLM API 开发与应用: llm_from_zero_with_python/00-llm_api_dev_index.md
-          - 神经网络与深度学习: neural-network-from-zero/index.md
-          - PyTorch 入门指南: pytorch-from-zero/index.md
-      - 系统与平台:
-          - 分类概览: categories/systems-and-platforms.md
-          - Linux 新手入门指南: linux_from_zero/00-linux-index.md
-          - Docker 新手指南: docker-from-zero/index.md
-      - 网络与安全:
-          - 分类概览: categories/networks-and-security.md
-          - 网络技术教程: cert3-network/index.md
-          - 信息安全教程: cert3-security/index.md
-      - 嵌入式与硬件:
-          - 分类概览: categories/embedded-and-hardware.md
-          - C 语言新手指南: c-from-zero/index.md
-          - Verilog 零基础入门指南: verilog-from-zero/index.md
-          - 嵌入式系统教程: cert3-embedded/index.md
-      - 软件工程与质量:
-          - 分类概览: categories/software-quality.md
-          - 调试与测试指南: debugging-testing-from-zero/index.md
-          - 《人月神话》软件工程入门: mythical_man_month/index.md
-      - 工具与生产力:
-          - 分类概览: categories/tools-and-productivity.md
-          - Git 与 GitHub 团队协作: git_github_from_zero/01-git-github-intro.md
-          - Markdown 新手指南: markdown-from-zero/index.md
-          - LaTeX 新手指南: latex-from-zero/index.md
-          - MkDocs 与 GitHub Pages: mkdocs-from-zero/index.md
-          - Microsoft Word: office-word-from-zero/index.md
-          - Microsoft Excel: office-excel-from-zero/index.md
-          - Microsoft PowerPoint: office-powerpoint-from-zero/index.md
-          - AI 编程助手技能系统: dog-skills-from-zero/index.md
-  - 课程库:
-      - 基础课程:
           - Python 新手指南:
               - 课程首页: python-from-zero/index.md
               - 第 1 章：从运行代码开始: python-from-zero/01-first-program.md
@@ -94,13 +45,6 @@ nav:
               - 第 3 章：列表、字典与数据处理: python-from-zero/03-data-structures.md
               - 第 4 章：文件、异常与模块: python-from-zero/04-files-errors-modules.md
               - 第 5 章：综合项目：命令行记账本: python-from-zero/05-project.md
-          - SQL 新手指南:
-              - 课程首页: sql-from-zero/index.md
-              - 第 1 章：表与第一条查询: sql-from-zero/01-select-basics.md
-              - 第 2 章：筛选、排序与聚合: sql-from-zero/02-filter-aggregate.md
-              - 第 3 章：连接多张表: sql-from-zero/03-joins.md
-              - 第 4 章：修改数据、事务与索引: sql-from-zero/04-write-transactions-indexes.md
-              - 第 5 章：综合项目：学习记录库: sql-from-zero/05-project.md
           - C 语言新手指南:
               - 课程首页: c-from-zero/index.md
               - 第 1 章：编译、类型与输入输出: c-from-zero/01-compile-types-io.md
@@ -108,35 +52,6 @@ nav:
               - 第 3 章：指针与内存: c-from-zero/03-pointers-memory.md
               - 第 4 章：结构体、文件与模块: c-from-zero/04-structs-files-modules.md
               - 第 5 章：综合项目：通讯录: c-from-zero/05-project.md
-          - 调试与测试指南:
-              - 课程首页: debugging-testing-from-zero/index.md
-              - 第 1 章：读懂错误与 Traceback: debugging-testing-from-zero/01-errors-tracebacks.md
-              - 第 2 章：断点、日志与最小复现: debugging-testing-from-zero/02-debugger-logs-repro.md
-              - 第 3 章：用 pytest 写第一组测试: debugging-testing-from-zero/03-pytest-basics.md
-              - 第 4 章：测试边界、替身与持续集成: debugging-testing-from-zero/04-test-design-ci.md
-              - 第 5 章：综合项目：给记账本加质量保障: debugging-testing-from-zero/05-project.md
-          - Git 与 GitHub 团队协作指南:
-              - 课程首页: git_github_from_zero/01-git-github-intro.md
-              - 第 2 章：本地单机操作与 .gitignore: git_github_from_zero/02-local-operations-gitignore.md
-              - 第 3 章：分支管理——创造平行宇宙: git_github_from_zero/03-branch-management.md
-              - 第 4 章：连接云端——与 GitHub 互通: git_github_from_zero/04-remote-operations.md
-              - 第 5 章：团队协作与代码审查: git_github_from_zero/05-team-collaboration.md
-              - 第 6 章：遇到冲突怎么办: git_github_from_zero/06-merge-conflict-resolution.md
-              - 第 7 章：吃后悔药——进阶与自救: git_github_from_zero/07-troubleshooting-advanced.md
-              - 第 8 章：项目管理与团队协同: git_github_from_zero/08-projects-discussions-agile.md
-      - 编程语言:
-          - R 语言新手指南:
-              - 课程首页: r-from-zero/index.md
-              - 第 1 章：你的第一次数据分析: r-from-zero/01-basics.md
-              - 第 2 章：让数据可视化: r-from-zero/02-syntax.md
-              - 第 3 章：数据清洗与变换: r-from-zero/03-tips.md
-              - 第 4 章：完成数据分析报告: r-from-zero/04-practice.md
-          - MATLAB 新手指南:
-              - 课程首页: matlab-from-zero/index.md
-              - 第 1 章：你的第一个数据分析: matlab-from-zero/01-basics.md
-              - 第 2 章：让数据说话: matlab-from-zero/02-syntax.md
-              - 第 3 章：自动化你的工作: matlab-from-zero/03-tips.md
-              - 第 4 章：完成数据分析项目: matlab-from-zero/04-practice.md
           - Java 新手指南:
               - 课程首页: java-from-zero/index.md
               - 第 1 章：认识 Java: java-from-zero/01-introduction.md
@@ -151,20 +66,6 @@ nav:
               - 第 10 章：集合框架: java-from-zero/10-collections.md
               - 第 11 章：文件输入输出: java-from-zero/11-file-io.md
               - 第 12 章：综合项目实战: java-from-zero/12-final-project.md
-          - Rust 新手指南:
-              - 课程首页: rust-from-zero/index.md
-              - 第 1 章：认识 Rust: rust-from-zero/01-introduction.md
-              - 第 2 章：变量与数据类型: rust-from-zero/02-variables-and-types.md
-              - 第 3 章：所有权与借用: rust-from-zero/03-ownership.md
-              - 第 4 章：结构体与枚举: rust-from-zero/04-structs-and-enums.md
-              - 第 5 章：模式匹配: rust-from-zero/05-pattern-matching.md
-              - 第 6 章：函数与错误处理: rust-from-zero/06-functions-and-errors.md
-              - 第 7 章：集合类型: rust-from-zero/07-collections.md
-              - 第 8 章：泛型与 Trait: rust-from-zero/08-generics-and-traits.md
-              - 第 9 章：生命周期: rust-from-zero/09-lifetimes.md
-              - 第 10 章：模块与包管理: rust-from-zero/10-modules-and-crates.md
-              - 第 11 章：测试与文档: rust-from-zero/11-testing-and-docs.md
-              - 第 12 章：综合项目实战: rust-from-zero/12-final-project.md
           - Go 语言新手指南:
               - 课程首页: go-from-zero/index.md
               - 第 1 章：认识 Go: go-from-zero/01-introduction.md
@@ -179,30 +80,52 @@ nav:
               - 第 10 章：并发编程: go-from-zero/10-concurrency.md
               - 第 11 章：标准库概览: go-from-zero/11-standard-library.md
               - 第 12 章：综合实战: go-from-zero/12-final-project.md
-      - 技术领域:
-          - LLM API 开发与应用:
-              - 课程首页: llm_from_zero_with_python/00-llm_api_dev_index.md
-              - 环境准备: llm_from_zero_with_python/01-environment-setup.md
-              - API 集成入门: llm_from_zero_with_python/02-api-integration.md
-              - 概念与 Chatbot 实战: llm_from_zero_with_python/03-concepts.md
-              - 批量处理工作流: llm_from_zero_with_python/04-batch-processing.md
-              - 安全与展望: llm_from_zero_with_python/05-security.md
-          - Linux 新手入门指南:
-              - 课程首页: linux_from_zero/00-linux-index.md
-              - 第 1 章：认识 Linux: linux_from_zero/01-linux-intro.md
-              - 第 2 章：搭建环境: linux_from_zero/02-environment-setup.md
-              - 第 3 章：命令行初体验: linux_from_zero/03-command-basics.md
-              - 第 4 章：文件操作: linux_from_zero/04-file-operations.md
-              - 第 5 章：用户与权限: linux_from_zero/05-user-permissions.md
-              - 第 6 章：实用技巧与下一步: linux_from_zero/06-advanced-tips.md
-          - 网络爬虫新手指南:
-              - 课程首页: web-crawler-from-zero/index.md
-              - 第 1 章：揭秘网络爬虫: web-crawler-from-zero/01-intro.md
-              - 第 2 章：环境搭建与第一个请求: web-crawler-from-zero/02-env-setup.md
-              - 第 3 章：精准解析网页: web-crawler-from-zero/03-parsing.md
-              - 第 4 章：数据持久化: web-crawler-from-zero/04-storage.md
-              - 第 5 章：合规应对反爬挑战: web-crawler-from-zero/05-anti-scraping.md
-              - 第 6 章：完整实战: web-crawler-from-zero/06-final-project.md
+          - Rust 新手指南:
+              - 课程首页: rust-from-zero/index.md
+              - 第 1 章：认识 Rust: rust-from-zero/01-introduction.md
+              - 第 2 章：变量与数据类型: rust-from-zero/02-variables-and-types.md
+              - 第 3 章：所有权与借用: rust-from-zero/03-ownership.md
+              - 第 4 章：结构体与枚举: rust-from-zero/04-structs-and-enums.md
+              - 第 5 章：模式匹配: rust-from-zero/05-pattern-matching.md
+              - 第 6 章：函数与错误处理: rust-from-zero/06-functions-and-errors.md
+              - 第 7 章：集合类型: rust-from-zero/07-collections.md
+              - 第 8 章：泛型与 Trait: rust-from-zero/08-generics-and-traits.md
+              - 第 9 章：生命周期: rust-from-zero/09-lifetimes.md
+              - 第 10 章：模块与包管理: rust-from-zero/10-modules-and-crates.md
+              - 第 11 章：测试与文档: rust-from-zero/11-testing-and-docs.md
+              - 第 12 章：综合项目实战: rust-from-zero/12-final-project.md
+      - 数据与计算:
+          - 分类概览: categories/data-and-computing.md
+          - SQL 新手指南:
+              - 课程首页: sql-from-zero/index.md
+              - 第 1 章：表与第一条查询: sql-from-zero/01-select-basics.md
+              - 第 2 章：筛选、排序与聚合: sql-from-zero/02-filter-aggregate.md
+              - 第 3 章：连接多张表: sql-from-zero/03-joins.md
+              - 第 4 章：修改数据、事务与索引: sql-from-zero/04-write-transactions-indexes.md
+              - 第 5 章：综合项目：学习记录库: sql-from-zero/05-project.md
+          - R 语言新手指南:
+              - 课程首页: r-from-zero/index.md
+              - 第 1 章：你的第一次数据分析: r-from-zero/01-basics.md
+              - 第 2 章：让数据可视化: r-from-zero/02-syntax.md
+              - 第 3 章：数据清洗与变换: r-from-zero/03-tips.md
+              - 第 4 章：完成数据分析报告: r-from-zero/04-practice.md
+          - MATLAB 新手指南:
+              - 课程首页: matlab-from-zero/index.md
+              - 第 1 章：你的第一个数据分析: matlab-from-zero/01-basics.md
+              - 第 2 章：让数据说话: matlab-from-zero/02-syntax.md
+              - 第 3 章：自动化你的工作: matlab-from-zero/03-tips.md
+              - 第 4 章：完成数据分析项目: matlab-from-zero/04-practice.md
+          - 线性规划与优化方法:
+              - 课程首页: linear-programming-from-zero/index.md
+              - 第 1 章：运筹学与线性规划概述: linear-programming-from-zero/01-introduction.md
+              - 第 2 章：数学基础回顾: linear-programming-from-zero/02-math-basics.md
+              - 第 3 章：线性规划数学模型: linear-programming-from-zero/03-lp-model.md
+              - 第 4 章：图解法: linear-programming-from-zero/04-graphical-method.md
+              - 第 5 章：标准形式与灵敏度分析: linear-programming-from-zero/05-standard-form-sensitivity.md
+              - 第 6 章：单纯形法原理: linear-programming-from-zero/06-simplex-method.md
+              - 第 7 章：表格单纯形法与进阶: linear-programming-from-zero/07-simplex-tableau-advanced.md
+      - Web 与数据采集:
+          - 分类概览: categories/web-and-data.md
           - 前端入门指南:
               - 课程首页: frontend-from-zero/index.md
               - 第 1 章：HTML5 语义化与文档结构: frontend-from-zero/01-html5-semantics.md
@@ -211,6 +134,23 @@ nav:
               - 第 4 章：JavaScript 基础语法: frontend-from-zero/04-javascript-basics.md
               - 第 5 章：DOM 操作与事件处理: frontend-from-zero/05-dom-events.md
               - 第 6 章：综合实战: frontend-from-zero/06-final-project.md
+          - 网络爬虫新手指南:
+              - 课程首页: web-crawler-from-zero/index.md
+              - 第 1 章：揭秘网络爬虫: web-crawler-from-zero/01-intro.md
+              - 第 2 章：环境搭建与第一个请求: web-crawler-from-zero/02-env-setup.md
+              - 第 3 章：精准解析网页: web-crawler-from-zero/03-parsing.md
+              - 第 4 章：数据持久化: web-crawler-from-zero/04-storage.md
+              - 第 5 章：合规应对反爬挑战: web-crawler-from-zero/05-anti-scraping.md
+              - 第 6 章：完整实战: web-crawler-from-zero/06-final-project.md
+      - AI 与机器学习:
+          - 分类概览: categories/ai-and-ml.md
+          - LLM API 开发与应用:
+              - 课程首页: llm_from_zero_with_python/00-llm_api_dev_index.md
+              - 环境准备: llm_from_zero_with_python/01-environment-setup.md
+              - API 集成入门: llm_from_zero_with_python/02-api-integration.md
+              - 概念与 Chatbot 实战: llm_from_zero_with_python/03-concepts.md
+              - 批量处理工作流: llm_from_zero_with_python/04-batch-processing.md
+              - 安全与展望: llm_from_zero_with_python/05-security.md
           - 神经网络与深度学习:
               - 课程首页: neural-network-from-zero/index.md
               - 第 1 章：什么是神经网络: neural-network-from-zero/01-what-are-neural-networks.md
@@ -231,15 +171,16 @@ nav:
               - 第 6 章：优化器与损失函数: pytorch-from-zero/06-optimization.md
               - 第 7 章：GPU 训练与性能优化: pytorch-from-zero/07-gpu-training.md
               - 第 8 章：完整项目实战: pytorch-from-zero/08-complete-project.md
-          - 线性规划与优化方法:
-              - 课程首页: linear-programming-from-zero/index.md
-              - 第 1 章：运筹学与线性规划概述: linear-programming-from-zero/01-introduction.md
-              - 第 2 章：数学基础回顾: linear-programming-from-zero/02-math-basics.md
-              - 第 3 章：线性规划数学模型: linear-programming-from-zero/03-lp-model.md
-              - 第 4 章：图解法: linear-programming-from-zero/04-graphical-method.md
-              - 第 5 章：标准形式与灵敏度分析: linear-programming-from-zero/05-standard-form-sensitivity.md
-              - 第 6 章：单纯形法原理: linear-programming-from-zero/06-simplex-method.md
-              - 第 7 章：表格单纯形法与进阶: linear-programming-from-zero/07-simplex-tableau-advanced.md
+      - 系统与平台:
+          - 分类概览: categories/systems-and-platforms.md
+          - Linux 新手入门指南:
+              - 课程首页: linux_from_zero/00-linux-index.md
+              - 第 1 章：认识 Linux: linux_from_zero/01-linux-intro.md
+              - 第 2 章：搭建环境: linux_from_zero/02-environment-setup.md
+              - 第 3 章：命令行初体验: linux_from_zero/03-command-basics.md
+              - 第 4 章：文件操作: linux_from_zero/04-file-operations.md
+              - 第 5 章：用户与权限: linux_from_zero/05-user-permissions.md
+              - 第 6 章：实用技巧与下一步: linux_from_zero/06-advanced-tips.md
           - Docker 新手指南:
               - 课程首页: docker-from-zero/index.md
               - 第 1 章：认识 Docker: docker-from-zero/01-introduction.md
@@ -250,16 +191,8 @@ nav:
               - 第 6 章：网络管理: docker-from-zero/06-networks.md
               - 第 7 章：Docker Compose: docker-from-zero/07-docker-compose.md
               - 第 8 章：综合实战: docker-from-zero/08-final-project.md
-          - Verilog 零基础入门指南:
-              - 课程首页: verilog-from-zero/index.md
-              - 第 1 章：数字逻辑基础与 Verilog: verilog-from-zero/01-digital-logic-basics.md
-              - 第 2 章：开发环境搭建: verilog-from-zero/02-environment-setup.md
-              - 第 3 章：数据类型与运算符: verilog-from-zero/03-data-types-operators.md
-              - 第 4 章：模块与端口: verilog-from-zero/04-modules-ports.md
-              - 第 5 章：组合逻辑设计: verilog-from-zero/05-combinational-logic.md
-              - 第 6 章：时序逻辑设计: verilog-from-zero/06-sequential-logic.md
-              - 第 7 章：状态机设计: verilog-from-zero/07-state-machine.md
-              - 第 8 章：综合实战项目: verilog-from-zero/08-digital-clock-project.md
+      - 网络与安全:
+          - 分类概览: categories/networks-and-security.md
           - 网络技术教程:
               - 课程首页: cert3-network/index.md
               - 第 1 章：网络体系结构: cert3-network/01-network-architecture.md
@@ -280,6 +213,18 @@ nav:
               - 第 6 章：应用安全: cert3-security/06-application-security.md
               - 第 7 章：安全管理: cert3-security/07-security-management.md
               - 第 8 章：综合实战与模拟测试: cert3-security/08-mock-exam.md
+      - 嵌入式与硬件:
+          - 分类概览: categories/embedded-and-hardware.md
+          - Verilog 零基础入门指南:
+              - 课程首页: verilog-from-zero/index.md
+              - 第 1 章：数字逻辑基础与 Verilog: verilog-from-zero/01-digital-logic-basics.md
+              - 第 2 章：开发环境搭建: verilog-from-zero/02-environment-setup.md
+              - 第 3 章：数据类型与运算符: verilog-from-zero/03-data-types-operators.md
+              - 第 4 章：模块与端口: verilog-from-zero/04-modules-ports.md
+              - 第 5 章：组合逻辑设计: verilog-from-zero/05-combinational-logic.md
+              - 第 6 章：时序逻辑设计: verilog-from-zero/06-sequential-logic.md
+              - 第 7 章：状态机设计: verilog-from-zero/07-state-machine.md
+              - 第 8 章：综合实战项目: verilog-from-zero/08-digital-clock-project.md
           - 嵌入式系统教程:
               - 课程首页: cert3-embedded/index.md
               - 第 1 章：嵌入式系统概述: cert3-embedded/01-embedded-overview.md
@@ -290,16 +235,15 @@ nav:
               - 第 6 章：嵌入式网络与物联网: cert3-embedded/06-iot-networking.md
               - 第 7 章：低功耗与可靠性设计: cert3-embedded/07-low-power.md
               - 第 8 章：综合实战与模拟测试: cert3-embedded/08-mock-exam.md
-      - 工具与生产力:
-          - Git 与 GitHub: git_github_from_zero/01-git-github-intro.md
-          - Markdown 新手指南: markdown-from-zero/index.md
-          - LaTeX 新手指南: latex-from-zero/index.md
-          - MkDocs 与 GitHub Pages: mkdocs-from-zero/index.md
-          - Microsoft Word: office-word-from-zero/index.md
-          - Microsoft Excel: office-excel-from-zero/index.md
-          - Microsoft PowerPoint: office-powerpoint-from-zero/index.md
-          - AI 编程助手技能系统: dog-skills-from-zero/index.md
       - 软件工程与质量:
+          - 分类概览: categories/software-quality.md
+          - 调试与测试指南:
+              - 课程首页: debugging-testing-from-zero/index.md
+              - 第 1 章：读懂错误与 Traceback: debugging-testing-from-zero/01-errors-tracebacks.md
+              - 第 2 章：断点、日志与最小复现: debugging-testing-from-zero/02-debugger-logs-repro.md
+              - 第 3 章：用 pytest 写第一组测试: debugging-testing-from-zero/03-pytest-basics.md
+              - 第 4 章：测试边界、替身与持续集成: debugging-testing-from-zero/04-test-design-ci.md
+              - 第 5 章：综合项目：给记账本加质量保障: debugging-testing-from-zero/05-project.md
           - 《人月神话》软件工程入门:
               - 课程首页: mythical_man_month/index.md
               - 第 1 章：焦油坑: mythical_man_month/chapter1.md
@@ -323,6 +267,27 @@ nav:
               - 第 19 章：结束语: mythical_man_month/chapter19.md
               - 学习目标对照表: mythical_man_month/learning_map.md
               - 质量评估报告: mythical_man_month/quality_report.md
+      - 工具与生产力:
+          - 分类概览: categories/tools-and-productivity.md
+          - Git 与 GitHub 团队协作:
+              - 课程首页: git_github_from_zero/01-git-github-intro.md
+              - 第 2 章：本地单机操作与 .gitignore: git_github_from_zero/02-local-operations-gitignore.md
+              - 第 3 章：分支管理——创造平行宇宙: git_github_from_zero/03-branch-management.md
+              - 第 4 章：连接云端——与 GitHub 互通: git_github_from_zero/04-remote-operations.md
+              - 第 5 章：团队协作与代码审查: git_github_from_zero/05-team-collaboration.md
+              - 第 6 章：遇到冲突怎么办: git_github_from_zero/06-merge-conflict-resolution.md
+              - 第 7 章：吃后悔药——进阶与自救: git_github_from_zero/07-troubleshooting-advanced.md
+              - 第 8 章：项目管理与团队协同: git_github_from_zero/08-projects-discussions-agile.md
+          - Markdown 新手指南: markdown-from-zero/index.md
+          - LaTeX 新手指南: latex-from-zero/index.md
+          - MkDocs 与 GitHub Pages: mkdocs-from-zero/index.md
+          - Microsoft Word: office-word-from-zero/index.md
+          - Microsoft Excel: office-excel-from-zero/index.md
+          - Microsoft PowerPoint: office-powerpoint-from-zero/index.md
+          - AI 编程助手技能系统: dog-skills-from-zero/index.md
+  - 资源中心:
+      - 全部课程: course-index.md
+      - 资源与反馈: resources-and-feedback.md
   - 资源中心:
       - 全部课程: course-index.md
       - 资源与反馈: resources-and-feedback.md

@@ -13,9 +13,9 @@
 | 想掌握开发环境和部署 | [Linux](linux_from_zero/00-linux-index.md)、[Docker](docker-from-zero/index.md) |
 | 想提升工程质量 | [调试与测试](debugging-testing-from-zero/index.md)、[Git 协作](git_github_from_zero/01-git-github-intro.md) |
 
-## 学习方向
+## 课程分类
 
-按领域浏览课程，不需要先知道具体技术名称。
+按主题分类浏览课程，不需要先知道具体技术名称。
 
 - [编程语言](categories/programming-languages.md) —— Python、C、Java、Go、Rust、R、MATLAB
 - [数据与计算](categories/data-and-computing.md) —— SQL、统计分析、数值计算和优化
@@ -27,7 +27,7 @@
 - [软件工程与质量](categories/software-quality.md) —— 调试、测试、协作和工程方法
 - [工具与生产力](categories/tools-and-productivity.md) —— Git、文档、Office 和 AI 工具
 
-[打开完整学习方向 →](categories/learning-map.md)
+[打开课程分类总览 →](categories/learning-map.md)
 
 ## 最近补充的基础课程
 
@@ -42,7 +42,7 @@
 
 ## 如何使用本站
 
-1. 通过上面的目标或[学习方向](categories/learning-map.md)找到合适的领域。
+1. 通过上面的目标或[课程分类](categories/learning-map.md)找到合适的领域。
 2. 进入一门课程的首页，先看适用版本、时长、维护状态和推荐教材。
 3. 从左侧课程目录按顺序学习章节，边读边运行示例。
 4. 发现错误或链接失效时，到[资源中心](resources-and-feedback.md)反馈。
