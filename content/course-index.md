@@ -57,6 +57,13 @@
 |:---|:---|:---|
 | 《人月神话》软件工程入门 | 规模、协作、架构和软件工程方法 | [进入课程](mythical_man_month/index.md) |
 
+## 赛博扫盲
+
+| 课程 | 主要内容 | 入口 |
+|:---|:---|:---|
+| 命令行开发环境配置 | C/C++、Python、Git、Shell、包管理器和环境排错 | [进入课程](cyber-environment-from-zero/index.md) |
+| Agent 工具入门 | OpenCode Desktop、DeepSeek API Key、CLI、权限和工具选型 | [进入课程](agent-tools-from-zero/index.md) |
+
 ## 课程状态
 
 - **维护中**：内容会根据版本变化和反馈持续更新。

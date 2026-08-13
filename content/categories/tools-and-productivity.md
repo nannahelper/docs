@@ -14,3 +14,5 @@
   <a class="course-card" href="../office-powerpoint-from-zero/index.md"><span class="course-tag">Office</span><h3>Microsoft PowerPoint 高效使用</h3><p>设计专业演示文稿并完成有效表达。</p><span class="course-meta">8 章 · 约 6–8 小时</span></a>
   <a class="course-card" href="../dog-skills-from-zero/index.md"><span class="course-tag">AI 工具</span><h3>AI 编程助手技能系统</h3><p>发现、创建和组合适合自己的 AI 技能。</p><span class="course-meta">6 章 · 约 3–4 小时</span></a>
 </div>
+
+<p>想先补齐命令行、编译器和 Agent 基础，请进入 <a href="../cyber-literacy.md">赛博扫盲</a>。</p>

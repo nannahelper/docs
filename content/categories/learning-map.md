@@ -54,6 +54,11 @@
     <strong>工具与生产力</strong>
     <span>Git、文档、Office、AI 工具</span>
   </a>
+  <a class="category-card category-card--violet" href="cyber-literacy.md">
+    <span class="category-icon">⌁</span>
+    <strong>赛博扫盲</strong>
+    <span>命令行、开发环境、Agent 工具</span>
+  </a>
 </div>
 
 !!! tip "怎么选？"

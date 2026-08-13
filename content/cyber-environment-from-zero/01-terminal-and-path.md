@@ -1,0 +1,81 @@
+# 第 1 章：终端、命令和 PATH — 给电脑一张地址簿
+
+## 📋 本章概览
+
+| 项目 | 内容 |
+|:---|:---|
+| 学习时长 | 60 分钟 |
+| 核心概念 | 终端、当前目录、命令、PATH、退出码 |
+| 核心比喻 | PATH 是系统查找工具的地址簿 |
+| 实践任务 | 检查系统架构、目录和命令查找结果 |
+| 难度等级 | ★☆☆☆☆ |
+
+## 1.1 认识当前目录
+
+终端不是“黑色窗口版文件管理器”，而是直接向操作系统发出命令的入口。先确认当前目录：
+
+=== "Windows PowerShell"
+    ```powershell
+    Get-Location
+    Get-ChildItem
+    ```
+
+=== "macOS / Linux"
+    ```bash
+    pwd
+    ls
+    ```
+
+## 1.2 认识 PATH
+
+当你输入 `python` 或 `git` 时，系统会按 PATH 中的目录顺序寻找可执行文件：
+
+=== "Windows PowerShell"
+    ```powershell
+    $env:Path -split ';'
+    Get-Command python -ErrorAction SilentlyContinue
+    ```
+
+=== "macOS / Linux"
+    ```bash
+    printf '%s\n' "$PATH" | tr ':' '\n'
+    command -v python3
+    ```
+
+!!! warning "不要随意覆盖 PATH"
+    安装程序通常会追加 PATH。不要把整条 PATH 替换成一个新值，否则可能导致系统命令和已有工具全部找不到。
+
+## 1.3 查看退出码
+
+命令通常通过退出码告诉调用者成功或失败：
+
+=== "Windows PowerShell"
+    ```powershell
+    Get-Command git
+    $LASTEXITCODE
+    ```
+
+=== "macOS / Linux"
+    ```bash
+    command -v git
+    echo $?
+    ```
+
+## ✅ 验证步骤
+
+记录当前目录、系统版本、Python 路径和 Git 版本。每一项都要能从命令行得到明确结果；命令不存在时，记录完整错误而不是只写“不能用”。
+
+## 📝 本章总结
+
+- 当前目录决定相对路径的起点。
+- PATH 决定系统从哪里寻找命令。
+- 退出码是脚本判断成功或失败的重要信号。
+
+## ✏️ 课后练习
+
+1. 找出电脑上实际被调用的 Python 和 Git 路径。
+2. 新建一个目录并用命令行进入、列出和离开它。
+
+## 🔮 下一章预告
+
+下一章会安装 C/C++ 编译器，并用命令行编译第一个程序。

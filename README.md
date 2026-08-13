@@ -29,6 +29,15 @@
 
 > **工欲善其事，必先利其器** —— 软件开发的基础工具和文档写作方法。
 
+#### 赛博扫盲
+
+从命令行和开发环境开始，理解编译器、解释器、包管理器、Git 和 AI Agent 的基本使用边界。
+
+| 教程 | 内容 |
+|:---|:---|
+| [命令行开发环境配置](content/cyber-environment-from-zero/index.md) | 以 C/C++ 为主线，补齐 Python、Git、Shell、包管理器和环境排错 |
+| [Agent 工具入门](content/agent-tools-from-zero/index.md) | 以 OpenCode Desktop 接入 DeepSeek API Key 为例，学习 GUI、CLI、权限和安全 |
+
 #### Git 与 GitHub 团队协作指南
 
 掌握版本控制和团队协作的核心技能，从单机操作到团队项目管理全覆盖。

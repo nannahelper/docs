@@ -285,6 +285,22 @@ nav:
           - Microsoft Excel: office-excel-from-zero/index.md
           - Microsoft PowerPoint: office-powerpoint-from-zero/index.md
           - AI 编程助手技能系统: dog-skills-from-zero/index.md
+      - 赛博扫盲:
+          - 分类概览: categories/cyber-literacy.md
+          - 命令行开发环境配置:
+              - 课程首页: cyber-environment-from-zero/index.md
+              - 第 1 章：终端、命令和 PATH: cyber-environment-from-zero/01-terminal-and-path.md
+              - 第 2 章：C/C++ 编译环境: cyber-environment-from-zero/02-cpp-toolchain.md
+              - 第 3 章：Python 与包管理器: cyber-environment-from-zero/03-python-and-packages.md
+              - 第 4 章：Git 与 Shell: cyber-environment-from-zero/04-git-and-shell.md
+              - 第 5 章：综合验收与排错: cyber-environment-from-zero/05-environment-check.md
+          - Agent 工具入门:
+              - 课程首页: agent-tools-from-zero/index.md
+              - 第 1 章：Agent 是什么: agent-tools-from-zero/01-agent-basics.md
+              - 第 2 章：OpenCode Desktop 接入 DeepSeek: agent-tools-from-zero/02-opencode-desktop-deepseek.md
+              - 第 3 章：OpenCode CLI: agent-tools-from-zero/03-opencode-cli.md
+              - 第 4 章：权限、安全与成本: agent-tools-from-zero/04-permissions-and-safety.md
+              - 第 5 章：工具选型与综合任务: agent-tools-from-zero/05-tool-selection-project.md
   - 资源中心:
       - 全部课程: course-index.md
       - 资源与反馈: resources-and-feedback.md
