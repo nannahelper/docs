@@ -6,7 +6,7 @@
 |:---|:---|
 | **学习目标** | 掌握 BeautifulSoup 核心 API，熟练使用 CSS 选择器与 find 系列方法精准提取结构化数据 |
 | **核心比喻** | **外科手术式数据剥离 (Surgical Data Extraction)** |
-| **预计时长** | 90 分钟 |
+| **预计时长** | 40 分钟 |
 | **关键库/概念** | `BeautifulSoup`, `lxml` 解析器, CSS Selector, `find()` / `find_all()`, 标签导航 |
 | **实践任务** | 从豆瓣电影 Top 250 首页提取所有电影的标题、评分和短评金句 |
 

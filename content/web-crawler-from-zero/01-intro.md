@@ -6,7 +6,7 @@
 |:---|:---|
 |  **学习目标**  | 深度理解爬虫底层逻辑，掌握 HTTP/HTTPS 协议精髓，精通开发者工具实战分析 |
 |  **核心比喻**  |  **自动化情报系统 (Automated Intelligence System)**  |
-|  **预计时长**  | 60 分钟 |
+|  **预计时长**  | 25 分钟 |
 |  **关键概念**  | HTTP Request/Response, Stateless Protocol, User-Agent, robots.txt, DOM Tree |
 |  **实践任务**  | 深度分析豆瓣电影请求报文，识别关键 Header 字段并模拟请求逻辑 |
 

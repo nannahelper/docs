@@ -19,7 +19,7 @@ MkDocs 是 Python 生态中最流行的静态文档站点生成器，配合 Mate
 | 项目 | 内容 |
 |:---|:---|
 | **学习目标** | 独立完成 MkDocs 文档站点的搭建、配置、内容编写与 GitHub Pages 部署 |
-| **预计时长** | 4~6 小时 |
+| **预计时长** | 约 2–3 小时 |
 | **前置知识** | 基本的命令行操作、Git 基础（clone / add / commit / push） |
 | **最终产出** | 一个可通过 `https://<你的用户名>.github.io/<仓库名>/` 访问的在线文档网站 |
 
@@ -29,13 +29,13 @@ MkDocs 是 Python 生态中最流行的静态文档站点生成器，配合 Mate
 
 | 章节 | 内容 | 预计时长 |
 |:---|:---|:---:|
-| [第 1 章：环境准备](01-environment-setup.md) | Python、pip、Git、VS Code 安装与验证 | 45 分钟 |
-| [第 2 章：MkDocs 入门](02-mkdocs-basics.md) | 安装 MkDocs、创建项目、本地预览 | 45 分钟 |
-| [第 3 章：配置详解](03-configuration.md) | mkdocs.yml 深度配置：导航、主题、扩展 | 60 分钟 |
-| [第 4 章：内容创作](04-content-creation.md) | Markdown 写作、弹窗组件、代码块、表格 | 60 分钟 |
-| [第 5 章：主题定制](05-theme-customization.md) | Material 主题配色、字体、Logo、自定义 CSS | 45 分钟 |
-| [第 6 章：部署上线](06-deployment.md) | GitHub 仓库创建、GitHub Actions CI/CD、发布上线 | 60 分钟 |
-| [第 7 章：格式规范检查清单](07-formatting-checklist.md) | 粗体间距、代码块、列表等常见渲染问题的排查与预防 | 30 分钟 |
+| [第 1 章：环境准备](01-environment-setup.md) | Python、pip、Git、VS Code 安装与验证 | 25 分钟 |
+| [第 2 章：MkDocs 入门](02-mkdocs-basics.md) | 安装 MkDocs、创建项目、本地预览 | 25 分钟 |
+| [第 3 章：配置详解](03-configuration.md) | mkdocs.yml 深度配置：导航、主题、扩展 | 35 分钟 |
+| [第 4 章：内容创作](04-content-creation.md) | Markdown 写作、弹窗组件、代码块、表格 | 35 分钟 |
+| [第 5 章：主题定制](05-theme-customization.md) | Material 主题配色、字体、Logo、自定义 CSS | 25 分钟 |
+| [第 6 章：部署上线](06-deployment.md) | GitHub 仓库创建、GitHub Actions CI/CD、发布上线 | 35 分钟 |
+| [第 7 章：格式规范检查清单](07-formatting-checklist.md) | 粗体间距、代码块、列表等常见渲染问题的排查与预防 | 20 分钟 |
 
 ---
 

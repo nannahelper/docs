@@ -10,14 +10,14 @@
 
 | 章节 | 核心目标 | 入口 | 预计时长 |
 |:---|:---|:---|:---:|
-| 第 1 章 | 幻灯片基础与设计原则 | [进入章节](01-slide-basics.md) | 45 分钟 |
-| 第 2 章 | 母版与模板 | [进入章节](02-master-templates.md) | 50 分钟 |
-| 第 3 章 | 图形与多媒体 | [进入章节](03-graphics-multimedia.md) | 45 分钟 |
-| 第 4 章 | 动画与过渡 | [进入章节](04-animations-transitions.md) | 50 分钟 |
-| 第 5 章 | 数据图表展示 | [进入章节](05-data-charts.md) | 45 分钟 |
-| 第 6 章 | 演讲者工具与演示技巧 | [进入章节](06-presenter-tools.md) | 40 分钟 |
-| 第 7 章 | 协作与共享 | [进入章节](07-collaboration-sharing.md) | 40 分钟 |
-| 第 8 章 | 综合实战项目 | [进入章节](08-final-project.md) | 90 分钟 |
+| 第 1 章 | 幻灯片基础与设计原则 | [进入章节](01-slide-basics.md) | 25 分钟 |
+| 第 2 章 | 母版与模板 | [进入章节](02-master-templates.md) | 30 分钟 |
+| 第 3 章 | 图形与多媒体 | [进入章节](03-graphics-multimedia.md) | 25 分钟 |
+| 第 4 章 | 动画与过渡 | [进入章节](04-animations-transitions.md) | 30 分钟 |
+| 第 5 章 | 数据图表展示 | [进入章节](05-data-charts.md) | 25 分钟 |
+| 第 6 章 | 演讲者工具与演示技巧 | [进入章节](06-presenter-tools.md) | 25 分钟 |
+| 第 7 章 | 协作与共享 | [进入章节](07-collaboration-sharing.md) | 25 分钟 |
+| 第 8 章 | 综合实战项目 | [进入章节](08-final-project.md) | 45 分钟 |
 
 ---
 

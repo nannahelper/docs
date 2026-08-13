@@ -6,17 +6,17 @@
 
 | 课程 | 主要内容 | 入口 |
 |:---|:---|:---|
-| 命令行开发环境配置 | C/C++、Python、Git、Shell、包管理器和环境排错 | [进入课程](cyber-environment-from-zero/index.md) |
-| Agent 工具入门 | OpenCode Desktop、DeepSeek API Key、CLI、权限和工具选型 | [进入课程](agent-tools-from-zero/index.md) |
+| 命令行开发环境配置 | C/C++、Python、Git、Shell、包管理器和环境排错；约 4 小时 | [进入课程](cyber-environment-from-zero/index.md) |
+| Agent 工具入门 | OpenCode Desktop、DeepSeek API Key、CLI、权限和工具选型；约 4 小时 | [进入课程](agent-tools-from-zero/index.md) |
 
 ## 基础课程
 
 | 课程 | 适合人群 | 入口 |
 |:---|:---|:---|
-| Python 新手指南 | 没有系统编程经验的学习者 | [进入课程](python-from-zero/index.md) |
-| SQL 新手指南 | 想学习数据库查询和数据处理的学习者 | [进入课程](sql-from-zero/index.md) |
-| C 语言新手指南 | 想理解编译、内存和底层基础的学习者 | [进入课程](c-from-zero/index.md) |
-| 调试与测试指南 | 想提高代码排错和质量保障能力的学习者 | [进入课程](debugging-testing-from-zero/index.md) |
+| Python 新手指南 | 没有系统编程经验的学习者；约 3–4 小时 | [进入课程](python-from-zero/index.md) |
+| SQL 新手指南 | 想学习数据库查询和数据处理的学习者；约 3–4 小时 | [进入课程](sql-from-zero/index.md) |
+| C 语言新手指南 | 想理解编译、内存和底层基础的学习者；约 4 小时 | [进入课程](c-from-zero/index.md) |
+| 调试与测试指南 | 想提高代码排错和质量保障能力的学习者；约 3–4 小时 | [进入课程](debugging-testing-from-zero/index.md) |
 | Git 与 GitHub 团队协作 | 需要进行版本控制和团队协作的学习者 | [进入课程](git_github_from_zero/01-git-github-intro.md) |
 
 ## 编程语言

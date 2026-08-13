@@ -151,10 +151,10 @@
 
 | 教程 | 简介 | 学习时长 |
 |:---|:---|:---|
-| [Python 新手指南](content/python-from-zero/index.md) | 从运行第一段代码到完成命令行记账本 | 8~10 小时 |
-| [SQL 新手指南](content/sql-from-zero/index.md) | 从第一条查询到学习记录数据库 | 8~10 小时 |
-| [C 语言新手指南](content/c-from-zero/index.md) | 从编译、指针到内存和通讯录项目 | 10~12 小时 |
-| [调试与测试指南](content/debugging-testing-from-zero/index.md) | 从读懂错误到 pytest 和持续集成 | 6~8 小时 |
+| [Python 新手指南](content/python-from-zero/index.md) | 从运行第一段代码到完成命令行记账本 | 约 3–4 小时 |
+| [SQL 新手指南](content/sql-from-zero/index.md) | 从第一条查询到学习记录数据库 | 约 3–4 小时 |
+| [C 语言新手指南](content/c-from-zero/index.md) | 从编译、指针到内存和通讯录项目 | 约 4 小时 |
+| [调试与测试指南](content/debugging-testing-from-zero/index.md) | 从读懂错误到 pytest 和持续集成 | 约 3–4 小时 |
 
 ---
 
@@ -316,7 +316,7 @@
 
 #### PyTorch 入门指南
 
-基于 PyTorch 中文文档，在 15 小时教学框架内系统学习深度学习框架。从张量操作到完整项目实战，每个知识点配备详细示例代码。
+基于 PyTorch 中文文档，在约 5–6 小时的主线学习中系统了解深度学习框架。从张量操作到完整项目实战，每个知识点配备示例代码。
 
 | 章节 | 内容 |
 |:---|:---|

@@ -24,14 +24,14 @@
 
 | 章节 | 核心问题 | 核心比喻 | 预计时长 |
 |:---|:---|:---|:---:|
-| [第 1 章：什么是神经网络](01-what-are-neural-networks.md) | 神经网络到底是什么？ | 神经元 = 投票器 | 1.5h |
-| [第 2 章：梯度下降算法](02-gradient-descent.md) | 网络如何"学习"？ | 盲人下山找最低点 | 2h |
-| [第 3 章：反向传播直觉](03-backpropagation-intuition.md) | 误差如何传递回每一层？ | 接力传话 + 责任追溯 | 2h |
-| [第 4 章：反向传播数学](04-backpropagation-math.md) | 链式法则如何驱动学习？ | 多米诺骨牌连锁反应 | 2h |
-| [第 5 章：大语言模型介绍](05-llm-introduction.md) | LLM 的本质是什么？ | 超级预测机 | 1.5h |
-| [第 6 章：Transformer 架构](06-transformer-architecture.md) | LLM 的引擎如何运转？ | 流水线工厂 | 2h |
-| [第 7 章：注意力机制](07-attention-mechanism.md) | 模型如何"关注"关键信息？ | 聚光灯 | 2h |
-| [第 8 章：LLM 如何记忆](08-how-llms-memorize.md) | 模型如何存储和检索知识？ | 图书馆索引 | 2h |
+| [第 1 章：什么是神经网络](01-what-are-neural-networks.md) | 神经网络到底是什么？ | 神经元 = 投票器 | 30 分钟 |
+| [第 2 章：梯度下降算法](02-gradient-descent.md) | 网络如何"学习"？ | 盲人下山找最低点 | 40 分钟 |
+| [第 3 章：反向传播直觉](03-backpropagation-intuition.md) | 误差如何传递回每一层？ | 接力传话 + 责任追溯 | 40 分钟 |
+| [第 4 章：反向传播数学](04-backpropagation-math.md) | 链式法则如何驱动学习？ | 多米诺骨牌连锁反应 | 45 分钟 |
+| [第 5 章：大语言模型介绍](05-llm-introduction.md) | LLM 的本质是什么？ | 超级预测机 | 30 分钟 |
+| [第 6 章：Transformer 架构](06-transformer-architecture.md) | LLM 的引擎如何运转？ | 流水线工厂 | 40 分钟 |
+| [第 7 章：注意力机制](07-attention-mechanism.md) | 模型如何"关注"关键信息？ | 聚光灯 | 40 分钟 |
+| [第 8 章：LLM 如何记忆](08-how-llms-memorize.md) | 模型如何存储和检索知识？ | 图书馆索引 | 30 分钟 |
 
 ---
 

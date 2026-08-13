@@ -4,7 +4,7 @@
 
 | 项目 | 内容 |
 |:---|:---|
-| 学习时长 | 75 分钟 |
+| 学习时长 | 35 分钟 |
 | 核心概念 | Node.js、npm、npx、package.json、lockfile |
 | 核心比喻 | `package.json` 是购物清单，`package-lock.json` 是实际小票 |
 | 实践任务 | 创建项目、安装依赖、运行一次本地工具 |

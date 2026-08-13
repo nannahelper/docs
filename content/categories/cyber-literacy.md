@@ -13,8 +13,8 @@
 ## 课程
 
 <div class="course-grid">
-  <a class="course-card" href="../cyber-environment-from-zero/index.md"><span class="course-tag">环境基础</span><h3>命令行开发环境配置</h3><p>以 C/C++ 为主线，补齐 Python、Git、Shell、winget、Scoop、npm 等工具，并用小黄鸭原则排错。</p><span class="course-meta">8 章 · 约 8–10 小时</span></a>
-  <a class="course-card" href="../agent-tools-from-zero/index.md"><span class="course-tag">Agent 工具</span><h3>Agent 工具入门</h3><p>以 OpenCode Desktop 接入 DeepSeek API Key 为例，加入 GUI、CLI、小黄鸭任务卡、权限和工具选型。</p><span class="course-meta">7 章 · 约 6–8 小时</span></a>
+  <a class="course-card" href="../cyber-environment-from-zero/index.md"><span class="course-tag">环境基础</span><h3>命令行开发环境配置</h3><p>以 C/C++ 为主线，补齐 Python、Git、Shell、winget、Scoop、npm 等工具，并用小黄鸭原则排错。</p><span class="course-meta">8 章 · 约 4 小时</span></a>
+  <a class="course-card" href="../agent-tools-from-zero/index.md"><span class="course-tag">Agent 工具</span><h3>Agent 工具入门</h3><p>以 OpenCode Desktop 接入 DeepSeek API Key 为例，加入 GUI、CLI、小黄鸭任务卡、权限和工具选型。</p><span class="course-meta">7 章 · 约 4 小时</span></a>
 </div>
 
 !!! tip "推荐顺序"
