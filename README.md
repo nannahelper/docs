@@ -35,6 +35,11 @@
 
 | 教程 | 内容 |
 |:---|:---|
+| [电脑与操作系统](content/cyber-computer-basics/index.md) | 从硬件、系统、应用和文件开始，学会基础诊断和故障描述 |
+| [文件管理与备份](content/cyber-files-backup/index.md) | 建立目录、命名、同步、备份和恢复习惯 |
+| [互联网与浏览器](content/cyber-internet-basics/index.md) | 理解网址、DNS、请求、响应和浏览器开发者工具 |
+| [账号安全与隐私](content/cyber-account-security/index.md) | 保护密码、2FA、第三方授权和 API Key |
+| [搜索与信息判断](content/cyber-search-literacy/index.md) | 学会拆问题、找一手资料、核验来源和 AI 答案 |
 | [命令行开发环境配置](content/cyber-environment-from-zero/index.md) | 以 C/C++ 为主线，补齐 Python、Git、Shell、包管理器和环境排错 |
 | [Agent 工具入门](content/agent-tools-from-zero/index.md) | 以 OpenCode Desktop 接入 DeepSeek API Key 为例，学习 GUI、CLI、权限和安全 |
 

@@ -38,6 +38,41 @@ nav:
       - 课程分类总览: categories/learning-map.md
       - 赛博扫盲:
           - 分类概览: categories/cyber-literacy.md
+          - 电脑与操作系统:
+              - 课程首页: cyber-computer-basics/index.md
+              - 第 1 章：电脑的四层地图: cyber-computer-basics/01-computer-map.md
+              - 第 2 章：操作系统与程序: cyber-computer-basics/02-os-and-processes.md
+              - 第 3 章：文件、路径与存储: cyber-computer-basics/03-files-paths-storage.md
+              - 第 4 章：权限与系统设置: cyber-computer-basics/04-permissions-settings.md
+              - 第 5 章：电脑故障自救: cyber-computer-basics/05-troubleshooting.md
+          - 文件管理与备份:
+              - 课程首页: cyber-files-backup/index.md
+              - 第 1 章：目录设计: cyber-files-backup/01-folder-design.md
+              - 第 2 章：命名与搜索: cyber-files-backup/02-naming-search.md
+              - 第 3 章：格式与压缩: cyber-files-backup/03-formats-archive.md
+              - 第 4 章：同步与备份: cyber-files-backup/04-sync-backup.md
+              - 第 5 章：恢复演练: cyber-files-backup/05-restore-drill.md
+          - 互联网与浏览器:
+              - 课程首页: cyber-internet-basics/index.md
+              - 第 1 章：网址与 DNS: cyber-internet-basics/01-url-dns.md
+              - 第 2 章：请求与响应: cyber-internet-basics/02-request-response.md
+              - 第 3 章：浏览器开发者工具: cyber-internet-basics/03-devtools.md
+              - 第 4 章：Cookie 与缓存: cyber-internet-basics/04-cookies-cache.md
+              - 第 5 章：下载与网页问题排查: cyber-internet-basics/05-download-troubleshooting.md
+          - 账号安全与隐私:
+              - 课程首页: cyber-account-security/index.md
+              - 第 1 章：账号与威胁: cyber-account-security/01-accounts-threats.md
+              - 第 2 章：密码与密码管理器: cyber-account-security/02-passwords.md
+              - 第 3 章：双因素认证: cyber-account-security/03-two-factor.md
+              - 第 4 章：钓鱼与危险授权: cyber-account-security/04-phishing-permissions.md
+              - 第 5 章：API Key 与泄露响应: cyber-account-security/05-api-key-response.md
+          - 搜索与信息判断:
+              - 课程首页: cyber-search-literacy/index.md
+              - 第 1 章：把问题问清楚: cyber-search-literacy/01-question-framing.md
+              - 第 2 章：搜索策略: cyber-search-literacy/02-search-strategy.md
+              - 第 3 章：来源与证据: cyber-search-literacy/03-sources-evidence.md
+              - 第 4 章：AI 结果核验: cyber-search-literacy/04-ai-verification.md
+              - 第 5 章：形成可复核结论: cyber-search-literacy/05-reproducible-notes.md
           - 命令行开发环境配置:
               - 课程首页: cyber-environment-from-zero/index.md
               - 第 1 章：终端、命令和 PATH: cyber-environment-from-zero/01-terminal-and-path.md

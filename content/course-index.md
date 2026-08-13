@@ -6,6 +6,11 @@
 
 | 课程 | 主要内容 | 入口 |
 |:---|:---|:---|
+| 电脑与操作系统 | 硬件、系统、应用、进程、文件和故障自救；约 2 小时 | [进入课程](cyber-computer-basics/index.md) |
+| 文件管理与备份 | 目录、命名、格式、同步、备份和恢复；约 2 小时 | [进入课程](cyber-files-backup/index.md) |
+| 互联网与浏览器 | 网址、DNS、HTTP、开发者工具、Cookie 和网页排错；约 2 小时 | [进入课程](cyber-internet-basics/index.md) |
+| 账号安全与隐私 | 密码、2FA、钓鱼、授权、API Key 和泄露响应；约 2 小时 | [进入课程](cyber-account-security/index.md) |
+| 搜索与信息判断 | 问题拆解、搜索策略、来源核验和 AI 结果检查；约 2 小时 | [进入课程](cyber-search-literacy/index.md) |
 | 命令行开发环境配置 | C/C++、Python、Git、Shell、包管理器和环境排错；约 4 小时 | [进入课程](cyber-environment-from-zero/index.md) |
 | Agent 工具入门 | OpenCode Desktop、DeepSeek API Key、CLI、权限和工具选型；约 4 小时 | [进入课程](agent-tools-from-zero/index.md) |
 
