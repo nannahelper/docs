@@ -1,127 +1,13 @@
 # 编程语言
 
-> **用代码表达思想** —— 系统学习编程语言的语法、核心概念和应用场景。
+学习如何用代码表达问题、组织逻辑，并把想法变成可以运行的程序。
 
----
+<div class="section-lead"><span class="eyebrow">BUILD WITH CODE</span><h2>从语法开始，走向完整项目</h2><p>选择一门语言建立编程思维，再根据方向补充工具链和工程能力。</p></div>
 
-## 分类说明
-
-编程语言类教程聚焦于特定编程语言的系统学习，涵盖语法基础、标准库和编程范式。学完这些教程后，你将具备使用该语言编写程序的能力。
-
-| 方向 | 涵盖内容 |
-|:---|:---|
-| **通用语言** | Python、JavaScript、Java、Go 等广泛使用的语言 |
-| **专业语言** | R、MATLAB、Julia 等面向特定领域的语言 |
-| **标记语言** | HTML、CSS、XML、YAML 等描述性语言 |
-
----
-
-## 教程列表
-
-### R 语言新手指南
-
-让数据说话。从零开始掌握 R 语言，开启数据分析和统计建模之旅。
-
-| 章节 | 内容 |
-|:---|:---|
-| 基础概念 | R 语言的特点、安装配置与 RStudio 使用 |
-| 核心语法 | 向量、矩阵、列表、数据框、函数定义 |
-| 常用技巧 | 数据清洗、ggplot2 绘图、统计分析 |
-| 实战案例 | 完整数据分析项目：从导入到报告 |
-
-[进入教程 →](../r-from-zero/index.md)
-
----
-
-### MATLAB 新手指南
-
-让数值计算触手可及。从零开始掌握 MATLAB，高效完成科学计算与工程仿真。
-
-| 章节 | 内容 |
-|:---|:---|
-| 基础概念 | MATLAB 的定位、工作界面与基本操作 |
-| 核心语法 | 矩阵运算、脚本、函数、流程控制 |
-| 常用技巧 | 数据可视化、文件 I/O、数据分析 |
-| 实战案例 | 信号处理、图像处理、数值分析综合案例 |
-
-[进入教程 →](../matlab-from-zero/index.md)
-
----
-
-### Java 新手指南
-
-从"你好，世界"到企业级应用。掌握 Java 编程语言的核心语法与面向对象思想，开启软件开发之旅。
-
-| 章节 | 内容 |
-|:---|:---|
-| 认识 Java | JDK 安装、Hello World、编译与运行 |
-| 变量与数据类型 | 基本数据类型、变量声明、类型转换 |
-| 运算符与表达式 | 算术、关系、逻辑运算符、表达式求值 |
-| 控制流程 | if-else、switch、for、while 循环 |
-| 方法与函数 | 方法定义、参数传递、返回值、重载 |
-| 数组与字符串 | 数组操作、String 类、遍历与排序 |
-| 面向对象（上） | 类与对象、构造方法、封装、this 关键字 |
-| 面向对象（下） | 继承、多态、抽象类、接口 |
-| 异常处理 | try-catch、throws、自定义异常 |
-| 集合框架 | ArrayList、HashMap、泛型、遍历 |
-| 文件 I/O | FileReader、BufferedReader、文件写入 |
-| 综合项目 | 学生管理系统——从数据建模到增删改查全流程 |
-
-[进入教程 →](../java-from-zero/index.md)
-
----
-
-### Rust 新手指南
-
-从"安全第一"到系统编程。掌握 Rust 的所有权模型与零成本抽象，开启高性能安全编程之旅。
-
-| 章节 | 内容 |
-|:---|:---|
-| 认识 Rust | Rustup、Cargo、Hello World |
-| 变量与数据类型 | 不可变性、基本类型、复合类型 |
-| 所有权与借用 | 所有权转移、引用、借用规则——Rust 的灵魂 |
-| 结构体与枚举 | struct、enum、方法定义、Option |
-| 模式匹配 | match、if let、解构——Rust 的瑞士军刀 |
-| 函数与错误处理 | 函数、闭包、Result、? 运算符 |
-| 集合类型 | Vec、HashMap、String、迭代器 |
-| 泛型与 Trait | 泛型函数、Trait 定义与实现 |
-| 生命周期 | 生命周期标注、悬垂引用 |
-| 模块与包管理 | mod、use、Cargo.toml、外部 crate |
-| 测试与文档 | 单元测试、集成测试、文档测试 |
-| 综合项目 | 命令行待办事项工具——从数据结构到文件持久化 |
-
-[进入教程 →](../rust-from-zero/index.md)
-
----
-
-### Go 语言新手指南
-
-简洁高效，并发至上。掌握 Go 语言的语法、goroutine 并发模型与标准库，开启云原生后端开发之旅。
-
-| 章节 | 内容 |
-|:---|:---|
-| 认识 Go | 语言哲学、环境搭建、Hello World |
-| 变量与数据类型 | 基本类型、零值、类型推断、常量 |
-| 控制流程 | if/else、for、switch、标签控制 |
-| 函数 | 多返回值、可变参数、defer、闭包 |
-| 复合类型 | 数组、切片、映射、结构体 |
-| 方法与接口 | 接收者、接口隐式实现、类型断言 |
-| 指针与内存 | 取址/解引用、new/make、逃逸分析 |
-| 包与模块 | package、import、go mod、可见性 |
-| 错误处理 | error 接口、panic/recover、错误包装 |
-| 并发编程 | goroutine、channel、select、sync 包 |
-| 标准库概览 | fmt、io、os、net/http、encoding/json |
-| 综合实战 | RESTful API 服务 + 测试 + 编译部署 |
-
-[进入教程 →](../go-from-zero/index.md)
-
----
-
-## 学习建议
-
-- **R 语言** 适合统计学、数据分析方向的学习者
-- **MATLAB** 适合工程、物理、数学等需要数值计算的方向
-- **Java** 适合企业级开发、安卓应用、后端服务方向的学习者
-- **Rust** 适合系统编程、高性能计算、WebAssembly 方向的学习者
-- **Go** 适合后端开发、云原生、微服务、DevOps 方向的学习者
-- 各门语言可以按需选择，不必全部学习
+<div class="course-grid">
+  <a class="course-card" href="../java-from-zero/index.md"><span class="course-tag">通用开发</span><h3>Java 新手指南</h3><p>从语法、面向对象到集合与文件 I/O。</p><span class="course-meta">12 章 · 约 20 小时</span></a>
+  <a class="course-card" href="../go-from-zero/index.md"><span class="course-tag">后端 / 云原生</span><h3>Go 语言新手指南</h3><p>掌握简洁语法、并发模型与标准库。</p><span class="course-meta">12 章 · 约 12–15 小时</span></a>
+  <a class="course-card" href="../rust-from-zero/index.md"><span class="course-tag">系统 / 高性能</span><h3>Rust 新手指南</h3><p>理解所有权、借用、Trait 与安全抽象。</p><span class="course-meta">12 章 · 约 20 小时</span></a>
+  <a class="course-card course-card--planned" href="../index.md"><span class="course-tag">即将补齐</span><h3>Python 新手指南</h3><p>面向数据、AI、自动化和 Web 的通用基础。</p><span class="course-meta">规划中 · 基础优先</span></a>
+  <a class="course-card course-card--planned" href="../index.md"><span class="course-tag">即将补齐</span><h3>C 语言新手指南</h3><p>为嵌入式、系统编程和理解内存打基础。</p><span class="course-meta">规划中 · 底层基础</span></a>
+</div>

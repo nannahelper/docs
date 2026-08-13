@@ -5,7 +5,7 @@ site_url: https://nannahelper.github.io/docs/
 docs_dir: docs
 
 extra:
-  welcome_text: "🎉 欢迎 2026 届新生！🎉"
+  welcome_text: "学习空间 · 持续更新"
 
 theme:
   name: material
@@ -25,14 +25,29 @@ theme:
         icon: material/brightness-4
         name: 切换至浅色模式
   features:
+    - navigation.tabs
+    - navigation.sections
     - navigation.instant
+    - navigation.top
+    - toc.follow
     - content.code.copy
     - content.code.annotate
 
 nav:
   - 首页: index.md
-  - 基础技能:
-    - 分类概览: categories/basic-skills.md
+  - 学习地图:
+    - 总览: categories/learning-map.md
+    - 编程语言: categories/programming-languages.md
+    - 数据与计算: categories/data-and-computing.md
+    - Web 与数据采集: categories/web-and-data.md
+    - AI 与机器学习: categories/ai-and-ml.md
+    - 系统与平台: categories/systems-and-platforms.md
+    - 网络与安全: categories/networks-and-security.md
+    - 嵌入式与硬件: categories/embedded-and-hardware.md
+    - 软件工程与质量: categories/software-quality.md
+    - 工具与生产力: categories/tools-and-productivity.md
+  - 课程索引:
+    - 课程总览: course-index.md
     - Git 与 GitHub 团队协作指南:
       - 第 1 章：认识版本控制与环境配置: git_github_from_zero/01-git-github-intro.md
       - 第 2 章：本地单机操作与 .gitignore: git_github_from_zero/02-local-operations-gitignore.md
@@ -157,7 +172,7 @@ nav:
       - 第 10 章：并发编程: go-from-zero/10-concurrency.md
       - 第 11 章：标准库概览: go-from-zero/11-standard-library.md
       - 第 12 章：综合实战: go-from-zero/12-final-project.md
-  - 技术领域:
+  - 方向课程:
     - 分类概览: categories/technical-domains.md
     - 零基础入门 LLM API 开发与应用:
       - 首页: llm_from_zero_with_python/00-llm_api_dev_index.md
@@ -269,7 +284,7 @@ nav:
       - 第 6 章：嵌入式网络与物联网: cert3-embedded/06-iot-networking.md
       - 第 7 章：低功耗与可靠性设计: cert3-embedded/07-low-power.md
       - 第 8 章：综合实战与模拟测试: cert3-embedded/08-mock-exam.md
-  - 工程实践:
+  - 软件工程与质量:
     - 分类概览: categories/engineering-practice.md
     - 《人月神话》软件工程入门:
       - 首页: mythical_man_month/index.md
@@ -294,9 +309,15 @@ nav:
       - 第 19 章 结束语: mythical_man_month/chapter19.md
       - 学习目标对照表: mythical_man_month/learning_map.md
       - 质量评估报告: mythical_man_month/quality_report.md
+  - 资源与反馈: resources-and-feedback.md
+
+extra_css:
+  - stylesheets/extra.css
 
 extra_javascript:
   - js/mathjax-config.js
+  - https://unpkg.com/mermaid@10/dist/mermaid.min.js
+  - js/mermaid-init.js
   - https://unpkg.com/mathjax@3/es5/tex-mml-chtml.js
 
 markdown_extensions:
