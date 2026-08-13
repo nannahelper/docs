@@ -32,11 +32,13 @@
 
 ## 🗺️ 学习路线
 
-1. [从运行代码开始](01-first-program.md)
-2. [条件、循环与函数](02-control-flow-functions.md)
-3. [列表、字典与数据处理](03-data-structures.md)
-4. [文件、异常与模块](04-files-errors-modules.md)
-5. [综合项目：命令行记账本](05-project.md)
+| 章节 | 核心目标 | 入口 |
+|:---|:---|:---|
+| 第 1 章 | 从运行代码开始 | [进入章节](01-first-program.md) |
+| 第 2 章 | 条件、循环与函数 | [进入章节](02-control-flow-functions.md) |
+| 第 3 章 | 列表、字典与数据处理 | [进入章节](03-data-structures.md) |
+| 第 4 章 | 文件、异常与模块 | [进入章节](04-files-errors-modules.md) |
+| 第 5 章 | 综合项目：命令行记账本 | [进入章节](05-project.md) |
 
 ## 🚀 快速开始
 

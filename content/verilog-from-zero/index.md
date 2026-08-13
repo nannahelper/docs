@@ -45,6 +45,17 @@
 
 ## 学习路线图
 
+| 章节 | 核心目标 | 入口 |
+|:---|:---|:---|
+| 第 1 章 | 数字逻辑基础与 Verilog 概述 | [进入章节](01-digital-logic-basics.md) |
+| 第 2 章 | 开发环境搭建与第一个程序 | [进入章节](02-environment-setup.md) |
+| 第 3 章 | 数据类型与运算符 | [进入章节](03-data-types-operators.md) |
+| 第 4 章 | 模块与端口 | [进入章节](04-modules-ports.md) |
+| 第 5 章 | 组合逻辑设计 | [进入章节](05-combinational-logic.md) |
+| 第 6 章 | 时序逻辑设计 | [进入章节](06-sequential-logic.md) |
+| 第 7 章 | 状态机设计 | [进入章节](07-state-machine.md) |
+| 第 8 章 | 综合实战项目 | [进入章节](08-digital-clock-project.md) |
+
 ```mermaid
 graph TD
     A[第1章：数字逻辑基础] --> B[第2章：环境搭建]

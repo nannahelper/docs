@@ -9,6 +9,11 @@
 </div>
 
 <div class="category-grid">
+  <a class="category-card category-card--violet" href="cyber-literacy.md">
+    <span class="category-icon">⌁</span>
+    <strong>赛博扫盲</strong>
+    <span>命令行、开发环境、Agent 工具</span>
+  </a>
   <a class="category-card category-card--indigo" href="programming-languages.md">
     <span class="category-icon">&lt;/&gt;</span>
     <strong>编程语言</strong>
@@ -54,15 +59,10 @@
     <strong>工具与生产力</strong>
     <span>Git、文档、Office、AI 工具</span>
   </a>
-  <a class="category-card category-card--violet" href="cyber-literacy.md">
-    <span class="category-icon">⌁</span>
-    <strong>赛博扫盲</strong>
-    <span>命令行、开发环境、Agent 工具</span>
-  </a>
 </div>
 
 !!! tip "怎么选？"
-    如果你还没有明确方向，可以先从 **编程语言** 或 **工具与生产力** 开始；如果已经在做项目，直接进入对应的技术分类即可。
+    如果你还没有明确方向，先从 **赛博扫盲** 认识终端、环境和 Agent，再进入编程语言或具体技术分类；如果已经在做项目，直接进入对应的技术分类即可。
 
 ## 分类原则
 

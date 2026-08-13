@@ -7,7 +7,7 @@
 | 项目 | 内容 |
 |:---|:---|
 | 适合人群 | 想使用 AI 编程助手，但不清楚 GUI、CLI、API Key 和权限边界的学习者 |
-| 预计时长 | 4–6 小时（包含练习） |
+| 预计时长 | 6–8 小时（包含练习） |
 | 适用版本 | OpenCode Desktop / CLI 以当前官方文档为准；DeepSeek API 兼容接口 |
 | 维护状态 | 维护中 |
 | 最后更新 | 2026-08-13 |
@@ -31,11 +31,13 @@
 
 | 章节 | 主题 | 核心比喻 | 预计时长 |
 |:---|:---|:---|:---:|
-| 第 1 章 | Agent 工作方式 | 有工具权限的协作者 | 45 分钟 |
-| 第 2 章 | OpenCode Desktop 与 DeepSeek | 给协作者发工作证 | 90 分钟 |
-| 第 3 章 | CLI、项目上下文与任务 | 用工单交代任务 | 75 分钟 |
-| 第 4 章 | 权限、安全与成本 | 给协作者划安全边界 | 60 分钟 |
-| 第 5 章 | 工具选型与综合任务 | 选择合适的工作台 | 90 分钟 |
+| [第 1 章：Agent 是什么](01-agent-basics.md) | Agent 工作方式 | 有工具权限的协作者 | 45 分钟 |
+| [第 2 章：OpenCode Desktop 接入 DeepSeek](02-opencode-desktop-deepseek.md) | GUI、Provider 与 API Key | 给协作者发工作证 | 90 分钟 |
+| [第 3 章：OpenCode CLI](03-opencode-cli.md) | CLI、项目上下文与任务 | 用工单交代任务 | 75 分钟 |
+| [第 4 章：权限、安全与成本](04-permissions-and-safety.md) | 权限、密钥与费用边界 | 给协作者划安全边界 | 60 分钟 |
+| [第 5 章：工具选型与综合任务](05-tool-selection-project.md) | 诊断、验收与回滚 | 选择合适的工作台 | 90 分钟 |
+| [第 6 章：小黄鸭原则与第一份 Agent 任务](06-duck-principle-and-first-task.md) | 零基础任务卡与只读实践 | 先向小黄鸭讲清楚 | 75 分钟 |
+| [第 7 章：其他 Agent 工具与协作方式](07-other-agent-tools.md) | GUI、CLI、IDE 与任务矩阵 | 不同任务用不同工作台 | 60 分钟 |
 
 ## 🚀 快速开始
 

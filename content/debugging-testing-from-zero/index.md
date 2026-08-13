@@ -33,10 +33,12 @@
 
 学习路线遵循“看懂错误 → 稳定复现 → 编写测试 → 自动验证”的递进顺序。
 
-1. [读懂错误与 Traceback](01-errors-tracebacks.md)
-2. [断点、日志与最小复现](02-debugger-logs-repro.md)
-3. [用 pytest 写第一组测试](03-pytest-basics.md)
-4. [测试边界、替身与持续集成](04-test-design-ci.md)
-5. [综合项目：给记账本加质量保障](05-project.md)
+| 章节 | 核心目标 | 入口 |
+|:---|:---|:---|
+| 第 1 章 | 读懂错误与 Traceback | [进入章节](01-errors-tracebacks.md) |
+| 第 2 章 | 断点、日志与最小复现 | [进入章节](02-debugger-logs-repro.md) |
+| 第 3 章 | 用 pytest 写第一组测试 | [进入章节](03-pytest-basics.md) |
+| 第 4 章 | 测试边界、替身与持续集成 | [进入章节](04-test-design-ci.md) |
+| 第 5 章 | 综合项目：给记账本加质量保障 | [进入章节](05-project.md) |
 
 反馈入口：[GitHub Issues](https://github.com/nannahelper/docs/issues)

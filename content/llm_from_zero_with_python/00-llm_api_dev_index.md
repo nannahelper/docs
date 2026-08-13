@@ -31,15 +31,15 @@
 - 想用 AI 自动化重复性办公任务的职场人
 - 对"用代码控制 AI"感到好奇的探索者
 
-## 章节导览
+## 学习路线
 
-| 章节 | 内容摘要 | 预计时间 |
-|------|----------|----------|
-| [第一章：环境准备](01-environment-setup.md) | 安装 VSCode、Python、配置虚拟环境 | 30 分钟 |
-| [第二章：API 集成入门](02-api-integration.md) | 第一次调用 DeepSeek API，理解核心概念 | 45 分钟 |
-| [第三章：概念与 Chatbot 实战](03-concepts.md) | 理解 Web UI vs API，构建终端 Chatbot | 30 分钟 |
-| [第四章：批量处理工作流](04-batch-processing.md) | 自动清洗非结构化数据，导出 Excel | 60 分钟 |
-| [第五章：安全与展望](05-security.md) | API Key 安全、成本监控、Agent/RAG 展望 | 20 分钟 |
+| 章节 | 内容摘要 | 入口 | 预计时间 |
+|:---|:---|:---|:---:|
+| 第一章：环境准备 | 安装 VSCode、Python、配置虚拟环境 | [进入章节](01-environment-setup.md) | 30 分钟 |
+| 第二章：API 集成入门 | 第一次调用 DeepSeek API，理解核心概念 | [进入章节](02-api-integration.md) | 45 分钟 |
+| 第三章：概念与 Chatbot 实战 | 理解 Web UI 与 API，构建终端 Chatbot | [进入章节](03-concepts.md) | 30 分钟 |
+| 第四章：批量处理工作流 | 自动清洗非结构化数据，导出 Excel | [进入章节](04-batch-processing.md) | 60 分钟 |
+| 第五章：安全与展望 | API Key 安全、成本监控、Agent/RAG 展望 | [进入章节](05-security.md) | 20 分钟 |
 
 ## 建议阅读顺序
 

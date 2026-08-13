@@ -2,6 +2,13 @@
 
 这里按主题分类整理完整目录。想先了解各分类的边界，请查看[课程分类总览](categories/learning-map.md)；已经知道要学什么，可以直接从下面进入课程首页。
 
+## 赛博扫盲
+
+| 课程 | 主要内容 | 入口 |
+|:---|:---|:---|
+| 命令行开发环境配置 | C/C++、Python、Git、Shell、包管理器和环境排错 | [进入课程](cyber-environment-from-zero/index.md) |
+| Agent 工具入门 | OpenCode Desktop、DeepSeek API Key、CLI、权限和工具选型 | [进入课程](agent-tools-from-zero/index.md) |
+
 ## 基础课程
 
 | 课程 | 适合人群 | 入口 |
@@ -56,13 +63,6 @@
 | 课程 | 主要内容 | 入口 |
 |:---|:---|:---|
 | 《人月神话》软件工程入门 | 规模、协作、架构和软件工程方法 | [进入课程](mythical_man_month/index.md) |
-
-## 赛博扫盲
-
-| 课程 | 主要内容 | 入口 |
-|:---|:---|:---|
-| 命令行开发环境配置 | C/C++、Python、Git、Shell、包管理器和环境排错 | [进入课程](cyber-environment-from-zero/index.md) |
-| Agent 工具入门 | OpenCode Desktop、DeepSeek API Key、CLI、权限和工具选型 | [进入课程](agent-tools-from-zero/index.md) |
 
 ## 课程状态
 

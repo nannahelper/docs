@@ -33,11 +33,13 @@ C 语言让你更接近程序运行的底层：类型如何占用内存，指针
 
 本课程使用“从编译器到内存，再到可交付项目”的递进路线。
 
-1. [编译、类型与输入输出](01-compile-types-io.md)
-2. [流程、数组与字符串](02-control-arrays-strings.md)
-3. [指针与内存](03-pointers-memory.md)
-4. [结构体、文件与模块](04-structs-files-modules.md)
-5. [综合项目：通讯录](05-project.md)
+| 章节 | 核心目标 | 入口 |
+|:---|:---|:---|
+| 第 1 章 | 编译、类型与输入输出 | [进入章节](01-compile-types-io.md) |
+| 第 2 章 | 流程、数组与字符串 | [进入章节](02-control-arrays-strings.md) |
+| 第 3 章 | 指针与内存 | [进入章节](03-pointers-memory.md) |
+| 第 4 章 | 结构体、文件与模块 | [进入章节](04-structs-files-modules.md) |
+| 第 5 章 | 综合项目：通讯录 | [进入章节](05-project.md) |
 
 !!! warning "安全练习"
     指针和内存练习请在自己的测试目录中进行。遇到崩溃时，先保存错误信息，不要反复执行不理解的内存操作。
