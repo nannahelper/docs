@@ -37,15 +37,55 @@ nav:
   - 首页: index.md
   - 学习方向:
       - 总览: categories/learning-map.md
-      - 编程语言: categories/programming-languages.md
-      - 数据与计算: categories/data-and-computing.md
-      - Web 与数据采集: categories/web-and-data.md
-      - AI 与机器学习: categories/ai-and-ml.md
-      - 系统与平台: categories/systems-and-platforms.md
-      - 网络与安全: categories/networks-and-security.md
-      - 嵌入式与硬件: categories/embedded-and-hardware.md
-      - 软件工程与质量: categories/software-quality.md
-      - 工具与生产力: categories/tools-and-productivity.md
+      - 编程语言:
+          - 分类概览: categories/programming-languages.md
+          - Python 新手指南: python-from-zero/index.md
+          - C 语言新手指南: c-from-zero/index.md
+          - Java 新手指南: java-from-zero/index.md
+          - Go 语言新手指南: go-from-zero/index.md
+          - Rust 新手指南: rust-from-zero/index.md
+      - 数据与计算:
+          - 分类概览: categories/data-and-computing.md
+          - SQL 新手指南: sql-from-zero/index.md
+          - R 语言新手指南: r-from-zero/index.md
+          - MATLAB 新手指南: matlab-from-zero/index.md
+          - 线性规划与优化方法: linear-programming-from-zero/index.md
+      - Web 与数据采集:
+          - 分类概览: categories/web-and-data.md
+          - 前端入门指南: frontend-from-zero/index.md
+          - 网络爬虫新手指南: web-crawler-from-zero/index.md
+      - AI 与机器学习:
+          - 分类概览: categories/ai-and-ml.md
+          - LLM API 开发与应用: llm_from_zero_with_python/00-llm_api_dev_index.md
+          - 神经网络与深度学习: neural-network-from-zero/index.md
+          - PyTorch 入门指南: pytorch-from-zero/index.md
+      - 系统与平台:
+          - 分类概览: categories/systems-and-platforms.md
+          - Linux 新手入门指南: linux_from_zero/00-linux-index.md
+          - Docker 新手指南: docker-from-zero/index.md
+      - 网络与安全:
+          - 分类概览: categories/networks-and-security.md
+          - 网络技术教程: cert3-network/index.md
+          - 信息安全教程: cert3-security/index.md
+      - 嵌入式与硬件:
+          - 分类概览: categories/embedded-and-hardware.md
+          - C 语言新手指南: c-from-zero/index.md
+          - Verilog 零基础入门指南: verilog-from-zero/index.md
+          - 嵌入式系统教程: cert3-embedded/index.md
+      - 软件工程与质量:
+          - 分类概览: categories/software-quality.md
+          - 调试与测试指南: debugging-testing-from-zero/index.md
+          - 《人月神话》软件工程入门: mythical_man_month/index.md
+      - 工具与生产力:
+          - 分类概览: categories/tools-and-productivity.md
+          - Git 与 GitHub 团队协作: git_github_from_zero/01-git-github-intro.md
+          - Markdown 新手指南: markdown-from-zero/index.md
+          - LaTeX 新手指南: latex-from-zero/index.md
+          - MkDocs 与 GitHub Pages: mkdocs-from-zero/index.md
+          - Microsoft Word: office-word-from-zero/index.md
+          - Microsoft Excel: office-excel-from-zero/index.md
+          - Microsoft PowerPoint: office-powerpoint-from-zero/index.md
+          - AI 编程助手技能系统: dog-skills-from-zero/index.md
   - 课程库:
       - 基础课程:
           - Python 新手指南:
