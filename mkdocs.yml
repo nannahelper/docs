@@ -5,7 +5,7 @@ site_url: https://nannahelper.github.io/docs/
 docs_dir: content
 
 extra:
-  welcome_text: "学习空间 · 持续更新"
+  welcome_text: "🎉 欢迎 2026 届新生！🎉"
 
 theme:
   name: material
@@ -25,11 +25,7 @@ theme:
         icon: material/brightness-4
         name: 切换至浅色模式
   features:
-    - navigation.tabs
-    - navigation.sections
     - navigation.instant
-    - navigation.top
-    - toc.follow
     - content.code.copy
     - content.code.annotate
 
@@ -339,9 +335,6 @@ nav:
       - 学习目标对照表: mythical_man_month/learning_map.md
       - 质量评估报告: mythical_man_month/quality_report.md
   - 资源与反馈: resources-and-feedback.md
-
-extra_css:
-  - stylesheets/extra.css
 
 extra_javascript:
   - js/mathjax-config.js
