@@ -6,11 +6,11 @@
 
 | 课程 | 主要内容 | 入口 |
 |:---|:---|:---|
-| 电脑与操作系统 | 从第一次开机到网络、外设和故障自救；约 5–6 小时 | [进入课程](cyber-computer-basics/index.md) |
-| 文件管理与备份 | 从创建目录到命名、下载、同步、备份和恢复；约 5–6 小时 | [进入课程](cyber-files-backup/index.md) |
-| 互联网与浏览器 | 从连接 Wi-Fi 到网址、请求、开发者工具和网页排错；约 5–6 小时 | [进入课程](cyber-internet-basics/index.md) |
-| 账号安全与隐私 | 从第一次登录到密码、2FA、钓鱼、设备和 API Key；约 5–6 小时 | [进入课程](cyber-account-security/index.md) |
-| 搜索与信息判断 | 从写清问题到搜索、来源、AI 核验和事实报告；约 5–6 小时 | [进入课程](cyber-search-literacy/index.md) |
+| 电脑与操作系统 | 从第一次开机到网络、外设和故障自救；约 1.5–2 小时 | [进入课程](cyber-computer-basics/index.md) |
+| 文件管理与备份 | 从创建目录到命名、下载、同步、备份和恢复；约 1.5–2 小时 | [进入课程](cyber-files-backup/index.md) |
+| 互联网与浏览器 | 从连接 Wi-Fi 到网址、请求、开发者工具和网页排错；约 1.5–2 小时 | [进入课程](cyber-internet-basics/index.md) |
+| 账号安全与隐私 | 从第一次登录到密码、2FA、钓鱼、设备和 API Key；约 1.5–2 小时 | [进入课程](cyber-account-security/index.md) |
+| 搜索与信息判断 | 从写清问题到搜索、来源、AI 核验和事实报告；约 1.5–2 小时 | [进入课程](cyber-search-literacy/index.md) |
 | 命令行开发环境配置 | C/C++、Python、Git、Shell、包管理器和环境排错；约 4 小时 | [进入课程](cyber-environment-from-zero/index.md) |
 | Agent 工具入门 | OpenCode Desktop、DeepSeek API Key、CLI、权限和工具选型；约 4 小时 | [进入课程](agent-tools-from-zero/index.md) |
 
