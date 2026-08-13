@@ -1,7 +1,5 @@
 # 南哪助手应用教程汇总（欢迎26届新生！）
 
-> **南哪今天搓代码了吗？** —— 从零开始，用生活化比喻轻松掌握编程技能。
-
 [![MkDocs](https://img.shields.io/badge/MkDocs-Material-4051b5?style=flat&logo=materialformkdocs)](https://squidfunk.github.io/mkdocs-material/)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 [![GitHub Pages](https://img.shields.io/badge/GitHub%20Pages-在线预览-success)](https://nannahelper.github.io/docs/)
