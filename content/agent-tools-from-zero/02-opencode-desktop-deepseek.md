@@ -37,7 +37,7 @@ DeepSeek 的 OpenAI 兼容 Base URL 是 `https://api.deepseek.com`；具体模�
 
 ![OpenCode Desktop 设置界面示例](../assets/opencode-desktop-settings.png)
 
-> 上图来自 [OpenCode 官方仓库](https://github.com/anomalyco/opencode) 的公开截图，用于帮助定位设置、Provider 和模型入口；当前版本的界面布局和语言可能不同，请以你安装的版本为准。
+> 上图为 OpenCode Desktop 的中文界面示例，用于帮助定位设置、Provider 和模型入口；当前版本的界面布局、语言选项和翻译可能不同，请以你安装的版本为准。
 
 ## 2.4 第一次安全验证
 
