@@ -6,8 +6,6 @@
 
 | 课程 | 主要内容 | 入口 |
 |:---|:---|:---|
-| 电脑与操作系统 | 从第一次开机到网络、外设和故障自救；约 1.5–2 小时 | [进入课程](cyber-computer-basics/index.md) |
-| 文件管理与备份 | 从创建目录到命名、下载、同步、备份和恢复；约 1.5–2 小时 | [进入课程](cyber-files-backup/index.md) |
 | 互联网与浏览器 | 从连接 Wi-Fi 到网址、请求、开发者工具和网页排错；约 1.5–2 小时 | [进入课程](cyber-internet-basics/index.md) |
 | 账号安全与隐私 | 从第一次登录到密码、2FA、钓鱼、设备和 API Key；约 1.5–2 小时 | [进入课程](cyber-account-security/index.md) |
 | 搜索与信息判断 | 从写清问题到搜索、来源、AI 核验和事实报告；约 1.5–2 小时 | [进入课程](cyber-search-literacy/index.md) |

@@ -35,8 +35,6 @@
 
 | 教程 | 内容 |
 |:---|:---|
-| [电脑与操作系统](content/cyber-computer-basics/index.md) | 从第一次开机开始，学习硬件、系统、文件、网络、外设和故障自救；约 1.5–2 小时 |
-| [文件管理与备份](content/cyber-files-backup/index.md) | 从创建目录开始，学习命名、格式、下载、同步、备份和恢复；约 1.5–2 小时 |
 | [互联网与浏览器](content/cyber-internet-basics/index.md) | 从连接 Wi-Fi 开始，学习网址、请求、开发者工具、登录和网页排错；约 1.5–2 小时 |
 | [账号安全与隐私](content/cyber-account-security/index.md) | 从第一次登录开始，学习密码、2FA、钓鱼、设备隐私和 API Key；约 1.5–2 小时 |
 | [搜索与信息判断](content/cyber-search-literacy/index.md) | 从写清问题开始，学习搜索、来源、资料卡、AI 核验和事实报告；约 1.5–2 小时 |
