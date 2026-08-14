@@ -44,7 +44,7 @@ pip install openai python-dotenv
 4. 点击 **"创建 API Key"**，填写名称（如 `my-first-key`）
 5. 复制生成的 Key（**注意：Key 只显示一次，请立即保存**）
 
-![DeepSeek API Key 获取](assets/deepseek-api-key.png)
+![DeepSeek API Key 获取](../assets/deepseek-api-key.png)
 
 记下两个关键信息：
 

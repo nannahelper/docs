@@ -45,7 +45,7 @@
         - ☑️ `添加到 PATH（重启后生效）`
     5. 点击"安装"，等待进度条完成
 
-    ![VSCode Windows 安装界面](assets/vscode-install-windows.png)
+    ![VSCode Windows 安装界面](../assets/vscode-install-windows.png)
 
 === "macOS"
 
@@ -55,7 +55,7 @@
     4. 从启动台打开 VSCode
     5. 按 `Cmd+Shift+P`，搜索 `Shell Command: Install 'code' command in PATH`，回车
 
-    ![VSCode macOS 安装界面](assets/vscode-install-macos.png)
+    ![VSCode macOS 安装界面](../assets/vscode-install-macos.png)
 
 **验证安装成功：** 打开 VSCode，看到欢迎界面说明安装完成 ✅
 
@@ -78,7 +78,7 @@ VSCode 本身只是一个文本编辑器，需要安装插件才能"理解" Pyth
 3. 找到 **Microsoft** 发布的 `Python` 插件（蓝色微软图标）
 4. 点击 **安装**
 
-![VSCode Python 插件安装](assets/vscode-python-extension.png)
+![VSCode Python 插件安装](../assets/vscode-python-extension.png)
 
 !!! tip "关于汉化插件的建议"
     **作者不建议安装汉化插件。** 理由如下：
@@ -112,14 +112,14 @@ VSCode 本身只是一个文本编辑器，需要安装插件才能"理解" Pyth
 3. 双击下载的 `.exe` 文件
 4. 在安装界面 **必须勾选** ⚠️：
 
-    ![Python 安装界面](assets/python-install-path.png)
+    ![Python 安装界面](../assets/python-install-path.png)
 
     - ☑️ **`Add python.exe to PATH`**（让终端能直接运行 `python` 命令）
 
 5. 点击 **"Install Now"**
 6. 安装完成后，如果看到 **"Disable path length limit"** 按钮，**点击它** ⚠️
 
-    ![Python 路径限制](assets/python-disable-path-limit.png)
+    ![Python 路径限制](../assets/python-disable-path-limit.png)
 
     这会解除 Windows 的路径长度限制（Windows 默认只允许 260 个字符的路径，现代开发常常超过这个长度）。
 
@@ -178,7 +178,7 @@ VSCode 的 Python 插件内置了虚拟环境管理功能：
     `>` 符号告诉 VSCode 这是一条命令而不是文件搜索。
 
 
-![VSCode 创建虚拟环境](assets/vscode-create-venv.png)
+![VSCode 创建虚拟环境](../assets/vscode-create-venv.png)
 
 创建完成后，项目根目录会出现一个 `.venv` 文件夹，VSCode 右下角状态栏会显示当前 Python 解释器路径。
 
