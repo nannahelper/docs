@@ -9,7 +9,7 @@
 | 核心比喻 | 给快递写清地址 |
 | 实践任务 | 把一个模糊问题改写成检索问题 |
 
-“Python 怎么学”太大；“Windows 11 上，零基础如何在 30 分钟内安装 Python 并验证 PATH”才有对象、系统和结果。
+[提问的智慧](https://github.com/ryanhanwu/How-To-Ask-Questions-The-Smart-Way/blob/main/README-zh_CN.md) “Python 怎么学”太大；“Windows 11 上，零基础如何在 30 分钟内安装 Python 并验证 PATH”才有对象、系统和结果。
 
 ## 1.1 五个问题
 
