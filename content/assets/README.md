@@ -10,3 +10,17 @@
 - `python-disable-path-limit.png` — Python 安装完成后的 Disable path length limit 按钮
 - `vscode-create-venv.png` — VSCode 命令面板创建 venv 环境
 - `deepseek-api-key.png` — DeepSeek 平台 API Keys 页面
+
+## 来源记录
+
+这些文件是从公开网页获取的操作截图。截图内容可能随软件版本变化，使用时应同时参考对应官方文档；如需在站点外再发布图片，请先核对原页面的授权条款。
+
+| 文件 | 来源 |
+|:---|:---|
+| `vscode-install-windows.png` | [Guide2WSL：VS Code installer](https://www.guide2wsl.com/vscode/) |
+| `vscode-install-macos.png` | [University of Chicago CS：Installing VS Code](https://uchicago-cs.github.io/student-resource-guide/vscode/install.html) |
+| `vscode-python-extension.png` | [Visual Studio Code：Get started](https://code.visualstudio.com/docs/getstarted/overview) |
+| `python-install-path.png` | [LaunchCode：Installing Python](https://education.launchcode.org/lchs/appendices/software-installation/python-setup.html) |
+| `python-disable-path-limit.png` | [Qualytics User Guide：Python installation](https://userguide.qualytics.io/cli/python-installation/) |
+| `vscode-create-venv.png` | [Visual Studio Code：Python environments](https://code.visualstudio.com/docs/python/environments) |
+| `deepseek-api-key.png` | [Apidog：How to Use the DeepSeek API](https://apidog.com/blog/how-to-use-deepseek-api-r1-v3/) |
