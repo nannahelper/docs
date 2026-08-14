@@ -33,7 +33,7 @@
 | 进阶自救 | reset、revert、stash、cherry-pick |
 | 项目管理 | Projects、Discussions、敏捷开发实践 |
 
-[进入教程 →](../git_github_from_zero/01-git-github-intro.md)
+[进入教程 →](../git_github_from_zero/index.md)
 
 ---
 

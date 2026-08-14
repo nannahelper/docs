@@ -5,7 +5,7 @@
 <div class="section-lead"><span class="eyebrow">TOOLS & PRODUCTIVITY</span><h2>先把工具用顺手</h2><p>这些课程不绑定某一种编程语言，是几乎所有学习和开发工作的共同底座。</p></div>
 
 <div class="course-grid">
-<a class="course-card" href="../git_github_from_zero/01-git-github-intro.md"><span class="course-tag">协作工具</span><h3>Git 与 GitHub 团队协作</h3><p>从本地版本控制到分支、协作和代码审查。</p><span class="course-meta">8 章 · 约 4–5 小时</span></a>
+<a class="course-card" href="../git_github_from_zero/index.md"><span class="course-tag">协作工具</span><h3>Git 与 GitHub 团队协作</h3><p>从本地版本控制到分支、协作和代码审查。</p><span class="course-meta">8 章 · 约 4–5 小时</span></a>
 <a class="course-card" href="../markdown-from-zero/index.md"><span class="course-tag">文档写作</span><h3>Markdown 新手指南</h3><p>写出清晰、可读、可维护的技术文档。</p><span class="course-meta">4 章 · 约 1–2 小时</span></a>
 <a class="course-card" href="../latex-from-zero/index.md"><span class="course-tag">学术写作</span><h3>LaTeX 新手指南</h3><p>制作论文、报告、简历和专业排版文档。</p><span class="course-meta">4 章 · 约 2–3 小时</span></a>
 <a class="course-card" href="../mkdocs-from-zero/index.md"><span class="course-tag">发布工具</span><h3>MkDocs 与 GitHub Pages</h3><p>从 Markdown 到一个可以在线访问的文档网站。</p><span class="course-meta">7 章 · 约 2–3 小时</span></a>

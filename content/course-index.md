@@ -20,7 +20,7 @@
 | SQL 新手指南 | 想学习数据库查询和数据处理的学习者；约 3–4 小时 | [进入课程](sql-from-zero/index.md) |
 | C 语言新手指南 | 想理解编译、内存和底层基础的学习者；约 4 小时 | [进入课程](c-from-zero/index.md) |
 | 调试与测试指南 | 想提高代码排错和质量保障能力的学习者；约 3–4 小时 | [进入课程](debugging-testing-from-zero/index.md) |
-| Git 与 GitHub 团队协作 | 需要进行版本控制和团队协作的学习者 | [进入课程](git_github_from_zero/01-git-github-intro.md) |
+| Git 与 GitHub 团队协作 | 需要进行版本控制和团队协作的学习者 | [进入课程](git_github_from_zero/index.md) |
 
 ## 编程语言
 
