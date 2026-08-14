@@ -10,6 +10,12 @@
 | 实践任务 | 用 OpenCode Desktop 完成一次只读项目分析 |
 | 难度等级 | ★★☆☆☆ |
 
+## 先理解这次连接发生了什么
+
+这一步不是简单地“把 Key 粘进去”。OpenCode Desktop 负责提供项目工作台和 Agent 交互界面，Provider 负责把请求转交给模型服务，API Key 负责证明你有权调用，模型则负责生成下一步建议。任何一层配置错误，都可能表现成连接失败，所以要按层验证，而不是反复粘贴密钥。
+
+我们还会故意从一个没有敏感资料的测试目录开始。这样即使第一次设置模型、读取项目或观察权限时判断失误，也不会把私人文件、校园资料或未提交的代码交给工具。安全的第一步不是相信工具，而是先缩小它能看到的范围。
+
 ## 2.1 安装 OpenCode Desktop
 
 从 [OpenCode 官方下载页](https://dev.opencode.ai/download) 选择对应系统版本。Windows 用户下载 Windows x64，macOS 用户按 Apple Silicon 或 Intel 选择。
