@@ -35,6 +35,10 @@ OpenCode 的官方流程是：
 
 DeepSeek 的 OpenAI 兼容 Base URL 是 `https://api.deepseek.com`；具体模型名称和可用性以官方控制台为准。
 
+![OpenCode Desktop 设置界面示例](../assets/opencode-desktop-settings.png)
+
+> 上图来自 [OpenCode 官方仓库](https://github.com/anomalyco/opencode) 的公开截图，用于帮助定位设置、Provider 和模型入口；当前版本的界面布局和语言可能不同，请以你安装的版本为准。
+
 ## 2.4 第一次安全验证
 
 ```text

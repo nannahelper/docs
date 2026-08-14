@@ -2,7 +2,7 @@
 
 本目录存放文档中引用的截图文件。文件名对应文档中的 `![...](assets/xxx.png)` 引用。
 
-需要补充的截图：
+当前已收录的截图：
 - `vscode-install-windows.png` — VSCode Windows 安装界面，勾选"添加到 PATH"
 - `vscode-install-macos.png` — VSCode macOS 拖入应用程序文件夹
 - `vscode-python-extension.png` — VSCode 扩展市场搜索 Python 插件
@@ -10,6 +10,7 @@
 - `python-disable-path-limit.png` — Python 安装完成后的 Disable path length limit 按钮
 - `vscode-create-venv.png` — VSCode 命令面板创建 venv 环境
 - `deepseek-api-key.png` — DeepSeek 平台 API Keys 页面
+- `opencode-desktop-settings.png` — OpenCode Desktop 设置、Provider 与模型入口示例
 
 ## 来源记录
 
@@ -24,3 +25,4 @@
 | `python-disable-path-limit.png` | [Qualytics User Guide：Python installation](https://userguide.qualytics.io/cli/python-installation/) |
 | `vscode-create-venv.png` | [Visual Studio Code：Python environments](https://code.visualstudio.com/docs/python/environments) |
 | `deepseek-api-key.png` | [Apidog：How to Use the DeepSeek API](https://apidog.com/blog/how-to-use-deepseek-api-r1-v3/) |
+| `opencode-desktop-settings.png` | [OpenCode 官方仓库](https://github.com/anomalyco/opencode) 中的公开界面截图 |
