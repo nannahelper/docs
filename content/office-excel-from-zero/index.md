@@ -15,7 +15,7 @@
 | 第 3 章 | 数据分析工具 | [进入章节](03-data-analysis.md) | 30 分钟 |
 | 第 4 章 | 图表与可视化 | [进入章节](04-charts-visualization.md) | 25 分钟 |
 | 第 5 章 | 数据透视表 | [进入章节](05-pivot-tables.md) | 35 分钟 |
-| 第 6 章 | 高级函数与数组公式 | [进入章节](06-advanced-formulas.md) | 35 分钟 |
+| 第 6 章 | 高级函数与数组公式 | [进入章节](06-advanced-functions.md) | 35 分钟 |
 | 第 7 章 | 宏与 VBA 入门 | [进入章节](07-macros-vba.md) | 30 分钟 |
 | 第 8 章 | 综合实战项目 | [进入章节](08-final-project.md) | 45 分钟 |
 

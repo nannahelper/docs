@@ -15,11 +15,11 @@
 先建立数字生活底座，再进入开发工具。每门课都可以单独学习，但顺序能减少术语和故障排查上的跳跃。
 
 <div class="course-grid">
-  <a class="course-card" href="../cyber-internet-basics/index.md"><span class="course-tag">01 · 网络基础</span><h3>互联网与浏览器</h3><p>从连接 Wi-Fi 开始，理解网址、请求、开发者工具、登录和网页排错。</p><span class="course-meta">6 章 · 约 1.5–2 小时</span></a>
-  <a class="course-card" href="../cyber-account-security/index.md"><span class="course-tag">02 · 安全底座</span><h3>账号安全与隐私</h3><p>从第一次登录开始，学习密码、2FA、钓鱼、设备隐私和 API Key。</p><span class="course-meta">6 章 · 约 1.5–2 小时</span></a>
-  <a class="course-card" href="../cyber-search-literacy/index.md"><span class="course-tag">03 · 信息判断</span><h3>搜索与信息判断</h3><p>从写清问题开始，学习搜索、来源、资料卡、AI 核验和事实报告。</p><span class="course-meta">6 章 · 约 1.5–2 小时</span></a>
-  <a class="course-card" href="../cyber-environment-from-zero/index.md"><span class="course-tag">04 · 开发环境</span><h3>命令行开发环境配置</h3><p>以 C/C++ 为主线，补齐 Python、Git、Shell、winget、Scoop、npm 等工具。</p><span class="course-meta">8 章 · 约 4 小时</span></a>
-  <a class="course-card" href="../agent-tools-from-zero/index.md"><span class="course-tag">05 · Agent 工具</span><h3>Agent 工具入门</h3><p>以 OpenCode Desktop 接入 DeepSeek API Key，学习 GUI、CLI、权限和工具选型。</p><span class="course-meta">7 章 · 约 4 小时</span></a>
+  <a class="course-card" href="../../cyber-internet-basics/"><span class="course-tag">01 · 网络基础</span><h3>互联网与浏览器</h3><p>从连接 Wi-Fi 开始，理解网址、请求、开发者工具、登录和网页排错。</p><span class="course-meta">6 章 · 约 1.5–2 小时</span></a>
+  <a class="course-card" href="../../cyber-account-security/"><span class="course-tag">02 · 安全底座</span><h3>账号安全与隐私</h3><p>从第一次登录开始，学习密码、2FA、钓鱼、设备隐私和 API Key。</p><span class="course-meta">6 章 · 约 1.5–2 小时</span></a>
+  <a class="course-card" href="../../cyber-search-literacy/"><span class="course-tag">03 · 信息判断</span><h3>搜索与信息判断</h3><p>从写清问题开始，学习搜索、来源、资料卡、AI 核验和事实报告。</p><span class="course-meta">6 章 · 约 1.5–2 小时</span></a>
+  <a class="course-card" href="../../cyber-environment-from-zero/"><span class="course-tag">04 · 开发环境</span><h3>命令行开发环境配置</h3><p>以 C/C++ 为主线，补齐 Python、Git、Shell、winget、Scoop、npm 等工具。</p><span class="course-meta">8 章 · 约 4 小时</span></a>
+  <a class="course-card" href="../../agent-tools-from-zero/"><span class="course-tag">05 · Agent 工具</span><h3>Agent 工具入门</h3><p>以 OpenCode Desktop 接入 DeepSeek API Key，学习 GUI、CLI、权限和工具选型。</p><span class="course-meta">7 章 · 约 4 小时</span></a>
 </div>
 
 !!! tip "推荐顺序"

@@ -9,52 +9,52 @@
 </div>
 
 <div class="category-grid">
-  <a class="category-card category-card--violet" href="cyber-literacy.md">
+  <a class="category-card category-card--violet" href="../cyber-literacy/">
     <span class="category-icon">⌁</span>
     <strong>赛博扫盲</strong>
     <span>命令行、开发环境、Agent 工具</span>
   </a>
-  <a class="category-card category-card--indigo" href="programming-languages.md">
+  <a class="category-card category-card--indigo" href="../programming-languages/">
     <span class="category-icon">&lt;/&gt;</span>
     <strong>编程语言</strong>
     <span>Python、C、Java、Go、Rust</span>
   </a>
-  <a class="category-card category-card--orange" href="data-and-computing.md">
+  <a class="category-card category-card--orange" href="../data-and-computing/">
     <span class="category-icon">∑</span>
     <strong>数据与计算</strong>
     <span>SQL、R、MATLAB、优化方法</span>
   </a>
-  <a class="category-card category-card--teal" href="web-and-data.md">
+  <a class="category-card category-card--teal" href="../web-and-data/">
     <span class="category-icon">◎</span>
     <strong>Web 与数据采集</strong>
     <span>前端、HTTP、网页解析</span>
   </a>
-  <a class="category-card category-card--violet" href="ai-and-ml.md">
+  <a class="category-card category-card--violet" href="../ai-and-ml/">
     <span class="category-icon">✦</span>
     <strong>AI 与机器学习</strong>
     <span>LLM、神经网络、PyTorch</span>
   </a>
-  <a class="category-card category-card--slate" href="systems-and-platforms.md">
+  <a class="category-card category-card--slate" href="../systems-and-platforms/">
     <span class="category-icon">⌘</span>
     <strong>系统与平台</strong>
     <span>Linux、Docker、运行环境</span>
   </a>
-  <a class="category-card category-card--rose" href="networks-and-security.md">
+  <a class="category-card category-card--rose" href="../networks-and-security/">
     <span class="category-icon">⌁</span>
     <strong>网络与安全</strong>
     <span>网络协议、密码学、安全实践</span>
   </a>
-  <a class="category-card category-card--cyan" href="embedded-and-hardware.md">
+  <a class="category-card category-card--cyan" href="../embedded-and-hardware/">
     <span class="category-icon">▦</span>
     <strong>嵌入式与硬件</strong>
     <span>Verilog、嵌入式系统、底层思维</span>
   </a>
-  <a class="category-card category-card--green" href="software-quality.md">
+  <a class="category-card category-card--green" href="../software-quality/">
     <span class="category-icon">✓</span>
     <strong>软件工程与质量</strong>
     <span>调试、测试、协作、工程方法</span>
   </a>
-  <a class="category-card category-card--sand" href="tools-and-productivity.md">
+  <a class="category-card category-card--sand" href="../tools-and-productivity/">
     <span class="category-icon">✎</span>
     <strong>工具与生产力</strong>
     <span>Git、文档、Office、AI 工具</span>

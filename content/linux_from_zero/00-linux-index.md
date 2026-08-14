@@ -159,6 +159,6 @@ graph LR
 
 **现在，准备好开始你的Linux之旅了吗？**  
 
-👉 [进入第1章：认识Linux](01-linux-intro)
+👉 [进入第1章：认识Linux](01-linux-intro.md)
 
 ---
