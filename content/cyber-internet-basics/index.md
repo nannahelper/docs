@@ -10,7 +10,7 @@
 | 预计时长 | 约 1.5–2 小时（按一遍阅读、跟做和验证估算） |
 | 适用版本 | Chrome、Edge、Firefox、Safari 当前版本；开发者工具界面可能变化 |
 | 维护状态 | 维护中 |
-| 最后更新 | 2026-08-13 |
+| 最后更新 | 2026-08-14 |
 | 反馈入口 | [GitHub Issues](https://github.com/nannahelper/docs/issues) |
 
 ## 🎯 学习目标
@@ -40,6 +40,17 @@
 ## 🚀 开始前准备
 
 第一次练习优先使用公开网页，不要在开发者工具里操作银行、校园账号或他人的登录页面。截图前检查地址栏、Cookie、邮箱和个人资料是否露出。
+
+## 📚 延伸阅读与资源
+
+建议按“先建立地图，再看协议，最后动手排错”的顺序阅读：
+
+- [MDN：Web 是如何工作的](https://developer.mozilla.org/en-US/docs/Learn_web_development/Getting_started/Web_standards/How_the_web_works) —— 从 URL、DNS、TCP/IP 到 HTTP，解释一个网页如何抵达浏览器。
+- [MDN：HTTP 概览](https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/Overview) —— 查请求、响应、状态码、缓存和认证等概念。
+- [Chrome DevTools 官方文档](https://developer.chrome.com/docs/devtools/overview) —— 对照练习 Network、Console、Elements 和性能排查。
+- [Cloudflare Learning Center：什么是 DNS？](https://www.cloudflare.com/learning/dns/what-is-dns/) —— 用较短的文章复习域名解析和 DNS 基础。
+
+这些文章适合作为“查概念”的入口，不要求一次读完。遇到网页打不开时，优先回到本教程的证据记录流程，再用对应资源核对术语。
 
 ## ✅ 完成标准
 

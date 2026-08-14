@@ -10,7 +10,7 @@
 | 预计时长 | 约 1.5–2 小时（按一遍阅读、跟做和验证估算） |
 | 适用版本 | 主流浏览器、GitHub、常见密码管理器；设置项以当前版本为准 |
 | 维护状态 | 维护中 |
-| 最后更新 | 2026-08-13 |
+| 最后更新 | 2026-08-14 |
 | 反馈入口 | [GitHub Issues](https://github.com/nannahelper/docs/issues) |
 
 ## 🎯 学习目标
@@ -41,6 +41,17 @@
 ## 🚀 开始前准备
 
 第一次练习不要拿最重要的主邮箱做实验。先阅读现有设置，准备纸笔记录恢复路径；任何密码、验证码、恢复码和 API Key 都不要发给教程作者、同学或聊天机器人。
+
+## 📚 延伸阅读与资源
+
+先完成一个账号的安全检查，再阅读密钥与组织安全资料：
+
+- [CISA：Secure Our World](https://www.cisa.gov/secure-our-world) —— 用密码管理器、多因素认证和识别钓鱼等日常动作建立安全习惯。
+- [Google：让账号更安全](https://support.google.com/accounts/answer/46526?hl=zh-CN) —— 查看恢复方式、2 步验证、第三方授权和密码安全检查。
+- [GitHub Docs：Secret scanning](https://docs.github.com/en/code-security/concepts/secret-security/secret-scanning) —— 理解 API Key 提交到仓库后如何被发现，以及为什么应立即撤销和轮换。
+- [OWASP：Secrets Management Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/Secrets_Management_Cheat_Sheet.html) —— 从存储、访问、审计和轮换角度理解密钥生命周期。
+
+安全资源只用于建立防护习惯，不要拿真实密码、恢复码或 API Key 做练习。演练时使用测试账号和无权限的示例密钥。
 
 ## ✅ 完成标准
 

@@ -1,6 +1,8 @@
 # Agent 工具入门
 
-从“聊天”进入“协作”：以 OpenCode Desktop 接入 DeepSeek API Key 为主线，理解 Agent 的模型、工具、权限、上下文和可审计工作流。
+随着大模型能力与应用方式不断演进，我们使用 AI 的方式也经历了从聊天对话，到提示词工程，再到 Agent 工具协作的转变。
+
+本教程带大家从“聊天”进入“协作”：以 OpenCode Desktop 接入 DeepSeek API Key 为主线，理解 Agent 的模型、工具、权限、上下文和可审计工作流。
 
 ## 📖 关于本教程
 
@@ -10,7 +12,7 @@
 | 预计时长 | 约 4 小时（包含练习） |
 | 适用版本 | OpenCode Desktop / CLI 以当前官方文档为准；DeepSeek API 兼容接口 |
 | 维护状态 | 维护中 |
-| 最后更新 | 2026-08-13 |
+| 最后更新 | 2026-08-14 |
 | 反馈入口 | [GitHub Issues](https://github.com/nannahelper/docs/issues) |
 
 ## 🎯 学习目标
@@ -90,9 +92,13 @@ OpenCode 是本课程的主线练习工具，DeepSeek Harness 是新增的官方
 
 先准备一个不含敏感信息的测试项目，在 OpenCode Desktop 中打开它。第一次任务只要求读取并解释文件，不允许自动修改、删除或执行未知命令。
 
-## 📚 推荐教材与官方文档
+## 📚 延伸阅读与资源
 
-- [OpenCode 官方下载页](https://dev.opencode.ai/download) —— Desktop 与 Terminal 安装入口。
-- [OpenCode Providers](https://opencode.ai/docs/providers) —— `/connect`、模型选择和提供商配置。
-- [DeepSeek 首次调用 API](https://api-docs.deepseek.com/zh-cn/) —— API Key、兼容接口和模型信息。
-- [DeepSeek Harness 官方仓库](https://github.com/deepseek-ai/deepseek-harness) —— 公开开发者预览、npm 启动方式与架构说明。
+- [OpenCode 官方文档](https://opencode.ai/v2/docs) —— 查 Desktop / CLI 的当前安装方式、项目上下文和使用边界。
+- [OpenCode Providers](https://opencode.ai/docs/providers) —— 查 `/connect`、模型选择和提供商配置。
+- [DeepSeek API 文档](https://api-docs.deepseek.com/zh-cn/) —— 查 API Key、兼容接口、模型和调用限制。
+- [DeepSeek Harness 官方仓库](https://github.com/deepseek-ai/deepseek-harness) —— 跟踪公开开发者预览、npm 启动方式和架构变化。
+- [Anthropic：Building effective agents](https://www.anthropic.com/engineering/building-effective-agents) —— 从简单、可组合的工作流理解 Agent，而不是先堆复杂框架。
+- [Anthropic：Effective harnesses for long-running agents](https://www.anthropic.com/engineering/effective-harnesses-for-long-running-agents) —— 学习长任务如何拆分、记录进度、验证结果并交接上下文。
+
+阅读顺序建议是“先看本教程的权限与验收 → 再看 Agent 设计文章 → 最后试用其他工具”。任何新工具都应先在无敏感信息的隔离项目中运行，并以官方文档和实际版本为准。

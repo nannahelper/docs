@@ -10,7 +10,7 @@
 | 预计时长 | 约 4 小时（包含练习） |
 | 适用版本 | Windows 11、macOS 14+、Ubuntu 22.04+；命令随版本变化 |
 | 维护状态 | 维护中 |
-| 最后更新 | 2026-08-13 |
+| 最后更新 | 2026-08-14 |
 | 反馈入口 | [GitHub Issues](https://github.com/nannahelper/docs/issues) |
 
 ## 🎯 学习目标
@@ -51,7 +51,14 @@ python --version
 
 如果某条命令不存在，不要直接复制一堆安装命令；先进入第 1 章确认系统、架构和 PATH。
 
-## 📚 推荐教材
+## 📚 延伸阅读与资源
 
-- [The C Programming Language](https://lilybre.lilystudio.space/book/994) —— 配合 C 编译实践。
-- [Automate the Boring Stuff with Python](https://lilybre.lilystudio.space/book/34) —— 练习 Python 工具链。
+- [cppreference：C 语言参考](https://en.cppreference.com/c/language) / [C++ 语言参考](https://en.cppreference.com/cpp/language) —— 写代码时查语法、类型、标准版本和未定义行为。
+- [Python Packaging User Guide](https://packaging.python.org/en/latest/) —— 学习虚拟环境、pip、`pyproject.toml` 和 Python 包发布的官方实践。
+- [Pro Git](https://git-scm.com/book/en/v2) —— 从安装和首次配置开始，逐步理解提交、分支、远程仓库和协作。
+- [npm Docs](https://docs.npmjs.com/) —— 查 npm、registry、包脚本和 CLI 命令；配合第 5 章使用。
+- [Microsoft Learn：Windows Terminal](https://learn.microsoft.com/en-us/windows/terminal/) —— 了解 PowerShell、命令提示符、WSL 和多标签终端。
+- [The C Programming Language](https://lilybre.lilystudio.space/book/994) —— 配合 C 编译实践阅读。
+- [Automate the Boring Stuff with Python](https://lilybre.lilystudio.space/book/34) —— 用小项目练习 Python 工具链。
+
+资源使用顺序建议是“本教程完成配置 → 用官方文档查命令 → 用教材做一个小项目”。安装器、编译器和包管理器的具体命令可能变化，遇到差异时以官方文档为准。

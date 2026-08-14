@@ -10,7 +10,7 @@
 | 预计时长 | 约 1.5–2 小时（按一遍阅读、跟做和验证估算） |
 | 适用版本 | 主流搜索引擎、浏览器和 AI 工具；页面功能以当前版本为准 |
 | 维护状态 | 维护中 |
-| 最后更新 | 2026-08-13 |
+| 最后更新 | 2026-08-14 |
 | 反馈入口 | [GitHub Issues](https://github.com/nannahelper/docs/issues) |
 
 ## 🎯 学习目标
@@ -40,6 +40,17 @@
 ## 🚀 开始前准备
 
 准备一个你确实想解决的问题，例如“如何安装一个工具”或“某个说法是否真实”。不要从医疗、法律、投资等高风险结论开始；这些问题需要专业人士和最新权威来源。
+
+## 📚 延伸阅读与资源
+
+把这些资源当作“核验工具箱”，不要只看结论，要观察它们如何找证据：
+
+- [Google：搜索技巧与结果关系](https://support.google.com/websearch/answer/134479?hl=zh-CN) —— 练习关键词、站点范围、时间和结果来源之间的关系。
+- [Google：缩小搜索范围](https://support.google.com/websearch/answer/2466433?hl=zh-CN) —— 学习引号、`site:`、减号和日期条件等常用操作符。
+- [斯坦福 Civic Online Reasoning](https://cor.stanford.edu/) —— 提供“横向阅读”“证据是什么”等数字信息判断课程和练习。
+- [《提问的智慧》中文译本](https://github.com/ryanhanwu/How-To-Ask-Questions-The-Smart-Way/blob/main/README-zh_CN.md) —— 学习如何提供环境、复现步骤和已尝试内容，让问题更容易得到有效回答。
+
+推荐练习：挑一条你不确定的说法，用 Google 搜索找到两个来源，再用斯坦福的“横向阅读”思路确认作者、证据和利益关系。
 
 ## ✅ 完成标准
 
