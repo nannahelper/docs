@@ -25,4 +25,4 @@
 | `python-disable-path-limit.png` | [Qualytics User Guide：Python installation](https://userguide.qualytics.io/cli/python-installation/) |
 | `vscode-create-venv.png` | [Visual Studio Code：Python environments](https://code.visualstudio.com/docs/python/environments) |
 | `deepseek-api-key.png` | [Apidog：How to Use the DeepSeek API](https://apidog.com/blog/how-to-use-deepseek-api-r1-v3/) |
-| `opencode-desktop-settings.png` | [《OpenCode 免費開源 AI 程式助理完整教學》](https://pcrookie.com/opencode-complete-guide-2026/) 中的 OpenCode Desktop 繁体中文界面截图 |
+| `opencode-desktop-settings.png` | [《试用 opencode 一周，我把 Claude Code 扔了》](https://juejin.cn/post/7599965904617242670) 中的 OpenCode Desktop 简体中文界面截图；用于定位设置入口和打开项目按钮 |
