@@ -15,40 +15,17 @@
 | **考点映射** | 408 考点：停等/GBN/SR 窗口大小与序号比特数关系、信道利用率（大题常考）；TCP 拥塞控制（拥塞窗口动态变化/快重传快恢复/平均发送速率，2023#47 等）；UDP 报文段与校验和；TCP 报文段结构与序号确认号；TCP 连接管理（三次握手/四次挥手）；TCP 可靠传输与流量控制 |
 | **习题配置** | 例题 5 道 + A 基础 5 题 + B 提高 3 题 + C 拓展 2 题 + 原书习题讲解 4 道（含真题 2010#47 改编） |
 
-```mermaid
-graph TD
-    A["第 3 章<br/>传输层"] --> B["3.1 传输层服务概述"]
-    A --> C["3.2 多路复用与解复用"]
-    A --> D["3.3 无连接传输：UDP"]
-    A --> E["3.4 可靠数据传输原理 ★"]
-    A --> F["3.5 面向连接传输：TCP"]
-    A --> G["3.6 拥塞控制原理"]
-    A --> H["3.7 TCP 拥塞控制 ★"]
-    A --> I["3.8 传输层功能演化（QUIC）"]
-    B --> B1["逻辑通信：传输层 vs 网络层"]
-    B --> B2["在端系统实现，路由器不识别"]
-    B --> B3["TCP 面向连接可靠 / UDP 无连接尽力而为"]
-    C --> C1["端口号 + socket 标识"]
-    C --> C2["UDP 二元组（目的 IP + 目的端口）"]
-    C --> C3["TCP 四元组（源/目的 IP + 源/目的端口）"]
-    D --> D1["UDP 为什么存在（4 个理由）"]
-    D --> D2["8 字节首部：源/目的端口 + 长度 + 校验和"]
-    D --> D3["校验和：二进制反码和（含回卷）"]
-    E --> E1["rdt1.0 可靠信道 / rdt2.x 差错 / rdt3.0 丢包+定时器"]
-    E --> E2["流水线 Pipelining 与利用率"]
-    E --> E3["GBN：累积确认、单定时器、超时重传窗口内全部"]
-    E --> E4["SR：逐分组确认、每分组定时器、重传单个"]
-    F --> F1["TCP 连接与报文段结构（MSS）"]
-    F --> F2["序号/确认号、RTT 估计（α=1/8 β=1/4）"]
-    F --> F3["可靠传输：超时重传 + 快重传（3 冗余 ACK）"]
-    F --> F4["流量控制 rwnd / 连接管理（三次握手四次挥手）"]
-    G --> G1["拥塞成因与代价（丢包/吞吐量下降/时延增大）"]
-    G --> G2["端到端 vs 网络辅助拥塞控制"]
-    H --> H1["慢开始（指数）/ 拥塞避免（+1）"]
-    H --> H2["快重传 / 快恢复（阈值=窗口/2）"]
-    H --> H3["Tahoe vs Reno、AIMD 锯齿、CUBIC/BBR/ECN、公平性"]
-    I --> I1["QUIC：基于 UDP、多路复用、0-RTT、连接迁移"]
-```
+<div class="chapter-route" aria-label="第 3 章学习路线">
+<a class="route-step" href="#31"><span class="route-index">01</span><strong>传输层服务</strong><small>逻辑通信与端到端服务</small></a>
+<a class="route-step" href="#32"><span class="route-index">02</span><strong>复用与解复用</strong><small>端口号、二元组与四元组</small></a>
+<a class="route-step" href="#33-udp"><span class="route-index">03</span><strong>UDP</strong><small>无连接、首部与校验和</small></a>
+<a class="route-step" href="#34"><span class="route-index">04</span><strong>可靠数据传输</strong><small>rdt、流水线、GBN 与 SR</small></a>
+<a class="route-step" href="#35-tcp"><span class="route-index">05</span><strong>TCP</strong><small>序号、确认、流量控制与连接</small></a>
+<a class="route-step" href="#36"><span class="route-index">06</span><strong>拥塞控制原理</strong><small>拥塞成因与端到端控制</small></a>
+<a class="route-step" href="#37-tcp"><span class="route-index">07</span><strong>TCP 拥塞控制</strong><small>慢开始、AIMD、Reno 与 CUBIC</small></a>
+<a class="route-step" href="#38-quic"><span class="route-index">08</span><strong>QUIC</strong><small>UDP、多路复用与连接迁移</small></a>
+</div>
+<p class="chapter-route-note">点击卡片跳转到对应小节。本路线图只负责定位，状态机、计算题和协议对比在正文中展开。</p>
 
 ---
 

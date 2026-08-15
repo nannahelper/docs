@@ -15,32 +15,14 @@
 | **考点映射** | 408 考点：CIDR 划分/地址分配/IP 地址合法性判断（**考频=9**：2023#39、2022#35、2021#35、2019#37、2017#38、2012#39、2011#38、2010#37、2017#36；大题 2019#47、2018#47、2013#47 等）；子网掩码作用（考频高）；IPv4 首部字段分析（2011、2012）；TTL 字段分析与计算（2014、2024）；IP 分片原理（2021）；NAT 原理（2016、2019、2020、2023）；DHCP（2015、2022）；IPv6（2023）；SDN 南向接口（2022） |
 | **习题配置** | 例题 5 道 + A 基础 5 题 + B 提高 3 题 + C 拓展 2 题 + 原书习题讲解 3 道（含真题 2019#47、2013#47、2023#39、2022#35、2021#35 改编） |
 
-```mermaid
-graph TD
-    A["第 4 章<br/>网络层：数据平面"] --> B["4.1 网络层概述"]
-    A --> C["4.2 路由器内部"]
-    A --> D["4.3 网际协议 IP ★"]
-    A --> E["4.4 通用转发与 SDN"]
-    A --> F["4.5 因特网体系结构原则"]
-    A --> G["4.6 小结"]
-    B --> B1["转发 forwarding vs 路由 routing"]
-    B --> B2["数据平面 / 控制平面（传统 vs SDN）"]
-    B --> B3["网络服务模型：尽力而为 best-effort"]
-    C --> C1["输入端口：查找（最长前缀匹配）+ TCAM"]
-    C --> C2["交换结构：经内存 / 经总线 / 经互连网络"]
-    C --> C3["输出端口与排队：HOL 阻塞、输出排队"]
-    C --> C4["分组调度：FIFO / 优先级 / 轮询 RR / WFQ"]
-    D --> D1["IPv4 数据报格式：20B 首部 11 字段"]
-    D --> D2["IPv4 分片计算：DF/MF/片偏移（单位 8B）"]
-    D --> D3["IPv4 编址：分类 / 子网划分 / CIDR 聚合"]
-    D --> D4["DHCP 四步 / 私有地址与 NAT"]
-    D --> D5["IPv6：128 位、:: 压缩、双栈与隧道"]
-    E --> E1["匹配+动作 match+action"]
-    E --> E2["OpenFlow 流表：匹配字段/优先级/计数/动作"]
-    E --> E3["中间盒 middlebox"]
-    F --> F1["IP 沙漏 narrow waist"]
-    F --> F2["端到端原则 end-to-end argument"]
-```
+<div class="chapter-route" aria-label="第 4 章学习路线">
+<a class="route-step" href="#41"><span class="route-index">01</span><strong>网络层概述</strong><small>转发、路由与数据平面</small></a>
+<a class="route-step" href="#42"><span class="route-index">02</span><strong>路由器内部</strong><small>输入端口、交换结构与排队</small></a>
+<a class="route-step" href="#43-ipipv4ipv6"><span class="route-index">03</span><strong>IP 协议</strong><small>IPv4、CIDR、NAT 与 IPv6</small></a>
+<a class="route-step" href="#44-sdn"><span class="route-index">04</span><strong>通用转发与 SDN</strong><small>匹配、动作与 OpenFlow</small></a>
+<a class="route-step" href="#45"><span class="route-index">05</span><strong>体系结构原则</strong><small>IP 沙漏与端到端原则</small></a>
+</div>
+<p class="chapter-route-note">点击卡片跳转到对应小节。本路线图只负责定位，地址计算、转发表和排队分析在正文中展开。</p>
 
 ---
 

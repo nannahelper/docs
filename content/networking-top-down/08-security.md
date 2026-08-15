@@ -15,47 +15,18 @@
 | **考点映射** | 408 考点（2024 新大纲起网络安全列为正式考点，历年低频但稳定出现）：对称/公钥加密与 RSA 计算；哈希与消息认证；数字签名与证书；端点认证与重放攻击（nonce）；TLS 握手与分层安全；防火墙与 IDS 规则分析 |
 | **习题配置** | 例题 4 道 + A 基础 5 题 + B 提高 3 题 + C 拓展 2 题 + 原书习题讲解 3 道 |
 
-```mermaid
-graph TD
-    A["第 8 章<br/>网络安全"] --> B["8.1 什么是网络安全"]
-    A --> C["8.2 密码学原理 ★"]
-    A --> D["8.3 消息完整性与数字签名 ★"]
-    A --> E["8.4 端点认证"]
-    A --> F["8.5 邮件安全：PGP"]
-    A --> G["8.6 传输层安全：TLS ★"]
-    A --> H["8.7 网络层安全：IPsec ★"]
-    A --> I["8.8 无线与 5G 安全"]
-    A --> J["8.9 运行安全：防火墙与 IDS ★"]
-    A --> K["8.10 小结"]
-    B --> B1["机密性 / 完整性 / 端点认证"]
-    B --> B2["Alice / Bob / Trudy 人物设定"]
-    B --> B3["窃听 / 修改 / 插入 / 删除"]
-    C --> C1["对称密钥：凯撒 / 单表替换 / DES / AES / CBC"]
-    C --> C2["公钥密码：RSA 原理 + 计算 + 会话密钥"]
-    D --> D1["哈希函数：SHA-1 / SHA-256，单向与抗碰撞"]
-    D --> D2["MAC：共享密钥 + 哈希"]
-    D --> D3["数字签名：私钥签名 / 公钥验证 / CA 证书"]
-    E --> E1["ap1.0 我声明 → ap2.0 IP 地址 → ap3.0 密码"]
-    E --> E2["ap3.1 加密密码 → 重放攻击"]
-    E --> E3["ap4.0 nonce + 共享密钥 → 防重放"]
-    F --> F1["机密性：会话密钥 + 公钥加密会话密钥"]
-    F --> F2["完整性：哈希 + 数字签名"]
-    F --> F3["PGP：先签名再加密，信任网"]
-    G --> G1["握手 / 密钥派生 / 数据传输"]
-    G --> G2["TLS 1.3：1-RTT，证书验证 + PMS → MS"]
-    G --> G3["记录协议：加密 + HMAC + 序号"]
-    H --> H1["VPN 隧道模式 / 传输模式"]
-    H --> H2["AH 认证 / ESP 加密+认证"]
-    H --> H3["SA 安全关联 + SPI + SAD/SPD"]
-    H --> H4["IKE 两阶段密钥管理"]
-    I --> I1["WPA3-Personal：SAE 四步 Dragonfly"]
-    I --> I2["WPA3-Enterprise：802.1X + EAP-TTLS"]
-    I --> I3["5G：EAP-AKA'，AUSF 归属网络认证"]
-    J --> J1["分组过滤（规则表/ACL）"]
-    J --> J2["状态过滤（连接表）"]
-    J --> J3["应用网关（SSH 网关）"]
-    J --> J4["IDS/IPS：签名 vs 异常"]
-```
+<div class="chapter-route" aria-label="第 8 章学习路线">
+<a class="route-step" href="#81"><span class="route-index">01</span><strong>网络安全概览</strong><small>机密性、完整性与端点认证</small></a>
+<a class="route-step" href="#82"><span class="route-index">02</span><strong>密码学原理</strong><small>对称密钥、公钥密码与会话密钥</small></a>
+<a class="route-step" href="#83"><span class="route-index">03</span><strong>完整性与签名</strong><small>哈希、MAC、数字签名与 CA</small></a>
+<a class="route-step" href="#84"><span class="route-index">04</span><strong>端点认证</strong><small>密码、nonce 与重放攻击</small></a>
+<a class="route-step" href="#85-pgp"><span class="route-index">05</span><strong>邮件安全</strong><small>PGP、签名、加密与信任网</small></a>
+<a class="route-step" href="#86-tls"><span class="route-index">06</span><strong>TLS</strong><small>握手、密钥派生与安全传输</small></a>
+<a class="route-step" href="#87-ipsec-vpn"><span class="route-index">07</span><strong>IPsec</strong><small>VPN、AH、ESP 与 IKE</small></a>
+<a class="route-step" href="#88-5g"><span class="route-index">08</span><strong>无线与 5G 安全</strong><small>WPA3、EAP 与移动网络认证</small></a>
+<a class="route-step" href="#89-ids"><span class="route-index">09</span><strong>运行安全</strong><small>防火墙、IDS 与入侵检测</small></a>
+</div>
+<p class="chapter-route-note">点击卡片跳转到对应小节。本路线图只负责定位，密码算法、握手过程和安全边界在正文中展开。</p>
 
 ---
 

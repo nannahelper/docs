@@ -15,33 +15,16 @@
 | **考点映射** | 408 考点：CSMA/CD 冲突检测与最短帧长（6 次：2023#36、2019#36、2016#36、2009#37、2015#36、2013#36；大题 2010#47、2022#47）；802.11 三地址与 CSMA/CA（5 次：2017#35、2020#37、2018#35、2011#36、2024#36）；交换机转发/自学习（2014#36、2016#36 等）；ARP 与 VLAN（2024#36、2022#47 等）；CRC（2023#36 同考点、2023#40） |
 | **习题配置** | 例题 5 道 + A 基础 5 题 + B 提高 3 题 + C 拓展 2 题 + 原书习题讲解 3 道（含真题 2023#36、2024#36、2010#47、2017#47 改编） |
 
-```mermaid
-graph TD
-    A["第 6 章<br/>链路层与局域网"] --> B["6.1 链路层概述"]
-    A --> C["6.2 差错检测与纠正 ★"]
-    A --> D["6.3 多路访问协议 ★"]
-    A --> E["6.4 交换局域网 ★"]
-    A --> F["6.5 链路虚拟化"]
-    A --> G["6.6 数据中心网络"]
-    A --> H["6.7 回顾：网页请求的一生 ★"]
-    B --> B1["服务：组帧/链路接入/可靠交付/差错检测"]
-    B --> B2["实现位置：网络适配器（网卡）"]
-    C --> C1["奇偶校验：单比特 / 二维（可纠 1 位错）"]
-    C --> C2["校验和：二进制反码和（UDP/TCP 用）"]
-    C --> C3["CRC：模 2 除、生成多项式、FCS ★"]
-    D --> D1["信道划分：TDM / FDM / CDMA（内积）"]
-    D --> D2["随机访问：ALOHA / CSMA / CSMA-CD ★ / CSMA-CA"]
-    D --> D3["轮转：轮询 / 令牌传递 + DOCSIS"]
-    E --> E1["MAC 地址与 ARP ★"]
-    E --> E2["以太网帧格式（前导码/地址/类型/数据/FCS）"]
-    E --> E3["交换机：自学习 / 过滤 / 转发 / 洪泛 ★"]
-    E --> E4["VLAN 与 802.1Q（trunk 干道）★"]
-    F --> F1["MPLS：标签交换 / FEC"]
-    F --> F2["VXLAN：以太网帧封装进 UDP / 24 位 VNI"]
-    G --> G1["层次拓扑：机架 / ToR / 核心交换机 / 负载均衡器"]
-    G --> G2["趋势：leaf-spine、SDN、VXLAN"]
-    H --> H1["DHCP → ARP → DNS → TCP → HTTP 全链路"]
-```
+<div class="chapter-route" aria-label="第 6 章学习路线">
+<a class="route-step" href="#61"><span class="route-index">01</span><strong>链路层概述</strong><small>组帧、接入、可靠交付与网卡</small></a>
+<a class="route-step" href="#62-408"><span class="route-index">02</span><strong>差错检测与纠正</strong><small>奇偶校验、校验和与 CRC</small></a>
+<a class="route-step" href="#63-408"><span class="route-index">03</span><strong>多路访问协议</strong><small>信道划分、随机访问与轮转</small></a>
+<a class="route-step" href="#64-408"><span class="route-index">04</span><strong>交换局域网</strong><small>MAC、ARP、以太网与 VLAN</small></a>
+<a class="route-step" href="#65"><span class="route-index">05</span><strong>链路虚拟化</strong><small>MPLS、VXLAN 与标签交换</small></a>
+<a class="route-step" href="#66"><span class="route-index">06</span><strong>数据中心网络</strong><small>ToR、核心交换与 Leaf-Spine</small></a>
+<a class="route-step" href="#67-408"><span class="route-index">07</span><strong>网页请求全链路</strong><small>DHCP、ARP、DNS、TCP 到 HTTP</small></a>
+</div>
+<p class="chapter-route-note">点击卡片跳转到对应小节。本路线图只负责定位，CRC 计算、帧格式和 VLAN 实验在正文中展开。</p>
 
 ---
 

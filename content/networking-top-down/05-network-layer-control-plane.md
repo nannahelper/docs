@@ -15,41 +15,16 @@
 | **考点映射** | 408 考点：RIP/OSPF 构造路由表过程（**高频**，2017#47 变形）；链路状态 vs 距离向量算法对比；RIP 跳数 16 表示不可达（2010）；RIP/OSPF/BGP 封装所用协议（2013、2017）；BGP 的作用与路径向量（2013）；BGP 路由选择顺序与热土豆（2024）；ICMP 差错报文类型（2022）；ICMP 封装与 PING/Traceroute（2012） |
 | **习题配置** | 例题 5 道 + A 基础 5 题 + B 提高 3 题 + C 拓展 3 题（含真题 2012#34、2017#47 改编）+ 原书习题讲解 3 道 |
 
-```mermaid
-graph TD
-    A["第 5 章<br/>网络层控制平面"] --> B["5.1 引言"]
-    A --> C["5.2 路由算法 ★"]
-    A --> D["5.3 域内路由：OSPF"]
-    A --> E["5.4 域间路由：BGP ★"]
-    A --> F["5.5 SDN 控制平面"]
-    A --> G["5.6 ICMP"]
-    A --> H["5.7 网络管理"]
-    A --> I["5.8 小结"]
-    B --> B1["每路由器控制 vs 逻辑集中式控制"]
-    B --> B2["控制平面 = 计算/维护/安装转发表"]
-    C --> C1["链路状态 LS：Dijkstra 算法"]
-    C --> C2["距离向量 DV：Bellman-Ford 方程"]
-    C --> C3["好消息快 / 坏消息慢（计数到无穷）"]
-    C --> C4["毒性逆转 poison reverse"]
-    C --> C5["LS vs DV 对比表"]
-    D --> D1["自治系统 AS 与 ASN"]
-    D --> D2["OSPF：链路状态 + 洪泛 + Dijkstra"]
-    D --> D3["OSPF 与 RIP 对比"]
-    E --> E1["BGP 作用：可达性 + 策略"]
-    E --> E2["eBGP / iBGP 会话"]
-    E --> E3["属性 AS-PATH 与 NEXT-HOP"]
-    E --> E4["路径选择：本地偏好→AS-PATH→热土豆→BGP 标识符"]
-    E --> E5["IP 任播与路由策略"]
-    F --> F1["SDN 四特征"]
-    F --> F2["控制器三层：通信/状态管理/北向接口"]
-    F --> F3["OpenFlow 协议与消息"]
-    F --> F4["ONOS / Orion 演进"]
-    G --> G1["差错报告 + 询问两类报文"]
-    G --> G2["PING 用回送、Traceroute 用时间超过"]
-    H --> H1["管理框架：管理站/代理/MIB"]
-    H --> H2["SNMP：get/set/trap"]
-    H --> H3["NETCONF/YANG"]
-```
+<div class="chapter-route" aria-label="第 5 章学习路线">
+<a class="route-step" href="#51"><span class="route-index">01</span><strong>控制平面</strong><small>计算、维护与安装转发表</small></a>
+<a class="route-step" href="#52"><span class="route-index">02</span><strong>路由算法</strong><small>链路状态、距离向量与收敛</small></a>
+<a class="route-step" href="#53-ospf"><span class="route-index">03</span><strong>OSPF</strong><small>自治系统、洪泛与 Dijkstra</small></a>
+<a class="route-step" href="#54-bgp"><span class="route-index">04</span><strong>BGP</strong><small>域间可达性、策略与路径选择</small></a>
+<a class="route-step" href="#55-sdn"><span class="route-index">05</span><strong>SDN 控制平面</strong><small>控制器、北向接口与 OpenFlow</small></a>
+<a class="route-step" href="#56-icmp"><span class="route-index">06</span><strong>ICMP</strong><small>差错报告、PING 与 Traceroute</small></a>
+<a class="route-step" href="#57-snmp-netconfyang"><span class="route-index">07</span><strong>网络管理</strong><small>SNMP、NETCONF 与 YANG</small></a>
+</div>
+<p class="chapter-route-note">点击卡片跳转到对应小节。本路线图只负责定位，算法步骤、路由表和报文分析在正文中展开。</p>
 
 ---
 

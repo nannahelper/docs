@@ -87,6 +87,65 @@
   font-weight: 600;
 }
 
+.chapter-route {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(12rem, 1fr));
+  gap: 0.85rem;
+  margin: 1.5rem 0 0.75rem;
+}
+
+.route-step {
+  display: flex;
+  min-height: 8rem;
+  flex-direction: column;
+  gap: 0.45rem;
+  padding: 1rem;
+  border: 1px solid var(--md-default-fg-color--lightest);
+  border-radius: 0.65rem;
+  background: linear-gradient(145deg, var(--md-default-bg-color), var(--md-code-bg-color));
+  color: var(--md-default-fg-color) !important;
+  text-decoration: none !important;
+  transition: border-color 160ms ease, box-shadow 160ms ease, transform 160ms ease;
+}
+
+.route-step:hover,
+.route-step:focus-visible {
+  border-color: var(--md-primary-fg-color);
+  box-shadow: var(--md-shadow-z1);
+  transform: translateY(-2px);
+}
+
+.route-index {
+  display: inline-flex;
+  width: 1.8rem;
+  height: 1.8rem;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  background: var(--md-primary-fg-color);
+  color: var(--md-primary-bg-color);
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+.route-step strong {
+  color: var(--md-default-fg-color);
+  font-size: 1rem;
+  line-height: 1.35;
+}
+
+.route-step small {
+  color: var(--md-default-fg-color--light);
+  font-size: 0.78rem;
+  line-height: 1.5;
+}
+
+.chapter-route-note {
+  margin: 0 0 1.5rem;
+  color: var(--md-default-fg-color--light);
+  font-size: 0.85rem;
+}
+
 @media screen and (max-width: 60em) {
   .category-grid,
   .course-grid,
@@ -100,5 +159,13 @@
   .course-grid,
   .resource-grid {
     grid-template-columns: 1fr;
+  }
+
+  .chapter-route {
+    grid-template-columns: 1fr;
+  }
+
+  .route-step {
+    min-height: auto;
   }
 }

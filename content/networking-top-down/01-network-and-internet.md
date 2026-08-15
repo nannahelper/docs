@@ -15,33 +15,17 @@
 | **考点映射** | 408 考点：分组交换/报文交换性能分析（4 次：2023#33、2013#35、2010#34、2024#33）；OSI 参考模型各层功能（8 次：2022#33、2019#33、2016#33 等）；TCP/IP 模型层次与协议关系（5 次：2021#33、2018#33 等）；物理层补充（奈氏准则 2009/2022/2023、香农定理 2016、奈氏香农对比 2017、波特率与比特率转化 2011、物理层设备冲突域/广播域 2010/2020，见 1.9 节） |
 | **习题配置** | 例题 6 道（含 1.9 节补充 2 道）+ A 基础 5 题 + B 提高 3 题 + C 拓展 2 题 + 原书习题讲解 4 道 |
 
-```mermaid
-graph TD
-    A["第 1 章<br/>计算机网络与因特网"] --> B["1.1 什么是因特网"]
-    A --> C["1.2 网络边缘"]
-    A --> D["1.3 网络核心"]
-    A --> E["1.4 时延、丢失与吞吐量"]
-    A --> F["1.5 协议层次与服务模型"]
-    A --> G["1.6 网络攻击"]
-    A --> H["1.7 历史"]
-    B --> B1["部件视角：端系统/链路/分组交换/ISP/协议"]
-    B --> B2["服务视角：分布式应用 + 套接字接口"]
-    B --> B3["协议定义：格式 + 顺序 + 动作"]
-    C --> C1["接入网：DSL/电缆/FTTH/固定无线/以太网/WiFi/4G-5G"]
-    C --> C2["物理介质：双绞线/同轴/光纤/无线信道"]
-    D --> D1["分组交换：存储转发 + 排队 + 转发表"]
-    D --> D2["电路交换：FDM/TDM"]
-    D --> D3["网络之网：ISP 层级 1-5"]
-    E --> E1["四种时延：d_proc+d_queue+d_trans+d_prop"]
-    E --> E2["流量强度 La/R 与丢包"]
-    E --> E3["吞吐量：瓶颈链路"]
-    F --> F1["TCP/IP 五层 + OSI 七层"]
-    F --> F2["封装：报文→报文段→数据报→帧"]
-    G --> G1["恶意软件/DoS/DDoS/嗅探/伪装/中间人"]
-    H --> H1["五个阶段（1961-今）"]
-    A --> I["1.9 补充：物理层（408 考纲）"]
-    I --> I1["奈氏准则 / 香农定理 / 编码调制 / 物理层设备"]
-```
+<div class="chapter-route" aria-label="第 1 章学习路线">
+<a class="route-step" href="#11"><span class="route-index">01</span><strong>什么是因特网</strong><small>部件、服务与协议三种视角</small></a>
+<a class="route-step" href="#12"><span class="route-index">02</span><strong>网络边缘</strong><small>端系统、接入网与物理介质</small></a>
+<a class="route-step" href="#13"><span class="route-index">03</span><strong>网络核心</strong><small>分组交换、电路交换与 ISP</small></a>
+<a class="route-step" href="#14"><span class="route-index">04</span><strong>性能指标</strong><small>时延、丢失、吞吐量与排队</small></a>
+<a class="route-step" href="#15"><span class="route-index">05</span><strong>协议分层</strong><small>协议栈、服务模型与封装</small></a>
+<a class="route-step" href="#16"><span class="route-index">06</span><strong>网络攻击</strong><small>恶意软件、DDoS 与嗅探</small></a>
+<a class="route-step" href="#17"><span class="route-index">07</span><strong>发展历史</strong><small>从早期网络到今天的因特网</small></a>
+<a class="route-step" href="#19-408"><span class="route-index">09</span><strong>物理层补充</strong><small>408 考纲中的编码与信道</small></a>
+</div>
+<p class="chapter-route-note">点击卡片跳转到对应小节。本路线图只负责定位，公式、例题和考点在正文中展开。</p>
 
 ---
 

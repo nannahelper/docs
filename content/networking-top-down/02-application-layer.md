@@ -15,39 +15,15 @@
 | **考点映射** | 408 考点：HTTP 传输时间计算（2017#47、2020#34、2022、2024 多次）；DNS 递归/迭代查询与报文（2010、2016、2020、2021）；应用层协议与端口/TCP-UDP 对应（2012、2014、2018、2021）；HTTP 报文方法（2015）；邮件协议推/拉机制（2012、2018） |
 | **习题配置** | 例题 4 道 + A 基础 5 题 + B 提高 3 题 + C 拓展 2 题 + 原书习题讲解 4 道 |
 
-```mermaid
-graph TD
-    A["第 2 章<br/>应用层"] --> B["2.1 网络应用原理"]
-    A --> C["2.2 Web 与 HTTP ★高频"]
-    A --> D["2.3 因特网电子邮件"]
-    A --> E["2.4 DNS ★高频"]
-    A --> F["2.5 视频流与 CDN"]
-    A --> G["2.6 Socket 编程"]
-    A --> H["2.7 小结"]
-    B --> B1["架构：C/S vs P2P"]
-    B --> B2["进程通信：socket + 端口"]
-    B --> B3["传输服务：TCP / UDP / TLS"]
-    C --> C1["HTTP 概述：对象 / URL / 无状态"]
-    C --> C2["非持久 vs 持久连接（RTT 计算）"]
-    C --> C3["报文格式：请求 / 响应 / 状态码"]
-    C --> C4["Cookie / Web 缓存"]
-    C --> C5["HTTP/2：帧与多路复用"]
-    C --> C6["HTTP/3 与 QUIC"]
-    D --> D1["SMTP：推协议 / 7 位 ASCII"]
-    D --> D2["报文格式与 MIME"]
-    D --> D3["POP3 / IMAP / Web 邮件"]
-    E --> E1["DNS 服务：解析 / 别名 / 负载分配"]
-    E --> E2["层次结构：根 / 顶级 / 权威 / 本地"]
-    E --> E3["递归 vs 迭代查询"]
-    E --> E4["资源记录与报文格式"]
-    F --> F1["视频压缩与比特率"]
-    F --> F2["HTTP 流与 DASH"]
-    F --> F3["CDN：部署 / 重定向 / 选路"]
-    F --> F4["案例：Netflix / YouTube"]
-    G --> G1["UDP socket：UDPClient / UDPServer"]
-    G --> G2["TCP socket：TCPClient / TCPServer"]
-    G --> G3["QUIC socket 简述"]
-```
+<div class="chapter-route" aria-label="第 2 章学习路线">
+<a class="route-step" href="#21"><span class="route-index">01</span><strong>网络应用原理</strong><small>C/S、P2P、进程与传输服务</small></a>
+<a class="route-step" href="#22-web-http"><span class="route-index">02</span><strong>Web 与 HTTP</strong><small>连接、报文、缓存与 HTTP/3</small></a>
+<a class="route-step" href="#23"><span class="route-index">03</span><strong>电子邮件</strong><small>SMTP、MIME、POP3 与 IMAP</small></a>
+<a class="route-step" href="#24-dns"><span class="route-index">04</span><strong>DNS</strong><small>层次结构、查询与资源记录</small></a>
+<a class="route-step" href="#25"><span class="route-index">05</span><strong>视频流与 CDN</strong><small>压缩、DASH、部署与选路</small></a>
+<a class="route-step" href="#26-socket"><span class="route-index">06</span><strong>Socket 编程</strong><small>UDP、TCP 与 QUIC 接口</small></a>
+</div>
+<p class="chapter-route-note">点击卡片跳转到对应小节。本路线图只负责定位，协议细节、报文格式和练习在正文中展开。</p>
 
 ---
 

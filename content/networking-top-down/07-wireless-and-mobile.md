@@ -15,36 +15,15 @@
 | **考点映射** | 408 考点：802.11 帧结构三地址 / CSMA/CA 预约信道（考频 5 次：2017#35、2020#37、2018#35、2011#36、2024#36；大题 2022#47Q4）；无线局域网为何不能用 CSMA/CD（隐蔽站/无法边发边听）；移动 IP 概念（归属代理、转交地址、三角路由） |
 | **习题配置** | 例题 4 道 + A 基础 4 题 + B 提高 3 题 + C 拓展 2 题 + 原书习题讲解 3 道（含真题 2017#35、2024#36 改编） |
 
-```mermaid
-graph TD
-    A["第 7 章<br/>无线与移动网络"] --> B["7.1 引言"]
-    A --> C["7.2 无线物理层"]
-    A --> D["7.3 无线接入网 ★"]
-    A --> E["7.4 无线核心网"]
-    A --> F["7.5 移动性 ★"]
-    A --> G["7.6 蓝牙/卫星/IoT"]
-    A --> H["7.7 小结"]
-    B --> B1["组成要素：无线主机/基站/无线链路/核心网"]
-    B --> B2["基础设施模式 vs 自组织 ad hoc"]
-    B --> B3["分类：单跳有基础设施/单跳无基础设施/多跳 mesh"]
-    C --> C1["信道特性：衰减/多径/干扰/隐藏站"]
-    C --> C2["编码与调制：ASK/FSK/PSK/QPSK/QAM"]
-    D --> D1["共享信道：OFDMA + CSMA/CA ★"]
-    D --> D2["802.11 WiFi：BSS/AP/三地址帧/RTS-CTS ★"]
-    D --> D3["5G RAN：gNB/OFDMA/波束成形"]
-    D --> D4["发现与附着：beacon/扫描/关联"]
-    D --> D5["调度与节能：RR-MT-BET-PF/PSM-DRX"]
-    E --> E1["5G 核心：网络功能/网络切片"]
-    E --> E2["UPF 与隧道/控制面用户面分离"]
-    E --> E3["身份 IMSI-SUPI/注册/寻呼"]
-    F --> F1["移动性原理：归属/外部代理、三角路由 ★"]
-    F --> F2["WiFi 中移动：ESS 内切换"]
-    F --> F3["5G 中移动：切换三阶段"]
-    F --> F4["移动 IP：COA/绑定更新"]
-    G --> G1["蓝牙：piconet/跳频"]
-    G --> G2["卫星：GEO/LEO/Starlink"]
-    G --> G3["IoT：LoRaWAN/NB-IoT"]
-```
+<div class="chapter-route" aria-label="第 7 章学习路线">
+<a class="route-step" href="#71"><span class="route-index">01</span><strong>无线网络概览</strong><small>主机、基站、链路与核心网</small></a>
+<a class="route-step" href="#72"><span class="route-index">02</span><strong>无线物理层</strong><small>衰减、多径、干扰与调制</small></a>
+<a class="route-step" href="#73"><span class="route-index">03</span><strong>无线接入网</strong><small>Wi-Fi、5G、扫描与关联</small></a>
+<a class="route-step" href="#74"><span class="route-index">04</span><strong>无线核心网</strong><small>网络功能、隧道与用户面</small></a>
+<a class="route-step" href="#75"><span class="route-index">05</span><strong>移动性</strong><small>切换、移动 IP 与三角路由</small></a>
+<a class="route-step" href="#76-iot"><span class="route-index">06</span><strong>蓝牙、卫星与 IoT</strong><small>短距、卫星和低功耗连接</small></a>
+</div>
+<p class="chapter-route-note">点击卡片跳转到对应小节。本路线图只负责定位，信道特性、无线帧和移动性过程在正文中展开。</p>
 
 ---
 
