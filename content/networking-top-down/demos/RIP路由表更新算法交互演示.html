@@ -1,0 +1,1123 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RIP路由表更新算法演示</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        :root {
+            --primary: #3b82f6;
+            --primary-light: #dbeafe;
+            --success: #10b981;
+            --success-light: #d1fae5;
+            --warning: #f59e0b;
+            --warning-light: #fef3c7;
+            --danger: #ef4444;
+            --text: #1f2937;
+            --text-light: #6b7280;
+            --border: #e5e7eb;
+            --bg: #f9fafb;
+            --white: #ffffff;
+        }
+        
+        body {
+            font-family: system-ui, -apple-system, "Segoe UI", "Microsoft YaHei", sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            font-size: 14px;
+            line-height: 1.5;
+            min-height: 100vh;
+        }
+        
+        .page {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 16px;
+        }
+        
+        /* 标题栏 */
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 20px;
+            background: var(--white);
+            border-radius: 8px;
+            margin-bottom: 16px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        
+        .header h1 {
+            font-size: 16px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .header h1 code {
+            font-family: "Consolas", monospace;
+            background: var(--primary-light);
+            color: var(--primary);
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 13px;
+        }
+        
+        .badge {
+            font-size: 12px;
+            color: var(--text-light);
+            background: var(--bg);
+            padding: 4px 12px;
+            border-radius: 12px;
+        }
+        
+        /* 拓扑图区域 */
+        .topology-section {
+            background: var(--white);
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 16px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        
+        .topology-svg {
+            width: 100%;
+            height: 180px;
+        }
+        
+        /* 路由器节点 */
+        .router-node {
+            cursor: default;
+        }
+        
+        .router-circle {
+            fill: var(--white);
+            stroke: var(--primary);
+            stroke-width: 2;
+            transition: all 0.3s;
+        }
+        
+        .router-circle.active {
+            fill: var(--primary-light);
+            stroke-width: 3;
+        }
+        
+        .router-circle.highlight {
+            fill: var(--warning-light);
+            stroke: var(--warning);
+            stroke-width: 3;
+        }
+        
+        .router-label {
+            font-size: 14px;
+            font-weight: 600;
+            fill: var(--text);
+            text-anchor: middle;
+            dominant-baseline: middle;
+        }
+        
+        /* 网络节点 */
+        .network-rect {
+            fill: var(--bg);
+            stroke: var(--border);
+            stroke-width: 1.5;
+            rx: 4;
+        }
+        
+        .network-rect.highlight {
+            fill: var(--success-light);
+            stroke: var(--success);
+            stroke-width: 2;
+        }
+        
+        .network-label {
+            font-size: 12px;
+            fill: var(--text-light);
+            text-anchor: middle;
+            dominant-baseline: middle;
+        }
+        
+        /* 连接线 */
+        .link-line {
+            stroke: var(--border);
+            stroke-width: 2;
+            fill: none;
+        }
+        
+        /* 数据包动画 */
+        .packet {
+            fill: var(--primary);
+            opacity: 0;
+        }
+        
+        .packet.animate {
+            animation: packetMove 1s ease-in-out forwards;
+        }
+        
+        @keyframes packetMove {
+            0% { opacity: 1; transform: translateX(0); }
+            100% { opacity: 1; transform: translateX(200px); }
+        }
+        
+        /* 路由表区域 */
+        .tables-section {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 16px;
+        }
+        
+        .table-card {
+            flex: 1;
+            background: var(--white);
+            border-radius: 8px;
+            padding: 16px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        
+        .table-card.center {
+            flex: 0 0 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: transparent;
+            box-shadow: none;
+            padding: 0;
+        }
+        
+        .arrow-indicator {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .arrow-icon {
+            width: 50px;
+            height: 50px;
+            background: var(--primary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--white);
+            font-size: 20px;
+            transition: all 0.3s;
+        }
+        
+        .arrow-icon.active {
+            animation: pulse 1s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+        
+        .arrow-text {
+            font-size: 11px;
+            color: var(--text-light);
+            text-align: center;
+        }
+        
+        .table-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+        
+        .table-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 14px;
+        }
+        
+        .table-icon.r4 {
+            background: var(--warning-light);
+            color: var(--warning);
+        }
+        
+        .table-icon.r6 {
+            background: var(--primary-light);
+            color: var(--primary);
+        }
+        
+        .table-icon.result {
+            background: var(--success-light);
+            color: var(--success);
+        }
+        
+        .table-title {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text);
+        }
+        
+        .table-subtitle {
+            font-size: 11px;
+            color: var(--text-light);
+        }
+        
+        /* 路由表格 */
+        .route-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+        }
+        
+        .route-table th {
+            padding: 8px 12px;
+            text-align: center;
+            font-weight: 500;
+            color: var(--text-light);
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-bottom: 1px solid var(--border);
+        }
+        
+        .route-table td {
+            padding: 10px 12px;
+            text-align: center;
+            font-family: "Consolas", monospace;
+            border-bottom: 1px solid var(--border);
+            transition: all 0.3s;
+        }
+        
+        .route-table tr:last-child td {
+            border-bottom: none;
+        }
+        
+        .route-table tr.current {
+            background: var(--primary-light);
+        }
+        
+        .route-table tr.current td {
+            color: var(--primary);
+            font-weight: 600;
+        }
+        
+        .route-table tr.new {
+            background: var(--success-light);
+        }
+        
+        .route-table tr.new td {
+            color: var(--success);
+            font-weight: 600;
+        }
+        
+        .route-table tr.update {
+            background: var(--warning-light);
+        }
+        
+        .route-table tr.update td {
+            color: var(--warning);
+            font-weight: 600;
+        }
+        
+        .route-table tr.unchanged {
+            opacity: 0.5;
+        }
+        
+        /* 状态标记 */
+        .status-dot {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            margin-right: 6px;
+        }
+        
+        .status-dot.new { background: var(--success); }
+        .status-dot.update { background: var(--warning); }
+        .status-dot.keep { background: var(--border); }
+        
+        /* 规则显示区 */
+        .rule-section {
+            background: var(--white);
+            border-radius: 8px;
+            padding: 16px 20px;
+            margin-bottom: 16px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            min-height: 60px;
+        }
+        
+        .rule-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            flex-shrink: 0;
+        }
+        
+        .rule-icon.idle {
+            background: var(--bg);
+            color: var(--text-light);
+        }
+        
+        .rule-icon.new {
+            background: var(--success-light);
+            color: var(--success);
+        }
+        
+        .rule-icon.update {
+            background: var(--warning-light);
+            color: var(--warning);
+        }
+        
+        .rule-icon.keep {
+            background: var(--bg);
+            color: var(--text-light);
+        }
+        
+        .rule-icon.done {
+            background: var(--success-light);
+            color: var(--success);
+        }
+        
+        .rule-content {
+            flex: 1;
+        }
+        
+        .rule-title {
+            font-weight: 600;
+            font-size: 14px;
+            margin-bottom: 2px;
+        }
+        
+        .rule-desc {
+            font-size: 13px;
+            color: var(--text-light);
+        }
+        
+        .rule-desc code {
+            font-family: "Consolas", monospace;
+            background: var(--bg);
+            padding: 1px 6px;
+            border-radius: 3px;
+            color: var(--primary);
+        }
+        
+        /* 控制区域 */
+        .control-section {
+            background: var(--white);
+            border-radius: 8px;
+            padding: 16px 20px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .scenario-group {
+            display: flex;
+            gap: 8px;
+        }
+        
+        .scenario-btn {
+            padding: 8px 16px;
+            border: 2px solid var(--border);
+            border-radius: 20px;
+            background: var(--white);
+            font-size: 13px;
+            color: var(--text-light);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .scenario-btn:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+        
+        .scenario-btn.active {
+            background: var(--primary);
+            border-color: var(--primary);
+            color: var(--white);
+        }
+        
+        .btn-group {
+            display: flex;
+            gap: 8px;
+        }
+        
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        .btn-primary {
+            background: var(--primary);
+            color: var(--white);
+        }
+        
+        .btn-primary:hover:not(:disabled) {
+            background: #2563eb;
+        }
+        
+        .btn-success {
+            background: var(--success);
+            color: var(--white);
+        }
+        
+        .btn-success:hover:not(:disabled) {
+            background: #059669;
+        }
+        
+        .btn-outline {
+            background: var(--white);
+            color: var(--text-light);
+            border: 1px solid var(--border);
+        }
+        
+        .btn-outline:hover:not(:disabled) {
+            background: var(--bg);
+            color: var(--text);
+        }
+        
+        /* 图例 */
+        .legend {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            margin-top: 12px;
+        }
+        
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: var(--text-light);
+        }
+        
+        .legend-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 3px;
+        }
+        
+        .legend-dot.new { background: var(--success-light); border: 1px solid var(--success); }
+        .legend-dot.update { background: var(--warning-light); border: 1px solid var(--warning); }
+        .legend-dot.current { background: var(--primary-light); border: 1px solid var(--primary); }
+        
+        /* 数据包动画路径 */
+        .data-flow {
+            stroke: var(--primary);
+            stroke-width: 3;
+            stroke-dasharray: 8 4;
+            fill: none;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        
+        .data-flow.active {
+            opacity: 1;
+            animation: dash 0.5s linear infinite;
+        }
+        
+        @keyframes dash {
+            to { stroke-dashoffset: -12; }
+        }
+        
+        /* 空状态 */
+        .empty-state {
+            text-align: center;
+            padding: 20px;
+            color: var(--text-light);
+            font-size: 13px;
+        }
+    </style>
+</head>
+<body>
+    <div class="page">
+        <!-- 标题栏 -->
+        <header class="header">
+            <h1>RIP路由表更新算法 <code>Distance Vector</code></h1>
+            <span class="badge">计算机网络 · 路由协议</span>
+        </header>
+        
+        <!-- 网络拓扑图 -->
+        <div class="topology-section">
+            <svg class="topology-svg" id="topologySvg" viewBox="0 0 800 160">
+                <defs>
+                    <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+                        <polygon points="0 0, 10 3.5, 0 7" fill="#3b82f6"/>
+                    </marker>
+                </defs>
+                
+                <!-- 连接线 -->
+                <line x1="100" y1="80" x2="180" y2="80" class="link-line"/>
+                <line x1="100" y1="80" x2="100" y2="40" class="link-line"/>
+                <line x1="100" y1="80" x2="100" y2="120" class="link-line"/>
+                <line x1="260" y1="80" x2="340" y2="80" class="link-line"/>
+                <line x1="420" y1="80" x2="540" y2="80" class="link-line"/>
+                <line x1="620" y1="80" x2="700" y2="80" class="link-line"/>
+                <line x1="700" y1="80" x2="700" y2="40" class="link-line"/>
+                
+                <!-- 数据流动画线 -->
+                <path d="M 380 80 L 500 80" class="data-flow" id="dataFlow"/>
+                
+                <!-- 网络节点 -->
+                <g class="network-node" id="netNode1">
+                    <rect x="30" y="20" width="60" height="30" class="network-rect"/>
+                    <text x="60" y="35" class="network-label">Net1</text>
+                </g>
+                <g class="network-node" id="netNode2">
+                    <rect x="30" y="65" width="60" height="30" class="network-rect"/>
+                    <text x="60" y="80" class="network-label">Net2</text>
+                </g>
+                <g class="network-node" id="netNode3">
+                    <rect x="30" y="110" width="60" height="30" class="network-rect"/>
+                    <text x="60" y="125" class="network-label">Net3</text>
+                </g>
+                <g class="network-node" id="netNode4">
+                    <rect x="670" y="20" width="60" height="30" class="network-rect"/>
+                    <text x="700" y="35" class="network-label">Net3</text>
+                </g>
+                
+                <!-- 路由器 R1 -->
+                <g class="router-node">
+                    <circle cx="180" cy="80" r="25" class="router-circle" style="stroke:#9ca3af"/>
+                    <text x="180" y="80" class="router-label" style="fill:#9ca3af">R1</text>
+                </g>
+                
+                <!-- 路由器 R4 (发送方) -->
+                <g class="router-node" id="routerR4">
+                    <circle cx="340" cy="80" r="28" class="router-circle" id="r4Circle"/>
+                    <text x="340" y="80" class="router-label">R4</text>
+                </g>
+                
+                <!-- 数据包图标 -->
+                <g id="packetIcon" style="opacity:0">
+                    <rect x="430" y="68" width="24" height="24" rx="4" fill="#3b82f6"/>
+                    <text x="442" y="84" text-anchor="middle" fill="white" font-size="10">RIP</text>
+                </g>
+                
+                <!-- 路由器 R6 (本地) -->
+                <g class="router-node" id="routerR6">
+                    <circle cx="580" cy="80" r="28" class="router-circle" id="r6Circle"/>
+                    <text x="580" y="80" class="router-label">R6</text>
+                </g>
+                
+                <!-- 路由器 R5 -->
+                <g class="router-node">
+                    <circle cx="700" cy="80" r="25" class="router-circle" style="stroke:#9ca3af"/>
+                    <text x="700" y="80" class="router-label" style="fill:#9ca3af">R5</text>
+                </g>
+                
+                <!-- 发送方标签 -->
+                <text x="340" y="125" text-anchor="middle" font-size="11" fill="#f59e0b" font-weight="600">发送方</text>
+                <text x="580" y="125" text-anchor="middle" font-size="11" fill="#3b82f6" font-weight="600">本地</text>
+            </svg>
+        </div>
+        
+        <!-- 路由表区域 -->
+        <div class="tables-section">
+            <!-- R4发来的路由表 -->
+            <div class="table-card">
+                <div class="table-header">
+                    <div class="table-icon r4">R4</div>
+                    <div>
+                        <div class="table-title">收到的路由信息</div>
+                        <div class="table-subtitle">来自 R4，距离已+1</div>
+                    </div>
+                </div>
+                <table class="route-table" id="neighborTable">
+                    <thead>
+                        <tr>
+                            <th>网络</th>
+                            <th>距离</th>
+                            <th>下一跳</th>
+                        </tr>
+                    </thead>
+                    <tbody id="neighborTableBody">
+                    </tbody>
+                </table>
+            </div>
+            
+            <!-- 中间箭头 -->
+            <div class="table-card center">
+                <div class="arrow-indicator">
+                    <div class="arrow-icon" id="arrowIcon">▶</div>
+                    <div class="arrow-text">比较<br/>更新</div>
+                </div>
+            </div>
+            
+            <!-- R6的路由表 -->
+            <div class="table-card">
+                <div class="table-header">
+                    <div class="table-icon result">R6</div>
+                    <div>
+                        <div class="table-title">本地路由表</div>
+                        <div class="table-subtitle">更新后的结果</div>
+                    </div>
+                </div>
+                <table class="route-table" id="localTable">
+                    <thead>
+                        <tr>
+                            <th>网络</th>
+                            <th>距离</th>
+                            <th>下一跳</th>
+                            <th style="width:60px">状态</th>
+                        </tr>
+                    </thead>
+                    <tbody id="localTableBody">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        
+        <!-- 规则显示区 -->
+        <div class="rule-section" id="ruleSection">
+            <div class="rule-icon idle" id="ruleIcon">?</div>
+            <div class="rule-content">
+                <div class="rule-title" id="ruleTitle">RIP 距离向量算法</div>
+                <div class="rule-desc" id="ruleDesc">点击"开始演示"观察路由表如何根据相邻路由器发来的信息进行更新</div>
+            </div>
+        </div>
+        
+        <!-- 图例 -->
+        <div class="legend">
+            <div class="legend-item">
+                <div class="legend-dot current"></div>
+                <span>当前处理</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-dot new"></div>
+                <span>新增路由</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-dot update"></div>
+                <span>更新路由</span>
+            </div>
+        </div>
+        
+        <!-- 控制区域 -->
+        <div class="control-section" style="margin-top: 16px;">
+            <div class="scenario-group">
+                <button class="scenario-btn active" id="btnScene1">场景 1</button>
+                <button class="scenario-btn" id="btnScene2">场景 2</button>
+                <button class="scenario-btn" id="btnScene3">场景 3</button>
+            </div>
+            <div class="btn-group">
+                <button class="btn btn-primary" id="btnStart">开始演示</button>
+                <button class="btn btn-success" id="btnStep" disabled>单步 ▶</button>
+                <button class="btn btn-success" id="btnAuto" disabled>自动 ▶▶</button>
+                <button class="btn btn-outline" id="btnReset">重置</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+    (function() {
+        // ===== 预设场景 =====
+        var SCENARIOS = {
+            scene1: {
+                name: '场景1：基础更新',
+                localOriginal: [
+                    { network: 'Net2', distance: 3, nextHop: 'R4' },
+                    { network: 'Net3', distance: 4, nextHop: 'R5' }
+                ],
+                neighbor: [
+                    { network: 'Net1', distance: 3 },
+                    { network: 'Net2', distance: 4 },
+                    { network: 'Net3', distance: 1 }
+                ]
+            },
+            scene2: {
+                name: '场景2：全新网络',
+                localOriginal: [
+                    { network: 'Net1', distance: 2, nextHop: 'R2' }
+                ],
+                neighbor: [
+                    { network: 'Net1', distance: 1 },
+                    { network: 'Net2', distance: 2 },
+                    { network: 'Net3', distance: 3 }
+                ]
+            },
+            scene3: {
+                name: '场景3：复杂更新',
+                localOriginal: [
+                    { network: 'Net1', distance: 5, nextHop: 'R2' },
+                    { network: 'Net2', distance: 2, nextHop: 'R4' },
+                    { network: 'Net3', distance: 3, nextHop: 'R5' }
+                ],
+                neighbor: [
+                    { network: 'Net1', distance: 2 },
+                    { network: 'Net2', distance: 4 },
+                    { network: 'Net4', distance: 1 }
+                ]
+            }
+        };
+        
+        // ===== 状态 =====
+        var state = {
+            phase: 'idle',
+            currentScene: 'scene1',
+            localTable: [],
+            neighborTable: [],
+            currentIndex: 0,
+            autoMode: false,
+            speed: 1000
+        };
+        
+        // ===== DOM引用 =====
+        var neighborTableBody = document.getElementById('neighborTableBody');
+        var localTableBody = document.getElementById('localTableBody');
+        var ruleIcon = document.getElementById('ruleIcon');
+        var ruleTitle = document.getElementById('ruleTitle');
+        var ruleDesc = document.getElementById('ruleDesc');
+        var ruleSection = document.getElementById('ruleSection');
+        var arrowIcon = document.getElementById('arrowIcon');
+        var dataFlow = document.getElementById('dataFlow');
+        var r4Circle = document.getElementById('r4Circle');
+        var r6Circle = document.getElementById('r6Circle');
+        var packetIcon = document.getElementById('packetIcon');
+        
+        var btnStart = document.getElementById('btnStart');
+        var btnStep = document.getElementById('btnStep');
+        var btnAuto = document.getElementById('btnAuto');
+        var btnReset = document.getElementById('btnReset');
+        var btnScene1 = document.getElementById('btnScene1');
+        var btnScene2 = document.getElementById('btnScene2');
+        var btnScene3 = document.getElementById('btnScene3');
+        
+        // ===== 渲染函数 =====
+        function renderNeighborTable() {
+            neighborTableBody.innerHTML = '';
+            for (var i = 0; i < state.neighborTable.length; i++) {
+                var row = state.neighborTable[i];
+                var tr = document.createElement('tr');
+                tr.id = 'neighbor-row-' + i;
+                if (row.processed) {
+                    tr.className = row.status === 'current' ? 'current' : '';
+                }
+                tr.innerHTML = 
+                    '<td>' + row.network + '</td>' +
+                    '<td>' + row.distance + '</td>' +
+                    '<td>R4</td>';
+                neighborTableBody.appendChild(tr);
+            }
+        }
+        
+        function renderLocalTable() {
+            localTableBody.innerHTML = '';
+            for (var i = 0; i < state.localTable.length; i++) {
+                var row = state.localTable[i];
+                var tr = document.createElement('tr');
+                tr.id = 'local-row-' + i;
+                tr.className = row.status || '';
+                
+                var statusHtml = '';
+                if (row.status === 'new') {
+                    statusHtml = '<span class="status-dot new"></span>新增';
+                } else if (row.status === 'update') {
+                    statusHtml = '<span class="status-dot update"></span>更新';
+                } else if (row.status === 'unchanged') {
+                    statusHtml = '<span class="status-dot keep"></span>不变';
+                } else {
+                    statusHtml = '-';
+                }
+                
+                tr.innerHTML = 
+                    '<td>' + row.network + '</td>' +
+                    '<td>' + row.distance + '</td>' +
+                    '<td>' + row.nextHop + '</td>' +
+                    '<td>' + statusHtml + '</td>';
+                localTableBody.appendChild(tr);
+            }
+        }
+        
+        function updateRule(type, title, desc) {
+            ruleIcon.className = 'rule-icon ' + type;
+            
+            var icons = {
+                'idle': '?',
+                'new': '+',
+                'update': '↻',
+                'keep': '=',
+                'done': '✓'
+            };
+            ruleIcon.textContent = icons[type] || '?';
+            ruleTitle.textContent = title;
+            ruleDesc.innerHTML = desc;
+        }
+        
+        function updateButtons() {
+            var isIdle = state.phase === 'idle';
+            var isProcessing = state.phase === 'processing';
+            
+            btnStart.disabled = !isIdle;
+            btnStep.disabled = !isProcessing || state.autoMode;
+            btnAuto.disabled = !isProcessing || state.autoMode;
+            
+            btnScene1.disabled = !isIdle;
+            btnScene2.disabled = !isIdle;
+            btnScene3.disabled = !isIdle;
+        }
+        
+        function setActiveScene(scene) {
+            btnScene1.classList.toggle('active', scene === 'scene1');
+            btnScene2.classList.toggle('active', scene === 'scene2');
+            btnScene3.classList.toggle('active', scene === 'scene3');
+        }
+        
+        // ===== 动画效果 =====
+        function showDataFlow() {
+            dataFlow.classList.add('active');
+            r4Circle.classList.add('highlight');
+            arrowIcon.classList.add('active');
+            
+            // 数据包动画
+            packetIcon.style.opacity = '1';
+            packetIcon.style.transition = 'transform 0.8s ease-in-out';
+            packetIcon.style.transform = 'translateX(100px)';
+        }
+        
+        function hideDataFlow() {
+            dataFlow.classList.remove('active');
+            r4Circle.classList.remove('highlight');
+            arrowIcon.classList.remove('active');
+            packetIcon.style.opacity = '0';
+            packetIcon.style.transform = 'translateX(0)';
+        }
+        
+        function highlightR6() {
+            r6Circle.classList.add('active');
+        }
+        
+        // ===== 核心逻辑 =====
+        function loadScene(sceneName) {
+            var scene = SCENARIOS[sceneName];
+            if (!scene) return;
+            
+            state.currentScene = sceneName;
+            state.phase = 'idle';
+            state.currentIndex = 0;
+            state.autoMode = false;
+            
+            // 复制本地表
+            state.localTable = [];
+            for (var i = 0; i < scene.localOriginal.length; i++) {
+                var item = scene.localOriginal[i];
+                state.localTable.push({
+                    network: item.network,
+                    distance: item.distance,
+                    nextHop: item.nextHop,
+                    status: null
+                });
+            }
+            
+            // 处理邻居表（距离+1）
+            state.neighborTable = [];
+            for (var j = 0; j < scene.neighbor.length; j++) {
+                var n = scene.neighbor[j];
+                state.neighborTable.push({
+                    network: n.network,
+                    distance: n.distance + 1,
+                    originalDistance: n.distance,
+                    processed: false,
+                    status: null
+                });
+            }
+            
+            setActiveScene(sceneName);
+            renderNeighborTable();
+            renderLocalTable();
+            updateRule('idle', 'RIP 距离向量算法', '点击"开始演示"观察路由表如何根据相邻路由器发来的信息进行更新');
+            hideDataFlow();
+            r6Circle.classList.remove('active');
+            updateButtons();
+        }
+        
+        function startDemo() {
+            if (state.phase !== 'idle') return;
+            
+            state.phase = 'processing';
+            state.currentIndex = 0;
+            
+            // 重置状态
+            for (var i = 0; i < state.neighborTable.length; i++) {
+                state.neighborTable[i].processed = false;
+                state.neighborTable[i].status = null;
+            }
+            for (var j = 0; j < state.localTable.length; j++) {
+                state.localTable[j].status = null;
+            }
+            
+            showDataFlow();
+            highlightR6();
+            updateRule('idle', '开始更新', '收到 R4 发来的路由信息，共 <code>' + state.neighborTable.length + '</code> 条路由待处理');
+            renderNeighborTable();
+            renderLocalTable();
+            updateButtons();
+        }
+        
+        function executeStep() {
+            if (state.phase !== 'processing') return;
+            if (state.currentIndex >= state.neighborTable.length) {
+                completeDemo();
+                return;
+            }
+            
+            // 清除之前的current状态
+            for (var i = 0; i < state.neighborTable.length; i++) {
+                if (state.neighborTable[i].status === 'current') {
+                    state.neighborTable[i].status = null;
+                }
+            }
+            
+            var entry = state.neighborTable[state.currentIndex];
+            entry.processed = true;
+            entry.status = 'current';
+            
+            var network = entry.network;
+            var newDistance = entry.distance;
+            
+            // 查找本地表
+            var localIndex = -1;
+            for (var j = 0; j < state.localTable.length; j++) {
+                if (state.localTable[j].network === network) {
+                    localIndex = j;
+                    break;
+                }
+            }
+            
+            if (localIndex === -1) {
+                // 新网络，添加
+                state.localTable.push({
+                    network: network,
+                    distance: newDistance,
+                    nextHop: 'R4',
+                    status: 'new'
+                });
+                updateRule('new', '规则1：新增路由', '本地不存在 <code>' + network + '</code>，添加新路由 (' + network + ', ' + newDistance + ', R4)');
+                
+            } else {
+                var localEntry = state.localTable[localIndex];
+                
+                if (localEntry.nextHop === 'R4') {
+                    // 同下一跳，无条件更新
+                    var oldDist = localEntry.distance;
+                    localEntry.distance = newDistance;
+                    localEntry.status = 'update';
+                    updateRule('update', '规则2：同下一跳更新', '<code>' + network + '</code> 下一跳同为 R4，距离 ' + oldDist + ' → ' + newDistance);
+                    
+                } else if (newDistance < localEntry.distance) {
+                    // 更短路径
+                    var oldD = localEntry.distance;
+                    var oldHop = localEntry.nextHop;
+                    localEntry.distance = newDistance;
+                    localEntry.nextHop = 'R4';
+                    localEntry.status = 'update';
+                    updateRule('update', '规则3：更短路径', '<code>' + network + '</code> 新距离 ' + newDistance + ' < 原距离 ' + oldD + '，更新路由');
+                    
+                } else {
+                    // 保持不变
+                    localEntry.status = 'unchanged';
+                    updateRule('keep', '保持不变', '<code>' + network + '</code> 新距离 ' + newDistance + ' >= 原距离 ' + localEntry.distance + '，不更新');
+                }
+            }
+            
+            state.currentIndex++;
+            renderNeighborTable();
+            renderLocalTable();
+            updateButtons();
+        }
+        
+        function completeDemo() {
+            state.phase = 'complete';
+            state.autoMode = false;
+            hideDataFlow();
+            
+            // 清除current状态
+            for (var i = 0; i < state.neighborTable.length; i++) {
+                if (state.neighborTable[i].status === 'current') {
+                    state.neighborTable[i].status = null;
+                }
+            }
+            
+            // 统计
+            var newCount = 0, updateCount = 0;
+            for (var j = 0; j < state.localTable.length; j++) {
+                if (state.localTable[j].status === 'new') newCount++;
+                if (state.localTable[j].status === 'update') updateCount++;
+            }
+            
+            updateRule('done', '更新完成', '新增 <code>' + newCount + '</code> 条，更新 <code>' + updateCount + '</code> 条，共 <code>' + state.localTable.length + '</code> 条路由');
+            renderNeighborTable();
+            updateButtons();
+        }
+        
+        function autoExecute() {
+            if (state.phase !== 'processing') return;
+            state.autoMode = true;
+            updateButtons();
+            
+            function runNext() {
+                if (state.currentIndex >= state.neighborTable.length || !state.autoMode) {
+                    state.autoMode = false;
+                    if (state.currentIndex >= state.neighborTable.length) {
+                        completeDemo();
+                    }
+                    updateButtons();
+                    return;
+                }
+                executeStep();
+                setTimeout(runNext, state.speed);
+            }
+            runNext();
+        }
+        
+        function resetDemo() {
+            loadScene(state.currentScene);
+        }
+        
+        // ===== 事件绑定 =====
+        btnStart.onclick = startDemo;
+        btnStep.onclick = executeStep;
+        btnAuto.onclick = autoExecute;
+        btnReset.onclick = resetDemo;
+        
+        btnScene1.onclick = function() { loadScene('scene1'); };
+        btnScene2.onclick = function() { loadScene('scene2'); };
+        btnScene3.onclick = function() { loadScene('scene3'); };
+        
+        // ===== 初始化 =====
+        loadScene('scene1');
+    })();
+    </script>
+</body>
+</html>

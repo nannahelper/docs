@@ -1,0 +1,1295 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DNS域名解析演示</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        :root {
+            --primary: #1a56db;
+            --primary-light: #e1effe;
+            --success: #047857;
+            --success-light: #d1fae5;
+            --danger: #b91c1c;
+            --danger-light: #fee2e2;
+            --warning: #d97706;
+            --warning-light: #fef3c7;
+            --purple: #7c3aed;
+            --purple-light: #ede9fe;
+            --text: #1f2937;
+            --text-secondary: #6b7280;
+            --border: #d1d5db;
+            --bg-light: #f9fafb;
+            --white: #ffffff;
+        }
+        
+        body {
+            font-family: system-ui, -apple-system, "Segoe UI", "Microsoft YaHei", sans-serif;
+            background: var(--white);
+            color: var(--text);
+            font-size: 14px;
+            line-height: 1.5;
+        }
+        
+        .page {
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            max-width: 1400px;
+            margin: 0 auto;
+            border-left: 1px solid var(--border);
+            border-right: 1px solid var(--border);
+        }
+        
+        .page-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 8px 16px;
+            border-bottom: 1px solid var(--border);
+            background: var(--bg-light);
+        }
+        
+        .page-title {
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--text);
+        }
+        
+        .page-title code {
+            font-family: "Consolas", "Monaco", monospace;
+            background: var(--primary-light);
+            color: var(--primary);
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-size: 13px;
+            margin-left: 8px;
+        }
+        
+        .page-badge {
+            font-size: 12px;
+            color: var(--text-secondary);
+            background: var(--white);
+            padding: 4px 10px;
+            border: 1px solid var(--border);
+            border-radius: 3px;
+        }
+        
+        .page-body {
+            display: flex;
+            flex: 1;
+            overflow: hidden;
+        }
+        
+        .main-panel {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            border-right: 1px solid var(--border);
+        }
+        
+        .side-panel {
+            width: 280px;
+            display: flex;
+            flex-direction: column;
+            background: var(--bg-light);
+        }
+        
+        /* ===== 可视化区域 ===== */
+        .visual-area {
+            flex: 1;
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .visual-box {
+            flex: 1;
+            background: var(--white);
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            position: relative;
+            min-height: 480px;
+        }
+        
+        /* 查询类型标签 */
+        .query-type-label {
+            position: absolute;
+            top: 12px;
+            left: 20px;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text);
+        }
+        
+        .query-type-label span {
+            color: var(--primary);
+        }
+        
+        /* DNS服务器节点 */
+        .dns-node {
+            position: absolute;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+        }
+        
+        .node-icon {
+            width: 60px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid var(--border);
+            border-radius: 4px;
+            background: var(--white);
+            transition: all 0.3s ease;
+        }
+        
+        .node-icon svg {
+            width: 32px;
+            height: 32px;
+            fill: var(--text-secondary);
+        }
+        
+        .node-icon.host {
+            width: 50px;
+            height: 40px;
+        }
+        
+        .node-icon.host svg {
+            width: 28px;
+            height: 28px;
+        }
+        
+        .node-label {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text);
+            text-align: center;
+            white-space: nowrap;
+        }
+        
+        .node-domain {
+            font-size: 10px;
+            font-family: "Consolas", "Monaco", monospace;
+            color: var(--text-secondary);
+            text-align: center;
+        }
+        
+        /* 节点高亮状态 */
+        .dns-node.active .node-icon {
+            border-color: var(--primary);
+            background: var(--primary-light);
+        }
+        
+        .dns-node.active .node-icon svg {
+            fill: var(--primary);
+        }
+        
+        .dns-node.sending .node-icon {
+            border-color: var(--warning);
+            background: var(--warning-light);
+        }
+        
+        .dns-node.sending .node-icon svg {
+            fill: var(--warning);
+        }
+        
+        .dns-node.receiving .node-icon {
+            border-color: var(--success);
+            background: var(--success-light);
+        }
+        
+        .dns-node.receiving .node-icon svg {
+            fill: var(--success);
+        }
+        
+        /* 节点位置 - 递归查询布局 */
+        .node-host {
+            left: 80px;
+            bottom: 30px;
+        }
+        
+        .node-local {
+            left: 80px;
+            top: 180px;
+        }
+        
+        .node-root {
+            left: 80px;
+            top: 50px;
+        }
+        
+        .node-tld {
+            right: 80px;
+            top: 50px;
+        }
+        
+        .node-auth {
+            right: 80px;
+            top: 180px;
+        }
+        
+        /* SVG箭头层 */
+        .arrows-svg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+        
+        .arrow-line {
+            display: none;
+            stroke-width: 2;
+            fill: none;
+        }
+        
+        .arrow-line.visible {
+            display: block;
+        }
+        
+        .arrow-line.query {
+            stroke: var(--primary);
+        }
+        
+        .arrow-line.response {
+            stroke: var(--success);
+            stroke-dasharray: 6, 4;
+        }
+        
+        .arrow-line.recursive {
+            stroke: var(--purple);
+        }
+        
+        /* 步骤序号标签 */
+        .step-label {
+            position: absolute;
+            display: none;
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            background: var(--primary);
+            color: var(--white);
+            font-size: 12px;
+            font-weight: 600;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .step-label.visible {
+            display: flex;
+        }
+        
+        .step-label.response-label {
+            background: var(--success);
+        }
+        
+        .step-label.recursive-label {
+            background: var(--purple);
+        }
+        
+        /* 消息气泡 */
+        .message-bubble {
+            position: absolute;
+            display: none;
+            padding: 6px 10px;
+            background: var(--white);
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            font-size: 11px;
+            color: var(--text);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            white-space: nowrap;
+            z-index: 10;
+        }
+        
+        .message-bubble.visible {
+            display: block;
+        }
+        
+        .message-bubble.query-bubble {
+            border-left: 3px solid var(--primary);
+        }
+        
+        .message-bubble.response-bubble {
+            border-left: 3px solid var(--success);
+        }
+        
+        /* ===== 控制面板 ===== */
+        .control-area {
+            border-top: 1px solid var(--border);
+            padding: 12px 20px;
+            background: var(--white);
+        }
+        
+        .control-row {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .control-left {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            align-items: center;
+        }
+        
+        .control-right {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            flex-shrink: 0;
+        }
+        
+        .control-group {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .control-label {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text);
+            white-space: nowrap;
+        }
+        
+        .control-input input {
+            width: 200px;
+            padding: 6px 10px;
+            border: 1px solid var(--border);
+            border-radius: 3px;
+            font-family: "Consolas", "Monaco", monospace;
+            font-size: 13px;
+        }
+        
+        .control-input input:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+        
+        .btn {
+            padding: 6px 14px;
+            border: 1px solid transparent;
+            border-radius: 3px;
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        .btn-mode {
+            background: var(--white);
+            color: var(--text-secondary);
+            border-color: var(--border);
+        }
+        
+        .btn-mode:hover:not(:disabled) {
+            background: var(--bg-light);
+        }
+        
+        .btn-mode.active {
+            background: var(--primary);
+            color: var(--white);
+            border-color: var(--primary);
+        }
+        
+        .btn-mode.recursive.active {
+            background: var(--purple);
+            border-color: var(--purple);
+        }
+        
+        .btn-primary {
+            background: var(--primary);
+            color: var(--white);
+            border-color: var(--primary);
+        }
+        
+        .btn-primary:hover:not(:disabled) {
+            background: #1e40af;
+        }
+        
+        .btn-success {
+            background: var(--success);
+            color: var(--white);
+            border-color: var(--success);
+        }
+        
+        .btn-success:hover:not(:disabled) {
+            background: #065f46;
+        }
+        
+        .btn-secondary {
+            background: var(--white);
+            color: var(--text-secondary);
+            border-color: var(--border);
+        }
+        
+        .btn-secondary:hover:not(:disabled) {
+            background: var(--bg-light);
+        }
+        
+        .speed-group {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        
+        .speed-group label {
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+        
+        .speed-group select {
+            padding: 4px 8px;
+            border: 1px solid var(--border);
+            border-radius: 3px;
+            font-size: 12px;
+        }
+        
+        .action-hint {
+            font-size: 12px;
+            color: var(--danger);
+            font-weight: 600;
+            animation: hintBlink 1s ease-in-out infinite;
+        }
+        
+        @keyframes hintBlink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        
+        /* ===== 右侧面板 ===== */
+        .side-header {
+            padding: 10px 12px;
+            border-bottom: 1px solid var(--border);
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text);
+        }
+        
+        .side-content {
+            flex: 1;
+            overflow-y: auto;
+            padding: 10px;
+        }
+        
+        .log-list {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+        
+        .log-item {
+            padding: 8px 10px;
+            background: var(--white);
+            border: 1px solid var(--border);
+            border-radius: 3px;
+            font-size: 11px;
+            line-height: 1.5;
+            color: var(--text-secondary);
+        }
+        
+        .log-item.query { border-left: 3px solid var(--primary); }
+        .log-item.response { border-left: 3px solid var(--success); }
+        .log-item.recursive { border-left: 3px solid var(--purple); }
+        .log-item.info { border-left: 3px solid var(--warning); }
+        
+        .log-item .log-step {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            line-height: 20px;
+            text-align: center;
+            border-radius: 50%;
+            background: var(--border);
+            color: var(--white);
+            font-size: 10px;
+            font-weight: 600;
+            margin-right: 8px;
+        }
+        
+        .log-item.query .log-step { background: var(--primary); }
+        .log-item.response .log-step { background: var(--success); }
+        .log-item.recursive .log-step { background: var(--purple); }
+        
+        .log-item .log-text {
+            color: var(--text);
+        }
+        
+        .log-item .log-detail {
+            display: block;
+            margin-top: 4px;
+            padding-left: 28px;
+            font-size: 10px;
+            color: var(--text-secondary);
+        }
+        
+        /* 图例 */
+        .legend-section {
+            padding: 10px 12px;
+            border-top: 1px solid var(--border);
+            background: var(--white);
+        }
+        
+        .legend-title {
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--text);
+            margin-bottom: 8px;
+        }
+        
+        .legend-list {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+        
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 11px;
+            color: var(--text-secondary);
+        }
+        
+        .legend-line {
+            width: 30px;
+            height: 2px;
+        }
+        
+        .legend-line.query-line {
+            background: var(--primary);
+        }
+        
+        .legend-line.response-line {
+            background: repeating-linear-gradient(
+                90deg,
+                var(--success) 0px,
+                var(--success) 6px,
+                transparent 6px,
+                transparent 10px
+            );
+        }
+        
+        .legend-line.recursive-line {
+            background: var(--purple);
+        }
+        
+        .info-section {
+            padding: 10px 12px;
+            border-top: 1px solid var(--border);
+            background: var(--white);
+            font-size: 11px;
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+        
+        .info-section strong {
+            color: var(--text);
+        }
+        
+        .info-section code {
+            font-family: "Consolas", "Monaco", monospace;
+            color: var(--primary);
+            font-weight: 500;
+        }
+    </style>
+</head>
+<body>
+    <div class="page">
+        <header class="page-header">
+            <h1 class="page-title">DNS域名解析过程<code>Domain Name System</code></h1>
+            <span class="page-badge">计算机网络 · 应用层</span>
+        </header>
+        
+        <div class="page-body">
+            <div class="main-panel">
+                <div class="visual-area">
+                    <div class="visual-box">
+                        <!-- 查询类型标签 -->
+                        <div class="query-type-label" id="queryTypeLabel">
+                            查询模式: <span id="modeText">迭代查询</span>
+                        </div>
+                        
+                        <!-- DNS服务器节点 -->
+                        <div class="dns-node node-host" id="nodeHost">
+                            <div class="node-icon host">
+                                <svg viewBox="0 0 24 24"><path d="M20 18c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2H4c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2H0v2h24v-2h-4zM4 6h16v10H4V6z"/></svg>
+                            </div>
+                            <span class="node-label">主机</span>
+                            <span class="node-domain" id="hostDomain">m.xyz.com</span>
+                        </div>
+                        
+                        <div class="dns-node node-local" id="nodeLocal">
+                            <div class="node-icon">
+                                <svg viewBox="0 0 24 24"><path d="M4 1h16c1.1 0 2 .9 2 2v4c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V3c0-1.1.9-2 2-2zm0 8h16c1.1 0 2 .9 2 2v4c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2v-4c0-1.1.9-2 2-2zm0 8h16c1.1 0 2 .9 2 2v4c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2v-4c0-1.1.9-2 2-2zM9 5h1V3H9v2zm0 8h1v-2H9v2zm0 8h1v-2H9v2z"/></svg>
+                            </div>
+                            <span class="node-label">本地域名服务器</span>
+                            <span class="node-domain">dns.xyz.com</span>
+                        </div>
+                        
+                        <div class="dns-node node-root" id="nodeRoot">
+                            <div class="node-icon">
+                                <svg viewBox="0 0 24 24"><path d="M4 1h16c1.1 0 2 .9 2 2v4c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V3c0-1.1.9-2 2-2zm0 8h16c1.1 0 2 .9 2 2v4c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2v-4c0-1.1.9-2 2-2zm0 8h16c1.1 0 2 .9 2 2v4c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2v-4c0-1.1.9-2 2-2zM9 5h1V3H9v2zm0 8h1v-2H9v2zm0 8h1v-2H9v2z"/></svg>
+                            </div>
+                            <span class="node-label">根域名服务器</span>
+                            <span class="node-domain">.</span>
+                        </div>
+                        
+                        <div class="dns-node node-tld" id="nodeTld">
+                            <div class="node-icon">
+                                <svg viewBox="0 0 24 24"><path d="M4 1h16c1.1 0 2 .9 2 2v4c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V3c0-1.1.9-2 2-2zm0 8h16c1.1 0 2 .9 2 2v4c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2v-4c0-1.1.9-2 2-2zm0 8h16c1.1 0 2 .9 2 2v4c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2v-4c0-1.1.9-2 2-2zM9 5h1V3H9v2zm0 8h1v-2H9v2zm0 8h1v-2H9v2z"/></svg>
+                            </div>
+                            <span class="node-label">顶级域名服务器</span>
+                            <span class="node-domain" id="tldDomain">dns.com</span>
+                        </div>
+                        
+                        <div class="dns-node node-auth" id="nodeAuth">
+                            <div class="node-icon">
+                                <svg viewBox="0 0 24 24"><path d="M4 1h16c1.1 0 2 .9 2 2v4c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V3c0-1.1.9-2 2-2zm0 8h16c1.1 0 2 .9 2 2v4c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2v-4c0-1.1.9-2 2-2zm0 8h16c1.1 0 2 .9 2 2v4c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2v-4c0-1.1.9-2 2-2zM9 5h1V3H9v2zm0 8h1v-2H9v2zm0 8h1v-2H9v2z"/></svg>
+                            </div>
+                            <span class="node-label">权限域名服务器</span>
+                            <span class="node-domain" id="authDomain">dns.abc.com</span>
+                        </div>
+                        
+                        <!-- 步骤序号标签 -->
+                        <div class="step-label" id="step1">1</div>
+                        <div class="step-label" id="step2">2</div>
+                        <div class="step-label" id="step3">3</div>
+                        <div class="step-label" id="step4">4</div>
+                        <div class="step-label" id="step5">5</div>
+                        <div class="step-label" id="step6">6</div>
+                        <div class="step-label" id="step7">7</div>
+                        <div class="step-label" id="step8">8</div>
+                        
+                        <!-- 消息气泡 -->
+                        <div class="message-bubble query-bubble" id="msgBubble"></div>
+                        
+                        <!-- SVG箭头层 -->
+                        <svg class="arrows-svg" id="arrowsSvg">
+                            <defs>
+                                <marker id="arrowBlue" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+                                    <polygon points="0 0, 8 3, 0 6" fill="#1a56db"/>
+                                </marker>
+                                <marker id="arrowGreen" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+                                    <polygon points="0 0, 8 3, 0 6" fill="#047857"/>
+                                </marker>
+                                <marker id="arrowPurple" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+                                    <polygon points="0 0, 8 3, 0 6" fill="#7c3aed"/>
+                                </marker>
+                            </defs>
+                            
+                            <!-- 箭头路径将由JS动态绘制 -->
+                        </svg>
+                    </div>
+                </div>
+                
+                <!-- 控制面板 -->
+                <div class="control-area">
+                    <div class="control-row">
+                        <div class="control-left">
+                            <div class="control-group">
+                                <span class="control-label">域名:</span>
+                                <div class="control-input">
+                                    <input type="text" id="inputDomain" value="y.abc.com" placeholder="输入要查询的域名">
+                                </div>
+                            </div>
+                            <div class="control-group">
+                                <span class="control-label">查询方式:</span>
+                                <button class="btn btn-mode active" id="btnIterative">迭代查询</button>
+                                <button class="btn btn-mode recursive" id="btnRecursive">递归查询</button>
+                            </div>
+                            <div class="speed-group">
+                                <label>速度:</label>
+                                <select id="speedSelect">
+                                    <option value="1500">慢速</option>
+                                    <option value="900" selected>正常</option>
+                                    <option value="500">快速</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="control-right">
+                            <span class="action-hint" id="hintStart">请选择 ▶</span>
+                            <button class="btn btn-primary" id="btnStart">开始演示</button>
+                            <button class="btn btn-success" id="btnStep" disabled>单步执行</button>
+                            <button class="btn btn-success" id="btnAuto" disabled>自动演示</button>
+                            <button class="btn btn-secondary" id="btnReset">重置</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 右侧面板 -->
+            <div class="side-panel">
+                <div class="side-header">解析过程</div>
+                <div class="side-content">
+                    <div class="log-list" id="logList"></div>
+                </div>
+                
+                <div class="legend-section">
+                    <div class="legend-title">图例说明</div>
+                    <div class="legend-list">
+                        <div class="legend-item">
+                            <div class="legend-line query-line"></div>
+                            <span>DNS查询请求</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-line response-line"></div>
+                            <span>DNS响应/返回</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-line recursive-line"></div>
+                            <span>递归查询转发</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="info-section">
+                    <strong>两种查询方式对比：</strong><br>
+                    <strong>迭代查询:</strong> 本地DNS逐级询问各服务器<br>
+                    <strong>递归查询:</strong> 服务器代为查询并返回结果<br><br>
+                    <strong>实际网络:</strong> 主机→本地DNS使用<code>递归</code>，本地DNS→其他服务器多用<code>迭代</code>
+                </div>
+            </div>
+        </div>
+    </div>
+
+<script>
+(function() {
+    // ===== 配置 =====
+    var POSITIONS = {
+        host: { x: 110, y: 420 },
+        local: { x: 110, y: 230 },
+        root: { x: 110, y: 85 },
+        tld: { x: 520, y: 85 },
+        auth: { x: 520, y: 230 }
+    };
+    
+    // 箭头偏移量（让来回箭头不重叠）
+    var ARROW_OFFSET = 12;
+    
+    // 步骤标签位置
+    var STEP_POSITIONS = {
+        iterative: {
+            1: { x: 70, y: 340 },   // host -> local (左侧)
+            2: { x: 70, y: 160 },   // local -> root (左侧)
+            3: { x: 150, y: 160 },  // root -> local (右侧)
+            4: { x: 300, y: 50 },   // local -> tld (上方)
+            5: { x: 300, y: 115 },  // tld -> local (下方)
+            6: { x: 540, y: 160 },  // local -> auth (右侧)
+            7: { x: 480, y: 160 },  // auth -> local (左侧)
+            8: { x: 150, y: 340 }   // local -> host (右侧)
+        },
+        recursive: {
+            1: { x: 70, y: 340 },   // host -> local (左侧)
+            2: { x: 70, y: 160 },   // local -> root (左侧)
+            3: { x: 300, y: 50 },   // root -> tld (上方)
+            4: { x: 540, y: 160 },  // tld -> auth (右侧)
+            5: { x: 480, y: 160 },  // auth -> tld (左侧)
+            6: { x: 300, y: 115 },  // tld -> root (下方)
+            7: { x: 150, y: 160 },  // root -> local (右侧)
+            8: { x: 150, y: 340 }   // local -> host (右侧)
+        }
+    };
+    
+    // 迭代查询步骤
+    var ITERATIVE_STEPS = [
+        {
+            action: 'query',
+            from: 'host', to: 'local',
+            fromNode: 'nodeHost', toNode: 'nodeLocal',
+            stepNum: 1,
+            log: '主机向本地DNS发起查询',
+            detail: '查询域名的IP地址',
+            logType: 'query'
+        },
+        {
+            action: 'query',
+            from: 'local', to: 'root',
+            fromNode: 'nodeLocal', toNode: 'nodeRoot',
+            stepNum: 2,
+            log: '本地DNS向根域名服务器查询',
+            detail: '本地无缓存，向根服务器询问',
+            logType: 'query'
+        },
+        {
+            action: 'response',
+            from: 'root', to: 'local',
+            fromNode: 'nodeRoot', toNode: 'nodeLocal',
+            stepNum: 3,
+            log: '根服务器返回顶级DNS地址',
+            detail: '返回 .com 顶级域名服务器地址',
+            logType: 'response'
+        },
+        {
+            action: 'query',
+            from: 'local', to: 'tld',
+            fromNode: 'nodeLocal', toNode: 'nodeTld',
+            stepNum: 4,
+            log: '本地DNS向顶级域名服务器查询',
+            detail: '继续查询目标域名',
+            logType: 'query'
+        },
+        {
+            action: 'response',
+            from: 'tld', to: 'local',
+            fromNode: 'nodeTld', toNode: 'nodeLocal',
+            stepNum: 5,
+            log: '顶级DNS返回权限DNS地址',
+            detail: '返回 abc.com 权限服务器地址',
+            logType: 'response'
+        },
+        {
+            action: 'query',
+            from: 'local', to: 'auth',
+            fromNode: 'nodeLocal', toNode: 'nodeAuth',
+            stepNum: 6,
+            log: '本地DNS向权限域名服务器查询',
+            detail: '最后一跳查询',
+            logType: 'query'
+        },
+        {
+            action: 'response',
+            from: 'auth', to: 'local',
+            fromNode: 'nodeAuth', toNode: 'nodeLocal',
+            stepNum: 7,
+            log: '权限DNS返回目标IP地址',
+            detail: '返回 y.abc.com 的IP',
+            logType: 'response'
+        },
+        {
+            action: 'response',
+            from: 'local', to: 'host',
+            fromNode: 'nodeLocal', toNode: 'nodeHost',
+            stepNum: 8,
+            log: '本地DNS将结果返回给主机',
+            detail: '解析完成，主机获得IP地址',
+            logType: 'response'
+        }
+    ];
+    
+    // 递归查询步骤
+    var RECURSIVE_STEPS = [
+        {
+            action: 'query',
+            from: 'host', to: 'local',
+            fromNode: 'nodeHost', toNode: 'nodeLocal',
+            stepNum: 1,
+            log: '主机向本地DNS发起递归查询',
+            detail: '请求本地DNS代为解析',
+            logType: 'query'
+        },
+        {
+            action: 'recursive',
+            from: 'local', to: 'root',
+            fromNode: 'nodeLocal', toNode: 'nodeRoot',
+            stepNum: 2,
+            log: '本地DNS转发查询到根服务器',
+            detail: '采用递归方式转发请求',
+            logType: 'recursive'
+        },
+        {
+            action: 'recursive',
+            from: 'root', to: 'tld',
+            fromNode: 'nodeRoot', toNode: 'nodeTld',
+            stepNum: 3,
+            log: '根服务器转发到顶级DNS',
+            detail: '递归转发给 .com 服务器',
+            logType: 'recursive'
+        },
+        {
+            action: 'recursive',
+            from: 'tld', to: 'auth',
+            fromNode: 'nodeTld', toNode: 'nodeAuth',
+            stepNum: 4,
+            log: '顶级DNS转发到权限DNS',
+            detail: '递归转发给 abc.com 服务器',
+            logType: 'recursive'
+        },
+        {
+            action: 'response',
+            from: 'auth', to: 'tld',
+            fromNode: 'nodeAuth', toNode: 'nodeTld',
+            stepNum: 5,
+            log: '权限DNS返回IP给顶级DNS',
+            detail: '找到IP，开始逐级返回',
+            logType: 'response'
+        },
+        {
+            action: 'response',
+            from: 'tld', to: 'root',
+            fromNode: 'nodeTld', toNode: 'nodeRoot',
+            stepNum: 6,
+            log: '顶级DNS返回结果给根服务器',
+            detail: '结果逐级向上返回',
+            logType: 'response'
+        },
+        {
+            action: 'response',
+            from: 'root', to: 'local',
+            fromNode: 'nodeRoot', toNode: 'nodeLocal',
+            stepNum: 7,
+            log: '根服务器返回结果给本地DNS',
+            detail: '结果返回到本地DNS',
+            logType: 'response'
+        },
+        {
+            action: 'response',
+            from: 'local', to: 'host',
+            fromNode: 'nodeLocal', toNode: 'nodeHost',
+            stepNum: 8,
+            log: '本地DNS将结果返回给主机',
+            detail: '解析完成，主机获得IP地址',
+            logType: 'response'
+        }
+    ];
+    
+    // ===== 状态 =====
+    var state = {
+        mode: 'iterative',
+        phase: 'idle',
+        stepIndex: 0,
+        speed: 900,
+        autoMode: false,
+        domain: 'y.abc.com',
+        arrows: [],
+        logCount: 0
+    };
+    
+    // ===== DOM引用 =====
+    var logList = document.getElementById('logList');
+    var arrowsSvg = document.getElementById('arrowsSvg');
+    var modeText = document.getElementById('modeText');
+    var msgBubble = document.getElementById('msgBubble');
+    var inputDomain = document.getElementById('inputDomain');
+    var btnIterative = document.getElementById('btnIterative');
+    var btnRecursive = document.getElementById('btnRecursive');
+    var btnStart = document.getElementById('btnStart');
+    var btnStep = document.getElementById('btnStep');
+    var btnAuto = document.getElementById('btnAuto');
+    var btnReset = document.getElementById('btnReset');
+    var hintStart = document.getElementById('hintStart');
+    var speedSelect = document.getElementById('speedSelect');
+    
+    // ===== 工具函数 =====
+    function getSteps() {
+        return state.mode === 'recursive' ? RECURSIVE_STEPS : ITERATIVE_STEPS;
+    }
+    
+    function updateDomainDisplay() {
+        var domain = state.domain;
+        var parts = domain.split('.');
+        
+        // 更新TLD域名服务器标签
+        if (parts.length >= 2) {
+            var tld = parts.slice(-1)[0];
+            document.getElementById('tldDomain').textContent = 'dns.' + tld;
+        }
+        
+        // 更新权限域名服务器标签
+        if (parts.length >= 2) {
+            var auth = parts.slice(-2).join('.');
+            document.getElementById('authDomain').textContent = 'dns.' + auth;
+        }
+    }
+    
+    function drawArrow(from, to, type, stepNum) {
+        var fromPos = POSITIONS[from];
+        var toPos = POSITIONS[to];
+        
+        // 计算方向向量
+        var dx = toPos.x - fromPos.x;
+        var dy = toPos.y - fromPos.y;
+        var len = Math.sqrt(dx * dx + dy * dy);
+        
+        // 使用"规范化方向"计算垂直向量，确保同一对节点间的两条线基于相同参考方向
+        // 规范化方向：总是从位置较小的节点指向位置较大的节点
+        var normalizedDx, normalizedDy;
+        if (fromPos.x < toPos.x || (fromPos.x === toPos.x && fromPos.y < toPos.y)) {
+            normalizedDx = dx;
+            normalizedDy = dy;
+        } else {
+            normalizedDx = -dx;
+            normalizedDy = -dy;
+        }
+        
+        // 计算垂直于规范化方向的单位向量
+        var perpX = -normalizedDy / len;
+        var perpY = normalizedDx / len;
+        
+        // query/recursive 向一侧偏移，response 向另一侧偏移
+        var offset = ARROW_OFFSET;
+        if (type === 'response') {
+            offset = -ARROW_OFFSET;
+        }
+        
+        var offsetX = perpX * offset;
+        var offsetY = perpY * offset;
+        
+        var line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+        line.setAttribute('x1', fromPos.x + offsetX);
+        line.setAttribute('y1', fromPos.y + offsetY);
+        line.setAttribute('x2', toPos.x + offsetX);
+        line.setAttribute('y2', toPos.y + offsetY);
+        
+        var arrowClass = 'arrow-line visible ';
+        var markerId = '';
+        
+        if (type === 'query') {
+            arrowClass += 'query';
+            markerId = 'arrowBlue';
+        } else if (type === 'response') {
+            arrowClass += 'response';
+            markerId = 'arrowGreen';
+        } else {
+            arrowClass += 'recursive';
+            markerId = 'arrowPurple';
+        }
+        
+        line.setAttribute('class', arrowClass);
+        line.setAttribute('marker-end', 'url(#' + markerId + ')');
+        
+        arrowsSvg.appendChild(line);
+        state.arrows.push(line);
+        
+        // 显示步骤标签
+        var stepLabel = document.getElementById('step' + stepNum);
+        if (stepLabel) {
+            var positions = state.mode === 'recursive' ? STEP_POSITIONS.recursive : STEP_POSITIONS.iterative;
+            var pos = positions[stepNum];
+            if (pos) {
+                stepLabel.style.left = pos.x + 'px';
+                stepLabel.style.top = pos.y + 'px';
+            }
+            
+            stepLabel.className = 'step-label visible';
+            if (type === 'response') {
+                stepLabel.classList.add('response-label');
+            } else if (type === 'recursive') {
+                stepLabel.classList.add('recursive-label');
+            }
+        }
+    }
+    
+    function highlightNode(nodeId, className) {
+        var node = document.getElementById(nodeId);
+        if (node) {
+            node.classList.remove('active', 'sending', 'receiving');
+            if (className) {
+                node.classList.add(className);
+            }
+        }
+    }
+    
+    function clearNodeHighlights() {
+        var nodes = ['nodeHost', 'nodeLocal', 'nodeRoot', 'nodeTld', 'nodeAuth'];
+        for (var i = 0; i < nodes.length; i++) {
+            highlightNode(nodes[i], null);
+        }
+    }
+    
+    function clearArrows() {
+        for (var i = 0; i < state.arrows.length; i++) {
+            if (state.arrows[i].parentNode) {
+                state.arrows[i].parentNode.removeChild(state.arrows[i]);
+            }
+        }
+        state.arrows = [];
+        
+        // 隐藏所有步骤标签
+        for (var j = 1; j <= 8; j++) {
+            var label = document.getElementById('step' + j);
+            if (label) {
+                label.classList.remove('visible', 'response-label', 'recursive-label');
+            }
+        }
+    }
+    
+    function addLog(stepNum, text, detail, type) {
+        state.logCount++;
+        var item = document.createElement('div');
+        item.className = 'log-item ' + (type || '');
+        
+        var stepSpan = document.createElement('span');
+        stepSpan.className = 'log-step';
+        stepSpan.textContent = stepNum;
+        
+        var textSpan = document.createElement('span');
+        textSpan.className = 'log-text';
+        textSpan.textContent = text;
+        
+        item.appendChild(stepSpan);
+        item.appendChild(textSpan);
+        
+        if (detail) {
+            var detailSpan = document.createElement('span');
+            detailSpan.className = 'log-detail';
+            detailSpan.textContent = detail.replace('y.abc.com', state.domain);
+            item.appendChild(detailSpan);
+        }
+        
+        logList.insertBefore(item, logList.firstChild);
+    }
+    
+    // ===== 执行步骤 =====
+    function executeStep() {
+        var steps = getSteps();
+        if (state.stepIndex >= steps.length) {
+            state.phase = 'complete';
+            clearNodeHighlights();
+            addLog('✓', '解析完成！主机获得 ' + state.domain + ' 的IP地址', null, 'info');
+            updateUI();
+            return;
+        }
+        
+        var step = steps[state.stepIndex];
+        
+        // 清除之前的高亮
+        clearNodeHighlights();
+        
+        // 高亮发送节点和接收节点
+        highlightNode(step.fromNode, 'sending');
+        highlightNode(step.toNode, 'receiving');
+        
+        // 绘制箭头
+        drawArrow(step.from, step.to, step.action, step.stepNum);
+        
+        // 添加日志
+        var logText = step.log.replace('y.abc.com', state.domain);
+        addLog(step.stepNum, logText, step.detail, step.logType);
+        
+        state.stepIndex++;
+        updateUI();
+    }
+    
+    // ===== UI更新 =====
+    function updateUI() {
+        btnStart.disabled = state.phase !== 'idle';
+        btnStep.disabled = state.phase !== 'running';
+        btnAuto.disabled = state.phase !== 'running' || state.autoMode;
+        btnIterative.disabled = state.phase !== 'idle';
+        btnRecursive.disabled = state.phase !== 'idle';
+        inputDomain.disabled = state.phase !== 'idle';
+        
+        hintStart.style.display = state.phase === 'idle' ? 'inline' : 'none';
+        
+        modeText.textContent = state.mode === 'recursive' ? '递归查询' : '迭代查询';
+    }
+    
+    // ===== 控制函数 =====
+    function selectMode(mode) {
+        state.mode = mode;
+        btnIterative.classList.toggle('active', mode === 'iterative');
+        btnRecursive.classList.toggle('active', mode === 'recursive');
+        updateUI();
+    }
+    
+    function startDemo() {
+        // 获取域名
+        var domain = inputDomain.value.trim();
+        if (!domain) {
+            domain = 'y.abc.com';
+            inputDomain.value = domain;
+        }
+        state.domain = domain;
+        
+        // 更新显示
+        updateDomainDisplay();
+        
+        state.phase = 'running';
+        state.stepIndex = 0;
+        state.logCount = 0;
+        
+        logList.innerHTML = '';
+        clearArrows();
+        clearNodeHighlights();
+        
+        var modeDesc = state.mode === 'recursive' ? '递归查询' : '迭代查询';
+        addLog('▶', '开始DNS解析：' + state.domain + ' (' + modeDesc + ')', null, 'info');
+        
+        updateUI();
+    }
+    
+    function stepExecute() {
+        if (state.phase !== 'running') return;
+        executeStep();
+    }
+    
+    function autoExecute() {
+        if (state.phase !== 'running') return;
+        
+        state.autoMode = true;
+        state.speed = parseInt(speedSelect.value) || 900;
+        updateUI();
+        
+        function runNext() {
+            var steps = getSteps();
+            if (state.stepIndex >= steps.length || !state.autoMode) {
+                state.autoMode = false;
+                if (state.stepIndex >= steps.length) {
+                    state.phase = 'complete';
+                    clearNodeHighlights();
+                    addLog('✓', '解析完成！主机获得 ' + state.domain + ' 的IP地址', null, 'info');
+                }
+                updateUI();
+                return;
+            }
+            
+            executeStep();
+            setTimeout(runNext, state.speed);
+        }
+        
+        runNext();
+    }
+    
+    function resetDemo() {
+        state.phase = 'idle';
+        state.stepIndex = 0;
+        state.autoMode = false;
+        state.logCount = 0;
+        
+        logList.innerHTML = '';
+        clearArrows();
+        clearNodeHighlights();
+        updateUI();
+    }
+    
+    // ===== 事件绑定 =====
+    btnIterative.onclick = function() { selectMode('iterative'); };
+    btnRecursive.onclick = function() { selectMode('recursive'); };
+    btnStart.onclick = startDemo;
+    btnStep.onclick = stepExecute;
+    btnAuto.onclick = autoExecute;
+    btnReset.onclick = resetDemo;
+    
+    // 域名输入回车触发开始
+    inputDomain.onkeypress = function(e) {
+        if (e.key === 'Enter' && state.phase === 'idle') {
+            startDemo();
+        }
+    };
+    
+    // ===== 初始化 =====
+    updateUI();
+})();
+</script>
+</body>
+</html>

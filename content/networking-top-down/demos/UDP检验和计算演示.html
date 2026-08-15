@@ -1,0 +1,1266 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UDP检验和计算演示</title>
+    <style>
+        /* ===== 408教学风格基础样式 ===== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        :root {
+            --primary: #1a56db;
+            --primary-light: #e1effe;
+            --success: #047857;
+            --success-light: #d1fae5;
+            --danger: #b91c1c;
+            --danger-light: #fee2e2;
+            --warning: #d97706;
+            --warning-light: #fef3c7;
+            --text: #1f2937;
+            --text-secondary: #6b7280;
+            --border: #d1d5db;
+            --bg-light: #f9fafb;
+            --white: #ffffff;
+        }
+        
+        body {
+            font-family: system-ui, -apple-system, "Segoe UI", "Microsoft YaHei", sans-serif;
+            background: var(--white);
+            color: var(--text);
+            font-size: 14px;
+            line-height: 1.5;
+        }
+        
+        /* ===== 页面布局 ===== */
+        .page {
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            max-width: 1400px;
+            margin: 0 auto;
+            border-left: 1px solid var(--border);
+            border-right: 1px solid var(--border);
+        }
+        
+        .page-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 8px 16px;
+            border-bottom: 1px solid var(--border);
+            background: var(--bg-light);
+        }
+        
+        .page-title {
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--text);
+        }
+        
+        .page-title code {
+            font-family: "Consolas", "Monaco", monospace;
+            background: var(--primary-light);
+            color: var(--primary);
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-size: 13px;
+            margin-left: 8px;
+        }
+        
+        .page-badge {
+            font-size: 12px;
+            color: var(--text-secondary);
+            background: var(--white);
+            padding: 4px 10px;
+            border: 1px solid var(--border);
+            border-radius: 3px;
+        }
+        
+        .page-body {
+            display: flex;
+            flex: 1;
+            overflow: hidden;
+        }
+        
+        .main-panel {
+            flex: 0 0 75%;
+            display: flex;
+            flex-direction: column;
+            border-right: 1px solid var(--border);
+        }
+        
+        .side-panel {
+            flex: 0 0 25%;
+            display: flex;
+            flex-direction: column;
+            background: var(--bg-light);
+        }
+        
+        /* ===== 可视化区域 ===== */
+        .visual-area {
+            flex: 1;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+        }
+        
+        .visual-section {
+            margin-bottom: 20px;
+        }
+        
+        .section-title {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .section-title .step-badge {
+            background: var(--primary);
+            color: var(--white);
+            padding: 2px 8px;
+            border-radius: 3px;
+            font-size: 11px;
+        }
+        
+        /* 二进制数输入区 */
+        .input-rows {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            font-family: "Consolas", "Monaco", monospace;
+        }
+        
+        .binary-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .row-label {
+            width: 60px;
+            text-align: right;
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+        
+        .binary-input {
+            display: flex;
+            gap: 1px;
+        }
+        
+        .binary-input input {
+            width: 220px;
+            padding: 8px 12px;
+            border: 1px solid var(--border);
+            border-radius: 3px;
+            font-family: "Consolas", "Monaco", monospace;
+            font-size: 14px;
+            letter-spacing: 2px;
+            text-align: center;
+        }
+        
+        .binary-input input:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+        
+        .btn-remove-row {
+            width: 24px;
+            height: 24px;
+            border: 1px solid var(--border);
+            border-radius: 3px;
+            background: var(--white);
+            color: var(--danger);
+            cursor: pointer;
+            font-size: 16px;
+            line-height: 1;
+        }
+        
+        .btn-remove-row:hover {
+            background: var(--danger-light);
+        }
+        
+        .btn-add-row {
+            padding: 6px 12px;
+            border: 1px dashed var(--border);
+            border-radius: 3px;
+            background: var(--bg-light);
+            color: var(--text-secondary);
+            cursor: pointer;
+            font-size: 12px;
+            margin-top: 8px;
+            width: fit-content;
+        }
+        
+        .btn-add-row:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+        
+        /* 计算过程区域 */
+        .calc-container {
+            background: var(--bg-light);
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            padding: 20px;
+            flex: 1;
+            min-height: 0;
+            overflow-y: auto;
+        }
+        
+        .visual-section:last-child {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            min-height: 0;
+        }
+        
+        .visual-area {
+            min-height: 0;
+        }
+        
+        .calc-step {
+            margin-bottom: 24px;
+            padding-bottom: 16px;
+            border-bottom: 1px dashed var(--border);
+        }
+        
+        .calc-step:last-child {
+            margin-bottom: 0;
+            padding-bottom: 0;
+            border-bottom: none;
+        }
+        
+        .calc-step-header {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--primary);
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .calc-step-header .step-num {
+            background: var(--primary);
+            color: var(--white);
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 11px;
+        }
+        
+        .binary-addition {
+            font-family: "Consolas", "Monaco", monospace;
+            font-size: 16px;
+            line-height: 1.8;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+        }
+        
+        .addition-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            position: relative;
+            height: 32px;
+        }
+        
+        .addition-symbol {
+            width: 24px;
+            text-align: center;
+            color: var(--text-secondary);
+        }
+        
+        .addition-bits {
+            display: flex;
+            gap: 0;
+            letter-spacing: 0;
+        }
+        
+        .bit-cell {
+            width: 18px;
+            height: 26px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+        
+        .bit-cell.highlight {
+            background: var(--warning-light);
+            color: var(--warning);
+            font-weight: bold;
+            border-radius: 2px;
+        }
+        
+        .bit-cell.carry {
+            background: var(--danger-light);
+            color: var(--danger);
+            font-weight: bold;
+            border-radius: 2px;
+        }
+        
+        .bit-cell.active {
+            background: var(--primary-light);
+            color: var(--primary);
+            font-weight: bold;
+            border-radius: 2px;
+        }
+        
+        .addition-separator {
+            width: 320px;
+            height: 2px;
+            background: var(--text);
+            margin: 4px 0 4px 32px;
+        }
+        
+        .carry-row {
+            font-size: 11px;
+            color: var(--danger);
+            margin-left: 32px;
+            height: 18px;
+            display: flex;
+            gap: 0;
+            font-weight: 600;
+        }
+        
+        .carry-bit {
+            width: 18px;
+            text-align: center;
+        }
+        
+        .carry-bit.has-carry {
+            background: var(--danger-light);
+            border-radius: 2px;
+        }
+        
+        .result-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .result-row .addition-bits {
+            font-weight: bold;
+            color: var(--success);
+        }
+        
+        .overflow-indicator {
+            color: var(--danger);
+            font-size: 12px;
+            font-weight: 600;
+            margin-left: 8px;
+            animation: blink 0.8s ease-in-out infinite;
+        }
+        
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.4; }
+        }
+        
+        /* 回卷动画 */
+        .wraparound-row {
+            margin-top: 12px;
+            padding: 10px;
+            background: var(--warning-light);
+            border: 1px solid var(--warning);
+            border-radius: 4px;
+        }
+        
+        .wraparound-title {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--warning);
+            margin-bottom: 8px;
+        }
+        
+        .wraparound-content {
+            font-family: "Consolas", "Monaco", monospace;
+            font-size: 14px;
+        }
+        
+        /* 最终结果 */
+        .final-result {
+            background: var(--success-light);
+            border: 1px solid var(--success);
+            border-radius: 4px;
+            padding: 16px;
+            margin-top: 16px;
+        }
+        
+        .final-result-title {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--success);
+            margin-bottom: 8px;
+        }
+        
+        .final-result-value {
+            font-family: "Consolas", "Monaco", monospace;
+            font-size: 18px;
+            font-weight: bold;
+            color: var(--text);
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+        
+        .final-result-value .label {
+            font-size: 12px;
+            font-weight: normal;
+            color: var(--text-secondary);
+        }
+        
+        /* 检验结果 */
+        .verify-result {
+            margin-top: 16px;
+            padding: 12px;
+            border-radius: 4px;
+        }
+        
+        .verify-result.success {
+            background: var(--success-light);
+            border: 1px solid var(--success);
+        }
+        
+        .verify-result.error {
+            background: var(--danger-light);
+            border: 1px solid var(--danger);
+        }
+        
+        .verify-result .verify-title {
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+        
+        .verify-result.success .verify-title {
+            color: var(--success);
+        }
+        
+        .verify-result.error .verify-title {
+            color: var(--danger);
+        }
+        
+        .verify-result .verify-text {
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+        
+        /* ===== 控制面板 ===== */
+        .control-area {
+            border-top: 1px solid var(--border);
+            padding: 12px 20px;
+            background: var(--white);
+        }
+        
+        .control-row {
+            display: flex;
+            gap: 20px;
+            align-items: flex-start;
+        }
+        
+        .control-left {
+            flex: 1;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px 20px;
+            align-items: center;
+        }
+        
+        .control-right {
+            flex-shrink: 0;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            align-items: center;
+            justify-content: flex-end;
+        }
+        
+        .control-group {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-shrink: 0;
+        }
+        
+        .control-label {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text);
+            white-space: nowrap;
+        }
+        
+        .action-hint {
+            font-size: 12px;
+            color: var(--danger);
+            font-weight: 600;
+            animation: hintBlink 1s ease-in-out infinite;
+            margin-right: 4px;
+        }
+        
+        @keyframes hintBlink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        
+        .btn {
+            padding: 6px 16px;
+            border: 1px solid transparent;
+            border-radius: 3px;
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        .btn-primary {
+            background: var(--primary);
+            color: var(--white);
+            border-color: var(--primary);
+        }
+        
+        .btn-primary:hover:not(:disabled) {
+            background: #1e40af;
+        }
+        
+        .btn-success {
+            background: var(--success);
+            color: var(--white);
+            border-color: var(--success);
+        }
+        
+        .btn-success:hover:not(:disabled) {
+            background: #065f46;
+        }
+        
+        .btn-secondary {
+            background: var(--white);
+            color: var(--text-secondary);
+            border-color: var(--border);
+        }
+        
+        .btn-secondary:hover:not(:disabled) {
+            background: var(--bg-light);
+            color: var(--text);
+        }
+        
+        /* ===== 右侧面板 ===== */
+        .side-header {
+            padding: 10px 12px;
+            border-bottom: 1px solid var(--border);
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text);
+        }
+        
+        .side-content {
+            flex: 1;
+            overflow-y: auto;
+            padding: 12px;
+        }
+        
+        .step-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        
+        .step-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 8px;
+            padding: 8px 10px;
+            background: var(--white);
+            border: 1px solid var(--border);
+            border-radius: 3px;
+            font-size: 12px;
+            line-height: 1.4;
+            color: var(--text-secondary);
+        }
+        
+        .step-item.active {
+            border-color: var(--primary);
+            background: var(--primary-light);
+            color: var(--primary);
+        }
+        
+        .step-item.done {
+            border-color: var(--success);
+            color: var(--success);
+        }
+        
+        .step-item.carry {
+            border-color: var(--danger);
+            color: var(--danger);
+        }
+        
+        .step-item.wrap {
+            border-color: var(--warning);
+            color: var(--warning);
+        }
+        
+        .step-num {
+            flex-shrink: 0;
+            width: 18px;
+            height: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            background: var(--border);
+            color: var(--white);
+            font-size: 10px;
+            font-weight: 600;
+        }
+        
+        .step-item.active .step-num {
+            background: var(--primary);
+        }
+        
+        .step-item.done .step-num {
+            background: var(--success);
+        }
+        
+        .step-item.carry .step-num {
+            background: var(--danger);
+        }
+        
+        .step-item.wrap .step-num {
+            background: var(--warning);
+        }
+        
+        .step-text {
+            flex: 1;
+        }
+        
+        .side-footer {
+            padding: 10px 12px;
+            border-top: 1px solid var(--border);
+            font-size: 11px;
+            color: var(--text-secondary);
+            background: var(--white);
+        }
+        
+        .side-footer code {
+            font-family: "Consolas", "Monaco", monospace;
+            color: var(--primary);
+            font-weight: 600;
+        }
+        
+        /* 空状态 */
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: var(--text-secondary);
+        }
+        
+        .empty-state .icon {
+            font-size: 32px;
+            margin-bottom: 12px;
+            opacity: 0.5;
+        }
+    </style>
+</head>
+<body>
+    <div class="page">
+        <header class="page-header">
+            <h1 class="page-title">UDP检验和计算演示<code>Checksum</code></h1>
+            <span class="page-badge">计算机网络 · 传输层</span>
+        </header>
+        
+        <div class="page-body">
+            <div class="main-panel">
+                <div class="visual-area">
+                    <!-- 输入区域 -->
+                    <div class="visual-section">
+                        <div class="section-title">
+                            输入16位二进制数（用空格分隔高低字节）
+                        </div>
+                        <div class="input-rows" id="inputRows">
+                            <div class="binary-row" data-index="0">
+                                <span class="row-label">字 1</span>
+                                <div class="binary-input">
+                                    <input type="text" placeholder="01100110 01100000" maxlength="17">
+                                </div>
+                                <button class="btn-remove-row" title="删除">×</button>
+                            </div>
+                            <div class="binary-row" data-index="1">
+                                <span class="row-label">字 2</span>
+                                <div class="binary-input">
+                                    <input type="text" placeholder="01010101 01010101" maxlength="17">
+                                </div>
+                                <button class="btn-remove-row" title="删除">×</button>
+                            </div>
+                            <div class="binary-row" data-index="2">
+                                <span class="row-label">字 3</span>
+                                <div class="binary-input">
+                                    <input type="text" placeholder="10001111 00001100" maxlength="17">
+                                </div>
+                                <button class="btn-remove-row" title="删除">×</button>
+                            </div>
+                        </div>
+                        <button class="btn-add-row" id="btnAddRow">+ 添加一行</button>
+                    </div>
+                    
+                    <!-- 计算过程区域 -->
+                    <div class="visual-section">
+                        <div class="section-title">
+                            计算过程
+                        </div>
+                        <div class="calc-container" id="calcContainer">
+                            <div class="empty-state">
+                                <div class="icon">▶</div>
+                                <div>点击"开始计算"查看演示</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="control-area">
+                    <div class="control-row">
+                        <div class="control-left">
+                            <div class="control-group">
+                                <span class="action-hint" id="hintStart">请选择 ▶</span>
+                                <button class="btn btn-primary" id="btnStart">开始计算</button>
+                            </div>
+                            <div class="control-group">
+                                <span class="action-hint" id="hintStep" style="display:none;">请选择 ▶</span>
+                                <button class="btn btn-success" id="btnStep" disabled>单步执行</button>
+                                <button class="btn btn-success" id="btnAuto" disabled>自动演示</button>
+                            </div>
+                            <div class="control-group">
+                                <button class="btn btn-secondary" id="btnExample">加载示例</button>
+                                <button class="btn btn-secondary" id="btnReset">重置</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="side-panel">
+                <div class="side-header">计算步骤</div>
+                <div class="side-content">
+                    <div class="step-list" id="stepsList">
+                        <div class="step-item">
+                            <span class="step-num">1</span>
+                            <span class="step-text">等待开始...</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="side-footer">
+                    <div>二进制反码求和：最高位进位需<code>回卷</code>到最低位</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+    (function() {
+        // ===== 状态 =====
+        var state = {
+            phase: 'idle',      // idle | calculating | complete
+            binaryInputs: [],   // 输入的二进制数数组
+            calcSteps: [],      // 计算步骤
+            currentStep: 0,
+            autoMode: false,
+            speed: 800
+        };
+        
+        var stepCount = 0;
+        
+        // ===== DOM引用 =====
+        var inputRows = document.getElementById('inputRows');
+        var calcContainer = document.getElementById('calcContainer');
+        var stepsList = document.getElementById('stepsList');
+        var btnStart = document.getElementById('btnStart');
+        var btnStep = document.getElementById('btnStep');
+        var btnAuto = document.getElementById('btnAuto');
+        var btnExample = document.getElementById('btnExample');
+        var btnReset = document.getElementById('btnReset');
+        var btnAddRow = document.getElementById('btnAddRow');
+        var hintStart = document.getElementById('hintStart');
+        var hintStep = document.getElementById('hintStep');
+        
+        // ===== 工具函数 =====
+        function parseBinary(str) {
+            // 移除空格，获取纯二进制字符串
+            return str.replace(/\s/g, '');
+        }
+        
+        function formatBinary(bits) {
+            // 格式化为 "xxxxxxxx xxxxxxxx" 形式
+            if (bits.length <= 8) return bits;
+            return bits.slice(0, 8) + ' ' + bits.slice(8);
+        }
+        
+        function padBinary(bits, length) {
+            while (bits.length < length) {
+                bits = '0' + bits;
+            }
+            return bits;
+        }
+        
+        function binaryAdd(a, b) {
+            // 二进制加法，返回 {result, carry, carries}
+            a = padBinary(a, 16);
+            b = padBinary(b, 16);
+            
+            var result = '';
+            var carry = 0;
+            var carries = [];
+            
+            for (var i = 15; i >= 0; i--) {
+                var bitA = parseInt(a[i]);
+                var bitB = parseInt(b[i]);
+                var sum = bitA + bitB + carry;
+                
+                result = (sum % 2) + result;
+                carry = Math.floor(sum / 2);
+                carries.unshift(carry);
+            }
+            
+            return {
+                result: result,
+                overflow: carry,
+                carries: carries
+            };
+        }
+        
+        function invertBinary(bits) {
+            // 求反码
+            var result = '';
+            for (var i = 0; i < bits.length; i++) {
+                result += bits[i] === '0' ? '1' : '0';
+            }
+            return result;
+        }
+        
+        function addOne(bits) {
+            // 最低位加1
+            var carry = 1;
+            var result = '';
+            for (var i = bits.length - 1; i >= 0; i--) {
+                var sum = parseInt(bits[i]) + carry;
+                result = (sum % 2) + result;
+                carry = Math.floor(sum / 2);
+            }
+            return { result: result, overflow: carry };
+        }
+        
+        // ===== 添加日志 =====
+        function addStep(text, type) {
+            stepCount++;
+            var stepItem = document.createElement('div');
+            stepItem.className = 'step-item ' + (type || '');
+            stepItem.innerHTML = '<span class="step-num">' + stepCount + '</span>' +
+                '<span class="step-text">' + text + '</span>';
+            if (stepsList.firstChild) {
+                stepsList.insertBefore(stepItem, stepsList.firstChild);
+            } else {
+                stepsList.appendChild(stepItem);
+            }
+            stepsList.scrollTop = 0;
+        }
+        
+        function clearSteps() {
+            stepCount = 0;
+            stepsList.innerHTML = '<div class="step-item"><span class="step-num">1</span><span class="step-text">等待开始...</span></div>';
+        }
+        
+        // ===== 更新提示 =====
+        function updateHints() {
+            hintStart.style.display = 'none';
+            hintStep.style.display = 'none';
+            
+            if (state.phase === 'idle') {
+                hintStart.style.display = 'inline';
+            } else if (state.phase === 'calculating' && !state.autoMode) {
+                hintStep.style.display = 'inline';
+            }
+        }
+        
+        // ===== 更新按钮状态 =====
+        function updateButtons() {
+            btnStart.disabled = state.phase !== 'idle';
+            btnStep.disabled = state.phase !== 'calculating' || state.autoMode;
+            btnAuto.disabled = state.phase !== 'calculating' || state.autoMode;
+            updateHints();
+        }
+        
+        // ===== 更新输入行号 =====
+        function updateRowNumbers() {
+            var rows = inputRows.querySelectorAll('.binary-row');
+            for (var i = 0; i < rows.length; i++) {
+                rows[i].querySelector('.row-label').textContent = '字 ' + (i + 1);
+                rows[i].setAttribute('data-index', i);
+            }
+        }
+        
+        // ===== 添加输入行 =====
+        function addInputRow() {
+            var index = inputRows.querySelectorAll('.binary-row').length;
+            var row = document.createElement('div');
+            row.className = 'binary-row';
+            row.setAttribute('data-index', index);
+            row.innerHTML = '<span class="row-label">字 ' + (index + 1) + '</span>' +
+                '<div class="binary-input"><input type="text" placeholder="xxxxxxxx xxxxxxxx" maxlength="17"></div>' +
+                '<button class="btn-remove-row" title="删除">×</button>';
+            inputRows.appendChild(row);
+            
+            // 绑定删除按钮
+            row.querySelector('.btn-remove-row').onclick = function() {
+                if (inputRows.querySelectorAll('.binary-row').length > 2) {
+                    row.remove();
+                    updateRowNumbers();
+                }
+            };
+        }
+        
+        // ===== 获取输入的二进制数 =====
+        function getInputs() {
+            var inputs = [];
+            var rows = inputRows.querySelectorAll('.binary-row input');
+            for (var i = 0; i < rows.length; i++) {
+                var value = parseBinary(rows[i].value);
+                if (value && /^[01]+$/.test(value)) {
+                    inputs.push(padBinary(value, 16));
+                }
+            }
+            return inputs;
+        }
+        
+        // ===== 生成加法HTML =====
+        function generateAdditionHTML(a, b, addResult, stepNum, isWrap) {
+            var html = '<div class="calc-step">';
+            html += '<div class="calc-step-header">';
+            html += '<span class="step-num">' + stepNum + '</span>';
+            html += isWrap ? '回卷：最低位加1' : '第 ' + stepNum + ' 次相加';
+            html += '</div>';
+            html += '<div class="binary-addition">';
+            
+            // 进位行 - 显示该位产生的进位（传给高位的进位）
+            html += '<div class="carry-row">';
+            // 先放一个空位（为了可能的溢出进位位置对齐）
+            for (var i = 0; i < 16; i++) {
+                // carries[i] 是第 i 位产生的进位，应该显示在第 i-1 位上方
+                // 所以第 i 位上方应该显示 carries[i+1]（即第 i+1 位产生的进位）
+                var carryToShow = (i < 15 && addResult.carries[i + 1]) ? '1' : '';
+                var hasCarry = carryToShow === '1';
+                html += '<span class="carry-bit' + (hasCarry ? ' has-carry' : '') + '">' + carryToShow + '</span>';
+            }
+            html += '</div>';
+            
+            // 被加数
+            html += '<div class="addition-row">';
+            html += '<span class="addition-symbol"></span>';
+            html += '<div class="addition-bits">';
+            for (var i = 0; i < 16; i++) {
+                html += '<span class="bit-cell">' + a[i] + '</span>';
+            }
+            html += '</div></div>';
+            
+            // 加数
+            html += '<div class="addition-row">';
+            html += '<span class="addition-symbol">+</span>';
+            html += '<div class="addition-bits">';
+            for (var i = 0; i < 16; i++) {
+                html += '<span class="bit-cell">' + b[i] + '</span>';
+            }
+            html += '</div></div>';
+            
+            // 分隔线
+            html += '<div class="addition-separator"></div>';
+            
+            // 结果行
+            html += '<div class="addition-row result-row">';
+            html += '<span class="addition-symbol">=</span>';
+            html += '<div class="addition-bits">';
+            if (addResult.overflow) {
+                html += '<span class="bit-cell carry">' + addResult.overflow + '</span>';
+            }
+            for (var i = 0; i < 16; i++) {
+                html += '<span class="bit-cell">' + addResult.result[i] + '</span>';
+            }
+            html += '</div>';
+            if (addResult.overflow) {
+                html += '<span class="overflow-indicator">产生进位!</span>';
+            }
+            html += '</div>';
+            
+            // 回卷提示
+            if (addResult.overflow && !isWrap) {
+                html += '<div class="wraparound-row">';
+                html += '<div class="wraparound-title">需要回卷</div>';
+                html += '<div class="wraparound-content">最高位进位 1 需要加回到最低位</div>';
+                html += '</div>';
+            }
+            
+            html += '</div></div>';
+            return html;
+        }
+        
+        // ===== 开始计算 =====
+        function startCalc() {
+            var inputs = getInputs();
+            if (inputs.length < 2) {
+                alert('请至少输入2个有效的16位二进制数');
+                return;
+            }
+            
+            state.binaryInputs = inputs;
+            state.calcSteps = [];
+            state.currentStep = 0;
+            state.phase = 'calculating';
+            
+            clearSteps();
+            addStep('开始计算检验和，共 ' + inputs.length + ' 个16位字', 'active');
+            
+            // 预计算所有步骤
+            var sum = inputs[0];
+            var stepNum = 1;
+            
+            for (var i = 1; i < inputs.length; i++) {
+                var addResult = binaryAdd(sum, inputs[i]);
+                state.calcSteps.push({
+                    type: 'add',
+                    stepNum: stepNum,
+                    a: sum,
+                    b: inputs[i],
+                    result: addResult
+                });
+                
+                // 如果有进位，需要回卷
+                if (addResult.overflow) {
+                    var wrapResult = addOne(addResult.result);
+                    state.calcSteps.push({
+                        type: 'wrap',
+                        stepNum: stepNum,
+                        a: addResult.result,
+                        b: '0000000000000001',
+                        result: wrapResult
+                    });
+                    sum = wrapResult.result;
+                } else {
+                    sum = addResult.result;
+                }
+                stepNum++;
+            }
+            
+            // 最终求反码
+            var checksum = invertBinary(sum);
+            state.calcSteps.push({
+                type: 'invert',
+                sum: sum,
+                checksum: checksum
+            });
+            
+            calcContainer.innerHTML = '';
+            updateButtons();
+        }
+        
+        // ===== 执行下一步 =====
+        function executeStep() {
+            if (state.currentStep >= state.calcSteps.length) {
+                state.phase = 'complete';
+                state.autoMode = false;
+                updateButtons();
+                return;
+            }
+            
+            var step = state.calcSteps[state.currentStep];
+            
+            if (step.type === 'add') {
+                var html = generateAdditionHTML(step.a, step.b, step.result, step.stepNum, false);
+                calcContainer.innerHTML += html;
+                addStep('计算: ' + formatBinary(step.a) + ' + ' + formatBinary(step.b), 'done');
+                if (step.result.overflow) {
+                    addStep('产生最高位进位，需要回卷', 'carry');
+                }
+            } else if (step.type === 'wrap') {
+                var html = '<div class="calc-step">';
+                html += '<div class="calc-step-header" style="color: var(--warning);">';
+                html += '<span class="step-num" style="background: var(--warning);">▼</span>';
+                html += '回卷操作：最低位加1';
+                html += '</div>';
+                html += '<div class="binary-addition">';
+                html += '<div class="addition-row">';
+                html += '<span class="addition-symbol"></span>';
+                html += '<div class="addition-bits">';
+                for (var i = 0; i < 16; i++) {
+                    html += '<span class="bit-cell">' + step.a[i] + '</span>';
+                }
+                html += '</div></div>';
+                html += '<div class="addition-row">';
+                html += '<span class="addition-symbol">+</span>';
+                html += '<div class="addition-bits">';
+                for (var i = 0; i < 15; i++) {
+                    html += '<span class="bit-cell">0</span>';
+                }
+                html += '<span class="bit-cell highlight">1</span>';
+                html += '</div></div>';
+                html += '<div class="addition-separator"></div>';
+                html += '<div class="addition-row result-row">';
+                html += '<span class="addition-symbol">=</span>';
+                html += '<div class="addition-bits">';
+                for (var i = 0; i < 16; i++) {
+                    html += '<span class="bit-cell">' + step.result.result[i] + '</span>';
+                }
+                html += '</div></div>';
+                html += '</div></div>';
+                calcContainer.innerHTML += html;
+                addStep('回卷完成: ' + formatBinary(step.result.result), 'wrap');
+            } else if (step.type === 'invert') {
+                var html = '<div class="final-result">';
+                html += '<div class="final-result-title">求反码得到检验和</div>';
+                html += '<div class="final-result-value">';
+                html += '<div><span class="label">求和结果:</span> ' + formatBinary(step.sum) + '</div>';
+                html += '<div style="font-size: 20px;">→</div>';
+                html += '<div><span class="label">取反码:</span> <strong style="color: var(--primary);">' + formatBinary(step.checksum) + '</strong></div>';
+                html += '</div></div>';
+                calcContainer.innerHTML += html;
+                addStep('求反码得检验和: ' + formatBinary(step.checksum), 'done');
+                
+                // 验证
+                var allInputs = state.binaryInputs.slice();
+                allInputs.push(step.checksum);
+                var verifySum = allInputs[0];
+                for (var i = 1; i < allInputs.length; i++) {
+                    var vr = binaryAdd(verifySum, allInputs[i]);
+                    verifySum = vr.result;
+                    if (vr.overflow) {
+                        var wr = addOne(verifySum);
+                        verifySum = wr.result;
+                    }
+                }
+                
+                var isAllOnes = verifySum === '1111111111111111';
+                html = '<div class="verify-result ' + (isAllOnes ? 'success' : 'error') + '">';
+                html += '<div class="verify-title">' + (isAllOnes ? '验证通过' : '验证失败') + '</div>';
+                html += '<div class="verify-text">将所有字（含检验和）相加: ' + formatBinary(verifySum) + '</div>';
+                html += '<div class="verify-text">' + (isAllOnes ? '结果全为1，表示无差错' : '结果不全为1，表示有差错') + '</div>';
+                html += '</div>';
+                calcContainer.innerHTML += html;
+                addStep('验证: 全部相加 = ' + formatBinary(verifySum), isAllOnes ? 'done' : 'carry');
+            }
+            
+            state.currentStep++;
+            
+            // 滚动到底部
+            calcContainer.scrollTop = calcContainer.scrollHeight;
+            
+            if (state.currentStep >= state.calcSteps.length) {
+                state.phase = 'complete';
+                state.autoMode = false;
+            }
+            
+            updateButtons();
+        }
+        
+        // ===== 自动执行 =====
+        function autoExecute() {
+            if (state.phase !== 'calculating') return;
+            state.autoMode = true;
+            updateButtons();
+            
+            function runNext() {
+                if (state.currentStep >= state.calcSteps.length || !state.autoMode) {
+                    state.autoMode = false;
+                    updateButtons();
+                    return;
+                }
+                executeStep();
+                setTimeout(runNext, state.speed);
+            }
+            runNext();
+        }
+        
+        // ===== 重置 =====
+        function resetAll() {
+            state.phase = 'idle';
+            state.binaryInputs = [];
+            state.calcSteps = [];
+            state.currentStep = 0;
+            state.autoMode = false;
+            
+            calcContainer.innerHTML = '<div class="empty-state"><div class="icon">▶</div><div>点击"开始计算"查看演示</div></div>';
+            clearSteps();
+            updateButtons();
+        }
+        
+        // ===== 加载示例 =====
+        function loadExample() {
+            // 清空现有行，保留3行
+            var rows = inputRows.querySelectorAll('.binary-row');
+            while (rows.length > 3) {
+                rows[rows.length - 1].remove();
+                rows = inputRows.querySelectorAll('.binary-row');
+            }
+            while (rows.length < 3) {
+                addInputRow();
+                rows = inputRows.querySelectorAll('.binary-row');
+            }
+            
+            // 填入示例数据
+            var examples = [
+                '01100110 01100000',
+                '01010101 01010101',
+                '10001111 00001100'
+            ];
+            
+            rows = inputRows.querySelectorAll('.binary-row input');
+            for (var i = 0; i < rows.length && i < examples.length; i++) {
+                rows[i].value = examples[i];
+            }
+            
+            resetAll();
+        }
+        
+        // ===== 事件绑定 =====
+        btnStart.onclick = startCalc;
+        btnStep.onclick = executeStep;
+        btnAuto.onclick = autoExecute;
+        btnReset.onclick = resetAll;
+        btnExample.onclick = loadExample;
+        btnAddRow.onclick = addInputRow;
+        
+        // 绑定删除按钮
+        var removeButtons = inputRows.querySelectorAll('.btn-remove-row');
+        for (var i = 0; i < removeButtons.length; i++) {
+            (function(btn) {
+                btn.onclick = function() {
+                    if (inputRows.querySelectorAll('.binary-row').length > 2) {
+                        btn.parentElement.remove();
+                        updateRowNumbers();
+                    }
+                };
+            })(removeButtons[i]);
+        }
+        
+        // ===== 初始化 =====
+        updateButtons();
+        loadExample();
+    })();
+    </script>
+</body>
+</html>

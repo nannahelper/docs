@@ -1,0 +1,1094 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>数字数据编码波形演示</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        :root {
+            --primary: #1a56db;
+            --primary-light: #e1effe;
+            --success: #047857;
+            --success-light: #d1fae5;
+            --danger: #b91c1c;
+            --danger-light: #fee2e2;
+            --warning: #d97706;
+            --warning-light: #fef3c7;
+            --text: #1f2937;
+            --text-secondary: #6b7280;
+            --border: #d1d5db;
+            --bg-light: #f9fafb;
+            --white: #ffffff;
+        }
+        
+        body {
+            font-family: system-ui, -apple-system, "Segoe UI", "Microsoft YaHei", sans-serif;
+            background: var(--white);
+            color: var(--text);
+            font-size: 14px;
+            line-height: 1.5;
+        }
+        
+        .page {
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            max-width: 1400px;
+            margin: 0 auto;
+            border-left: 1px solid var(--border);
+            border-right: 1px solid var(--border);
+        }
+        
+        .page-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 8px 16px;
+            border-bottom: 1px solid var(--border);
+            background: var(--bg-light);
+        }
+        
+        .page-title {
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--text);
+        }
+        
+        .page-title code {
+            font-family: "Consolas", "Monaco", monospace;
+            background: var(--primary-light);
+            color: var(--primary);
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-size: 13px;
+            margin-left: 8px;
+        }
+        
+        .page-badge {
+            font-size: 12px;
+            color: var(--text-secondary);
+            background: var(--white);
+            padding: 4px 10px;
+            border: 1px solid var(--border);
+            border-radius: 3px;
+        }
+        
+        .page-body {
+            display: flex;
+            flex: 1;
+            overflow: hidden;
+        }
+        
+        .main-panel {
+            flex: 0 0 80%;
+            display: flex;
+            flex-direction: column;
+            border-right: 1px solid var(--border);
+        }
+        
+        .side-panel {
+            flex: 0 0 20%;
+            display: flex;
+            flex-direction: column;
+            background: var(--bg-light);
+        }
+        
+        /* 可视化区域 */
+        .visual-area {
+            flex: 1;
+            padding: 16px 20px;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+        
+        .visual-header {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 12px;
+        }
+        
+        .visual-label {
+            font-family: "Consolas", "Monaco", monospace;
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text);
+        }
+        
+        .visual-info {
+            font-family: "Consolas", "Monaco", monospace;
+            font-size: 13px;
+            color: var(--text-secondary);
+        }
+        
+        .visual-info strong {
+            color: var(--primary);
+        }
+        
+        /* 波形容器 */
+        .waveform-container {
+            flex: 1;
+            background: var(--white);
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            overflow: auto;
+            position: relative;
+        }
+        
+        .waveform-canvas {
+            display: block;
+        }
+        
+        /* 控制面板 */
+        .control-area {
+            border-top: 1px solid var(--border);
+            padding: 12px 20px;
+            background: var(--white);
+        }
+        
+        .control-row {
+            display: flex;
+            gap: 20px;
+            align-items: flex-start;
+        }
+        
+        .control-left {
+            flex: 1;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px 20px;
+            align-items: center;
+        }
+        
+        .control-right {
+            flex-shrink: 0;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            align-items: center;
+            justify-content: flex-end;
+        }
+        
+        .control-group {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-shrink: 0;
+        }
+        
+        .control-label {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text);
+            white-space: nowrap;
+        }
+        
+        .control-input {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .control-input input {
+            width: 200px;
+            padding: 6px 10px;
+            border: 1px solid var(--border);
+            border-radius: 3px;
+            font-family: "Consolas", "Monaco", monospace;
+            font-size: 14px;
+        }
+        
+        .control-input input:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+        
+        .btn {
+            padding: 6px 16px;
+            border: 1px solid transparent;
+            border-radius: 3px;
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        .btn-primary {
+            background: var(--primary);
+            color: var(--white);
+            border-color: var(--primary);
+        }
+        
+        .btn-primary:hover:not(:disabled) {
+            background: #1e429f;
+        }
+        
+        .btn-success {
+            background: var(--success);
+            color: var(--white);
+            border-color: var(--success);
+        }
+        
+        .btn-success:hover:not(:disabled) {
+            background: #065f46;
+        }
+        
+        .btn-warning {
+            background: var(--warning);
+            color: var(--white);
+            border-color: var(--warning);
+        }
+        
+        .btn-warning:hover:not(:disabled) {
+            background: #b45309;
+        }
+        
+        .btn-secondary {
+            background: var(--white);
+            color: var(--text-secondary);
+            border-color: var(--border);
+        }
+        
+        .btn-secondary:hover:not(:disabled) {
+            background: var(--bg-light);
+            color: var(--text);
+        }
+        
+        .action-hint {
+            font-size: 12px;
+            color: var(--danger);
+            font-weight: 600;
+            animation: hintBlink 1s ease-in-out infinite;
+            margin-right: 4px;
+        }
+        
+        @keyframes hintBlink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        
+        /* 右侧面板 */
+        .side-header {
+            padding: 10px 12px;
+            border-bottom: 1px solid var(--border);
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text);
+        }
+        
+        .side-content {
+            flex: 1;
+            overflow-y: auto;
+            padding: 12px;
+        }
+        
+        .encoding-list {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+        
+        .encoding-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 10px;
+            background: var(--white);
+            border: 1px solid var(--border);
+            border-radius: 3px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .encoding-item:hover {
+            border-color: var(--primary);
+        }
+        
+        .encoding-item.active {
+            border-color: var(--primary);
+            background: var(--primary-light);
+        }
+        
+        .encoding-item.animating {
+            border-color: var(--warning);
+            background: var(--warning-light);
+        }
+        
+        .encoding-color {
+            width: 12px;
+            height: 12px;
+            border-radius: 2px;
+            flex-shrink: 0;
+        }
+        
+        .encoding-name {
+            flex: 1;
+            font-weight: 500;
+            color: var(--text);
+        }
+        
+        .encoding-abbr {
+            font-family: "Consolas", "Monaco", monospace;
+            font-size: 10px;
+            color: var(--text-secondary);
+            background: var(--bg-light);
+            padding: 2px 4px;
+            border-radius: 2px;
+        }
+        
+        .side-footer {
+            padding: 10px 12px;
+            border-top: 1px solid var(--border);
+            font-size: 11px;
+            color: var(--text-secondary);
+            background: var(--white);
+            line-height: 1.6;
+        }
+        
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            margin-bottom: 4px;
+        }
+        
+        .legend-line {
+            width: 20px;
+            height: 2px;
+        }
+        
+        /* 特性说明 */
+        .feature-box {
+            margin-top: 12px;
+            padding: 10px;
+            background: var(--white);
+            border: 1px solid var(--border);
+            border-radius: 3px;
+        }
+        
+        .feature-title {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text);
+            margin-bottom: 6px;
+        }
+        
+        .feature-text {
+            font-size: 11px;
+            color: var(--text-secondary);
+            line-height: 1.5;
+        }
+        
+        .feature-text strong {
+            color: var(--primary);
+        }
+        
+        /* 速度控制 */
+        .speed-control {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        
+        .speed-label {
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+        
+        .speed-slider {
+            width: 80px;
+            height: 4px;
+            -webkit-appearance: none;
+            background: var(--border);
+            border-radius: 2px;
+            outline: none;
+        }
+        
+        .speed-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 12px;
+            height: 12px;
+            background: var(--primary);
+            border-radius: 50%;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="page">
+        <header class="page-header">
+            <h1 class="page-title">数字数据编码波形演示<code>Digital Encoding</code></h1>
+            <span class="page-badge">计算机网络 · 物理层</span>
+        </header>
+        
+        <div class="page-body">
+            <div class="main-panel">
+                <div class="visual-area">
+                    <div class="visual-header">
+                        <span class="visual-label">波形对比</span>
+                        <span class="visual-info">二进制序列: <strong id="binaryDisplay">11110010</strong></span>
+                        <span class="visual-info">当前位: <strong id="currentBitDisplay">-</strong></span>
+                    </div>
+                    <div class="waveform-container" id="waveformContainer">
+                        <canvas class="waveform-canvas" id="waveformCanvas"></canvas>
+                    </div>
+                </div>
+                
+                <div class="control-area">
+                    <div class="control-row">
+                        <div class="control-left">
+                            <div class="control-group">
+                                <span class="control-label">二进制序列</span>
+                                <div class="control-input">
+                                    <input type="text" id="inputBinary" value="11110010" placeholder="输入0和1的序列">
+                                </div>
+                            </div>
+                            <div class="control-group">
+                                <span class="speed-label">速度</span>
+                                <input type="range" class="speed-slider" id="speedSlider" min="1" max="10" value="5">
+                            </div>
+                        </div>
+                        
+                        <div class="control-right">
+                            <span class="action-hint" id="hintGenerate">请选择 ▶</span>
+                            <button class="btn btn-primary" id="btnGenerate">生成波形</button>
+                            <button class="btn btn-success" id="btnAnimate">动画演示</button>
+                            <button class="btn btn-warning" id="btnPause">暂停</button>
+                            <button class="btn btn-secondary" id="btnReset">重置</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="side-panel">
+                <div class="side-header">编码方式</div>
+                <div class="side-content">
+                    <div class="encoding-list" id="encodingList">
+                        <div class="encoding-item active" data-encoding="nrz">
+                            <span class="encoding-color" style="background: #1a56db;"></span>
+                            <span class="encoding-name">非归零编码</span>
+                            <span class="encoding-abbr">NRZ</span>
+                        </div>
+                        <div class="encoding-item active" data-encoding="rz">
+                            <span class="encoding-color" style="background: #047857;"></span>
+                            <span class="encoding-name">归零编码</span>
+                            <span class="encoding-abbr">RZ</span>
+                        </div>
+                        <div class="encoding-item active" data-encoding="nrzi">
+                            <span class="encoding-color" style="background: #7c3aed;"></span>
+                            <span class="encoding-name">反向非归零编码</span>
+                            <span class="encoding-abbr">NRZI</span>
+                        </div>
+                        <div class="encoding-item active" data-encoding="manchester">
+                            <span class="encoding-color" style="background: #dc2626;"></span>
+                            <span class="encoding-name">曼彻斯特编码</span>
+                            <span class="encoding-abbr">Manchester</span>
+                        </div>
+                        <div class="encoding-item active" data-encoding="diff-manchester">
+                            <span class="encoding-color" style="background: #ea580c;"></span>
+                            <span class="encoding-name">差分曼彻斯特编码</span>
+                            <span class="encoding-abbr">Diff-Man</span>
+                        </div>
+                    </div>
+                    
+                    <div class="feature-box" id="featureBox">
+                        <div class="feature-title">编码特性</div>
+                        <div class="feature-text" id="featureText">
+                            点击左侧编码方式查看特性说明
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="side-footer">
+                    <div class="legend-item">
+                        <span class="legend-line" style="background: #333;"></span>
+                        <span>高电平 / 低电平</span>
+                    </div>
+                    <div class="legend-item">
+                        <span style="color: var(--danger); font-weight: 600;">跳变</span>
+                        <span>= 电平变化点</span>
+                    </div>
+                    <div class="legend-item">
+                        <span style="color: var(--text-secondary);">不变</span>
+                        <span>= 保持原电平</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+    (function() {
+        // 编码颜色配置
+        var COLORS = {
+            nrz: '#1a56db',
+            rz: '#047857',
+            nrzi: '#7c3aed',
+            manchester: '#dc2626',
+            'diff-manchester': '#ea580c'
+        };
+        
+        // 编码特性说明
+        var FEATURES = {
+            nrz: '<strong>特点：</strong>1用高电平表示，0用低电平表示<br><strong>优点：</strong>实现简单<br><strong>缺点：</strong>无自同步能力，连续0或1时无法同步时钟',
+            rz: '<strong>特点：</strong>每个码元中间归零<br><strong>优点：</strong>有一定自同步能力<br><strong>缺点：</strong>带宽利用率低（是NRZ的两倍）',
+            nrzi: '<strong>特点：</strong>0不跳变，1跳变（或反过来）<br><strong>优点：</strong>连续1时有跳变<br><strong>缺点：</strong>连续0时仍无跳变',
+            manchester: '<strong>特点：</strong>每个码元中间必跳变，高→低表示0，低→高表示1<br><strong>优点：</strong>自同步能力强<br><strong>缺点：</strong>带宽是NRZ的两倍<br><strong>应用：</strong>以太网',
+            'diff-manchester': '<strong>特点：</strong>码元中间必跳变用于同步，码元开始跳变表示0，不跳变表示1<br><strong>优点：</strong>抗干扰能力强<br><strong>应用：</strong>令牌环网'
+        };
+        
+        // 状态变量
+        var binaryData = [];
+        var isAnimating = false;
+        var isPaused = false;
+        var animationTimer = null;
+        var currentAnimBit = 0;
+        
+        // 波形数据缓存
+        var waveformData = {};
+        
+        // DOM引用
+        var canvas = document.getElementById('waveformCanvas');
+        var ctx = canvas.getContext('2d');
+        var container = document.getElementById('waveformContainer');
+        var inputBinary = document.getElementById('inputBinary');
+        var binaryDisplay = document.getElementById('binaryDisplay');
+        var currentBitDisplay = document.getElementById('currentBitDisplay');
+        var featureText = document.getElementById('featureText');
+        var speedSlider = document.getElementById('speedSlider');
+        var hintGenerate = document.getElementById('hintGenerate');
+        
+        var btnGenerate = document.getElementById('btnGenerate');
+        var btnAnimate = document.getElementById('btnAnimate');
+        var btnPause = document.getElementById('btnPause');
+        var btnReset = document.getElementById('btnReset');
+        
+        // 绘图参数
+        var CONFIG = {
+            bitWidth: 80,
+            rowHeight: 80,
+            marginLeft: 140,
+            marginTop: 50,
+            marginBottom: 30,
+            waveHeight: 40,
+            lineWidth: 2.5
+        };
+        
+        // 初始化Canvas尺寸
+        function resizeCanvas() {
+            var rect = container.getBoundingClientRect();
+            var totalRows = 6; // 二进制 + 5种编码
+            var minHeight = CONFIG.marginTop + totalRows * CONFIG.rowHeight + CONFIG.marginBottom;
+            var minWidth = CONFIG.marginLeft + binaryData.length * CONFIG.bitWidth + 60;
+            
+            canvas.width = Math.max(rect.width, minWidth);
+            canvas.height = Math.max(rect.height, minHeight);
+        }
+        
+        // 解析二进制输入
+        function parseBinary(input) {
+            var result = [];
+            for (var i = 0; i < input.length; i++) {
+                if (input[i] === '0' || input[i] === '1') {
+                    result.push(parseInt(input[i]));
+                }
+            }
+            return result;
+        }
+        
+        // 生成NRZ编码波形数据
+        function generateNRZ(bits) {
+            var wave = [];
+            for (var i = 0; i < bits.length; i++) {
+                wave.push({
+                    type: 'nrz',
+                    bit: bits[i],
+                    levelAtStart: bits[i],
+                    levelAtEnd: bits[i],
+                    topLabel: bits[i] === 1 ? '高' : '',
+                    bottomLabel: bits[i] === 0 ? '低' : ''
+                });
+            }
+            return wave;
+        }
+        
+        // 生成RZ编码波形数据
+        function generateRZ(bits) {
+            var wave = [];
+            for (var i = 0; i < bits.length; i++) {
+                wave.push({
+                    type: 'rz',
+                    bit: bits[i],
+                    levelFirst: bits[i],
+                    levelSecond: 0,
+                    topLabel: bits[i] === 1 ? '高' : '',
+                    midLabel: '零',
+                    bottomLabel: bits[i] === 0 ? '低' : ''
+                });
+            }
+            return wave;
+        }
+        
+        // 生成NRZI编码波形数据
+        function generateNRZI(bits) {
+            var wave = [];
+            var currentLevel = 0;
+            for (var i = 0; i < bits.length; i++) {
+                var prevLevel = currentLevel;
+                if (bits[i] === 1) {
+                    currentLevel = 1 - currentLevel;
+                }
+                wave.push({
+                    type: 'nrzi',
+                    bit: bits[i],
+                    levelAtStart: prevLevel,
+                    levelAtEnd: currentLevel,
+                    transitionAtStart: bits[i] === 1,
+                    label: bits[i] === 1 ? '跳变' : '不变'
+                });
+            }
+            return wave;
+        }
+        
+        // 生成曼彻斯特编码波形数据
+        function generateManchester(bits) {
+            var wave = [];
+            for (var i = 0; i < bits.length; i++) {
+                // 0: 高→低，1: 低→高（中间跳变）
+                wave.push({
+                    type: 'manchester',
+                    bit: bits[i],
+                    levelFirst: bits[i] === 0 ? 1 : 0,
+                    levelSecond: bits[i] === 0 ? 0 : 1,
+                    label: '跳变'
+                });
+            }
+            return wave;
+        }
+        
+        // 生成差分曼彻斯特编码波形数据
+        function generateDiffManchester(bits) {
+            var wave = [];
+            var lastLevel = 0;
+            
+            for (var i = 0; i < bits.length; i++) {
+                var firstLevel, secondLevel;
+                var label;
+                
+                if (bits[i] === 0) {
+                    // 0: 码元开始跳变
+                    firstLevel = 1 - lastLevel;
+                    label = '跳变';
+                } else {
+                    // 1: 码元开始不跳变
+                    firstLevel = lastLevel;
+                    label = '不变';
+                }
+                // 中间必须跳变
+                secondLevel = 1 - firstLevel;
+                
+                wave.push({
+                    type: 'diff-manchester',
+                    bit: bits[i],
+                    levelFirst: firstLevel,
+                    levelSecond: secondLevel,
+                    transitionAtStart: bits[i] === 0,
+                    label: label
+                });
+                
+                lastLevel = secondLevel;
+            }
+            return wave;
+        }
+        
+        // 生成所有编码波形
+        function generateAllWaveforms() {
+            waveformData = {
+                nrz: generateNRZ(binaryData),
+                rz: generateRZ(binaryData),
+                nrzi: generateNRZI(binaryData),
+                manchester: generateManchester(binaryData),
+                'diff-manchester': generateDiffManchester(binaryData)
+            };
+        }
+        
+        // 绘制波形
+        function drawWaveforms(animateBits) {
+            if (typeof animateBits === 'undefined') {
+                animateBits = binaryData.length;
+            }
+            
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.font = '13px "Microsoft YaHei", sans-serif';
+            ctx.textBaseline = 'middle';
+            
+            // 绘制二进制数据行
+            drawBinaryRow(animateBits);
+            
+            // 绘制分隔虚线
+            drawVerticalLines(animateBits);
+            
+            // 绘制各编码波形
+            var encodings = ['nrz', 'rz', 'nrzi', 'manchester', 'diff-manchester'];
+            var labels = ['非归零编码', '归零编码', '反向非归零编码', '曼彻斯特编码', '差分曼彻斯特编码'];
+            
+            for (var i = 0; i < encodings.length; i++) {
+                var rowY = CONFIG.marginTop + (i + 1) * CONFIG.rowHeight;
+                drawEncodingRow(encodings[i], labels[i], rowY, animateBits);
+            }
+        }
+        
+        // 绘制二进制数据行
+        function drawBinaryRow(animateBits) {
+            var y = CONFIG.marginTop;
+            
+            ctx.fillStyle = '#333';
+            ctx.font = 'bold 13px "Microsoft YaHei", sans-serif';
+            ctx.textAlign = 'left';
+            ctx.fillText('二进制数据', 10, y + 25);
+            
+            ctx.font = 'bold 20px "Consolas", monospace';
+            ctx.textAlign = 'center';
+            
+            for (var i = 0; i < binaryData.length && i < animateBits; i++) {
+                var x = CONFIG.marginLeft + i * CONFIG.bitWidth + CONFIG.bitWidth / 2;
+                ctx.fillStyle = (i === animateBits - 1 && isAnimating) ? '#dc2626' : '#333';
+                ctx.fillText(binaryData[i].toString(), x, y + 25);
+            }
+            ctx.textAlign = 'left';
+        }
+        
+        // 绘制垂直分隔线
+        function drawVerticalLines(animateBits) {
+            ctx.strokeStyle = '#ccc';
+            ctx.lineWidth = 1;
+            ctx.setLineDash([5, 5]);
+            
+            var endY = CONFIG.marginTop + 6 * CONFIG.rowHeight - 10;
+            
+            for (var i = 0; i <= binaryData.length && i <= animateBits; i++) {
+                var x = CONFIG.marginLeft + i * CONFIG.bitWidth;
+                ctx.beginPath();
+                ctx.moveTo(x, CONFIG.marginTop + 50);
+                ctx.lineTo(x, endY);
+                ctx.stroke();
+            }
+            ctx.setLineDash([]);
+        }
+        
+        // 绘制单个编码波形行
+        function drawEncodingRow(encoding, label, baseY, animateBits) {
+            var wave = waveformData[encoding];
+            if (!wave) return;
+            
+            var color = COLORS[encoding];
+            var highY = baseY + 10;
+            var lowY = baseY + 10 + CONFIG.waveHeight;
+            var midY = baseY + 10 + CONFIG.waveHeight / 2;
+            
+            // 绘制标签
+            ctx.fillStyle = '#333';
+            ctx.font = '13px "Microsoft YaHei", sans-serif';
+            ctx.textAlign = 'left';
+            ctx.fillText(label, 10, midY);
+            
+            // 绘制波形
+            ctx.strokeStyle = color;
+            ctx.lineWidth = CONFIG.lineWidth;
+            ctx.lineCap = 'square';
+            ctx.lineJoin = 'miter';
+            
+            var prevY = null;
+            
+            for (var i = 0; i < wave.length && i < animateBits; i++) {
+                var seg = wave[i];
+                var x = CONFIG.marginLeft + i * CONFIG.bitWidth;
+                var xEnd = x + CONFIG.bitWidth;
+                var xMid = x + CONFIG.bitWidth / 2;
+                
+                ctx.beginPath();
+                
+                if (encoding === 'nrz') {
+                    var levelY = seg.levelAtStart === 1 ? highY : lowY;
+                    // 与上一段连接
+                    if (prevY !== null && prevY !== levelY) {
+                        ctx.moveTo(x, prevY);
+                        ctx.lineTo(x, levelY);
+                    }
+                    ctx.moveTo(x, levelY);
+                    ctx.lineTo(xEnd, levelY);
+                    prevY = levelY;
+                    
+                    // 标注
+                    drawTopBottomLabel(seg.topLabel, seg.bottomLabel, xMid, highY - 12, lowY + 12);
+                    
+                } else if (encoding === 'rz') {
+                    var firstY = seg.levelFirst === 1 ? highY : lowY;
+                    var secondY = lowY; // 归零到低电平
+                    
+                    if (prevY !== null && prevY !== firstY) {
+                        ctx.moveTo(x, prevY);
+                        ctx.lineTo(x, firstY);
+                    }
+                    ctx.moveTo(x, firstY);
+                    ctx.lineTo(xMid, firstY);
+                    ctx.lineTo(xMid, secondY);
+                    ctx.lineTo(xEnd, secondY);
+                    prevY = secondY;
+                    
+                    // 标注：上方显示高，下方显示零
+                    if (seg.levelFirst === 1) {
+                        drawSingleLabel('高', xMid - 20, highY - 12, '#333');
+                    } else {
+                        drawSingleLabel('低', xMid - 20, lowY + 12, '#333');
+                    }
+                    drawSingleLabel('零', xMid + 20, lowY + 12, '#666');
+                    
+                } else if (encoding === 'nrzi') {
+                    var startY = seg.levelAtStart === 1 ? highY : lowY;
+                    var endLevelY = seg.levelAtEnd === 1 ? highY : lowY;
+                    
+                    if (prevY !== null && prevY !== startY) {
+                        ctx.moveTo(x, prevY);
+                        ctx.lineTo(x, startY);
+                    }
+                    
+                    if (seg.transitionAtStart) {
+                        // 开始时跳变
+                        ctx.moveTo(x, startY);
+                        ctx.lineTo(x, endLevelY);
+                        ctx.lineTo(xEnd, endLevelY);
+                    } else {
+                        ctx.moveTo(x, startY);
+                        ctx.lineTo(xEnd, endLevelY);
+                    }
+                    prevY = endLevelY;
+                    
+                    // 标注
+                    drawTransitionLabel(seg.label, xMid, midY - 5);
+                    
+                } else if (encoding === 'manchester') {
+                    var firstY = seg.levelFirst === 1 ? highY : lowY;
+                    var secondY = seg.levelSecond === 1 ? highY : lowY;
+                    
+                    if (prevY !== null && prevY !== firstY) {
+                        ctx.moveTo(x, prevY);
+                        ctx.lineTo(x, firstY);
+                    }
+                    ctx.moveTo(x, firstY);
+                    ctx.lineTo(xMid, firstY);
+                    ctx.lineTo(xMid, secondY);
+                    ctx.lineTo(xEnd, secondY);
+                    prevY = secondY;
+                    
+                    // 标注
+                    drawTransitionLabel(seg.label, xMid, midY - 5);
+                    
+                } else if (encoding === 'diff-manchester') {
+                    var firstY = seg.levelFirst === 1 ? highY : lowY;
+                    var secondY = seg.levelSecond === 1 ? highY : lowY;
+                    
+                    if (prevY !== null && prevY !== firstY) {
+                        ctx.moveTo(x, prevY);
+                        ctx.lineTo(x, firstY);
+                    }
+                    ctx.moveTo(x, firstY);
+                    ctx.lineTo(xMid, firstY);
+                    ctx.lineTo(xMid, secondY);
+                    ctx.lineTo(xEnd, secondY);
+                    prevY = secondY;
+                    
+                    // 标注
+                    drawTransitionLabel(seg.label, xMid, midY - 5);
+                }
+                
+                ctx.stroke();
+            }
+        }
+        
+        // 绘制上下标注
+        function drawTopBottomLabel(topText, bottomText, x, topY, bottomY) {
+            ctx.font = '11px "Microsoft YaHei", sans-serif';
+            ctx.textAlign = 'center';
+            if (topText) {
+                ctx.fillStyle = '#333';
+                ctx.fillText(topText, x, topY);
+            }
+            if (bottomText) {
+                ctx.fillStyle = '#333';
+                ctx.fillText(bottomText, x, bottomY);
+            }
+        }
+        
+        // 绘制单个标注
+        function drawSingleLabel(text, x, y, color) {
+            ctx.font = '11px "Microsoft YaHei", sans-serif';
+            ctx.textAlign = 'center';
+            ctx.fillStyle = color;
+            ctx.fillText(text, x, y);
+        }
+        
+        // 绘制跳变/不变标注
+        function drawTransitionLabel(text, x, y) {
+            ctx.font = '11px "Microsoft YaHei", sans-serif';
+            ctx.textAlign = 'center';
+            ctx.fillStyle = text === '跳变' ? '#dc2626' : '#666';
+            ctx.fillText(text, x, y);
+        }
+        
+        // 更新按钮状态
+        function updateButtonStates() {
+            btnGenerate.disabled = isAnimating;
+            btnAnimate.disabled = isAnimating || binaryData.length === 0;
+            btnPause.disabled = !isAnimating;
+            btnReset.disabled = isAnimating && !isPaused;
+            
+            hintGenerate.style.display = binaryData.length === 0 ? 'inline' : 'none';
+        }
+        
+        // 生成波形
+        function onGenerate() {
+            var input = inputBinary.value.trim();
+            binaryData = parseBinary(input);
+            
+            if (binaryData.length === 0) {
+                alert('请输入有效的二进制序列（只包含0和1）');
+                return;
+            }
+            
+            if (binaryData.length > 16) {
+                alert('二进制序列最多支持16位');
+                binaryData = binaryData.slice(0, 16);
+            }
+            
+            binaryDisplay.textContent = binaryData.join('');
+            currentBitDisplay.textContent = '-';
+            
+            resizeCanvas();
+            generateAllWaveforms();
+            drawWaveforms();
+            updateButtonStates();
+        }
+        
+        // 开始动画
+        function onAnimate() {
+            if (binaryData.length === 0) return;
+            
+            isAnimating = true;
+            isPaused = false;
+            currentAnimBit = 0;
+            
+            updateButtonStates();
+            animateStep();
+        }
+        
+        // 动画单步
+        function animateStep() {
+            if (!isAnimating || isPaused) return;
+            
+            currentAnimBit++;
+            currentBitDisplay.textContent = currentAnimBit <= binaryData.length ? currentAnimBit : '-';
+            
+            drawWaveforms(currentAnimBit);
+            
+            if (currentAnimBit < binaryData.length) {
+                var delay = 1100 - speedSlider.value * 100;
+                animationTimer = setTimeout(animateStep, delay);
+            } else {
+                isAnimating = false;
+                currentBitDisplay.textContent = '完成';
+                updateButtonStates();
+            }
+        }
+        
+        // 暂停/继续
+        function onPause() {
+            if (!isAnimating) return;
+            
+            if (isPaused) {
+                isPaused = false;
+                btnPause.textContent = '暂停';
+                animateStep();
+            } else {
+                isPaused = true;
+                btnPause.textContent = '继续';
+                if (animationTimer) {
+                    clearTimeout(animationTimer);
+                    animationTimer = null;
+                }
+            }
+        }
+        
+        // 重置
+        function onReset() {
+            if (animationTimer) {
+                clearTimeout(animationTimer);
+                animationTimer = null;
+            }
+            
+            isAnimating = false;
+            isPaused = false;
+            currentAnimBit = 0;
+            currentBitDisplay.textContent = '-';
+            btnPause.textContent = '暂停';
+            
+            if (binaryData.length > 0) {
+                drawWaveforms();
+            } else {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+            }
+            
+            updateButtonStates();
+        }
+        
+        // 编码点击
+        function onEncodingClick(e) {
+            var item = e.target.closest('.encoding-item');
+            if (!item) return;
+            
+            var encoding = item.getAttribute('data-encoding');
+            if (encoding && FEATURES[encoding]) {
+                featureText.innerHTML = FEATURES[encoding];
+            }
+        }
+        
+        // 事件绑定
+        btnGenerate.onclick = onGenerate;
+        btnAnimate.onclick = onAnimate;
+        btnPause.onclick = onPause;
+        btnReset.onclick = onReset;
+        document.getElementById('encodingList').onclick = onEncodingClick;
+        
+        inputBinary.onkeydown = function(e) {
+            if (e.key === 'Enter') onGenerate();
+        };
+        
+        window.onresize = function() {
+            resizeCanvas();
+            if (binaryData.length > 0) {
+                drawWaveforms(isAnimating ? currentAnimBit : binaryData.length);
+            }
+        };
+        
+        // 初始化
+        resizeCanvas();
+        onGenerate();
+        updateButtonStates();
+        featureText.innerHTML = FEATURES.nrz;
+    })();
+    </script>
+</body>
+</html>

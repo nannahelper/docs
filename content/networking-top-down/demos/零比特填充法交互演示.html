@@ -1,0 +1,1362 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>比特填充过程演示</title>
+    <style>
+        /* ===== 408教学风格基础样式 ===== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        :root {
+            /* 主色调：学术蓝 */
+            --primary: #1a56db;
+            --primary-light: #e1effe;
+            /* 功能色 */
+            --success: #047857;
+            --success-light: #d1fae5;
+            --danger: #b91c1c;
+            --danger-light: #fee2e2;
+            --warning: #d97706;
+            --warning-light: #fef3c7;
+            --info: #0891b2;
+            --info-light: #cffafe;
+            /* 中性色 */
+            --text: #1f2937;
+            --text-secondary: #6b7280;
+            --border: #d1d5db;
+            --bg-light: #f9fafb;
+            --white: #ffffff;
+        }
+        
+        body {
+            font-family: system-ui, -apple-system, "Segoe UI", "Microsoft YaHei", sans-serif;
+            background: var(--white);
+            color: var(--text);
+            font-size: 14px;
+            line-height: 1.5;
+        }
+        
+        /* ===== 页面布局 ===== */
+        .page {
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            max-width: 1400px;
+            margin: 0 auto;
+            border-left: 1px solid var(--border);
+            border-right: 1px solid var(--border);
+        }
+        
+        /* 顶部标题栏 */
+        .page-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 8px 16px;
+            border-bottom: 1px solid var(--border);
+            background: var(--bg-light);
+        }
+        
+        .page-title {
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--text);
+        }
+        
+        .page-title code {
+            font-family: "Consolas", "Monaco", monospace;
+            background: var(--primary-light);
+            color: var(--primary);
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-size: 13px;
+            margin-left: 8px;
+        }
+        
+        .page-badge {
+            font-size: 12px;
+            color: var(--text-secondary);
+            background: var(--white);
+            padding: 4px 10px;
+            border: 1px solid var(--border);
+            border-radius: 3px;
+        }
+        
+        /* 主体区域：左右布局 */
+        .page-body {
+            display: flex;
+            flex: 1;
+            overflow: hidden;
+        }
+        
+        /* 左侧主区域 80% */
+        .main-panel {
+            flex: 0 0 80%;
+            display: flex;
+            flex-direction: column;
+            border-right: 1px solid var(--border);
+        }
+        
+        /* 右侧消息区域 20% */
+        .side-panel {
+            flex: 0 0 20%;
+            display: flex;
+            flex-direction: column;
+            background: var(--bg-light);
+        }
+        
+        /* ===== 可视化区域 ===== */
+        .visual-area {
+            flex: 1;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+        }
+        
+        .section-title {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text);
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .section-title .tag {
+            font-size: 11px;
+            font-weight: 500;
+            padding: 2px 6px;
+            border-radius: 2px;
+            background: var(--primary-light);
+            color: var(--primary);
+        }
+        
+        /* 比特序列容器 */
+        .bit-container {
+            background: var(--bg-light);
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            padding: 16px;
+            margin-bottom: 16px;
+        }
+        
+        .bit-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 8px;
+        }
+        
+        .bit-row:last-child {
+            margin-bottom: 0;
+        }
+        
+        .bit-label {
+            font-family: "Consolas", "Monaco", monospace;
+            font-size: 12px;
+            color: var(--text-secondary);
+            width: 80px;
+            flex-shrink: 0;
+        }
+        
+        .bit-sequence {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 2px;
+            align-items: center;
+        }
+        
+        .bit-cell {
+            width: 28px;
+            height: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1.5px solid var(--border);
+            background: var(--white);
+            font-family: "Consolas", "Monaco", monospace;
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text);
+            border-radius: 2px;
+            transition: all 0.3s ease;
+        }
+        
+        .bit-cell.highlight-five {
+            border-color: var(--warning);
+            background: var(--warning-light);
+            color: var(--warning);
+        }
+        
+        .bit-cell.highlight-insert {
+            border-color: var(--success);
+            background: var(--success-light);
+            color: var(--success);
+            animation: insertPulse 0.5s ease;
+        }
+        
+        .bit-cell.highlight-current {
+            border-color: var(--primary);
+            background: var(--primary-light);
+            color: var(--primary);
+        }
+        
+        .bit-cell.highlight-delete {
+            border-color: var(--danger);
+            background: var(--danger-light);
+            color: var(--danger);
+        }
+        
+        .bit-cell.flag {
+            border-color: var(--info);
+            background: var(--info-light);
+            color: var(--info);
+        }
+        
+        @keyframes insertPulse {
+            0% { transform: scale(0); opacity: 0; }
+            50% { transform: scale(1.2); }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        
+        /* 分隔符 */
+        .bit-separator {
+            width: 1px;
+            height: 20px;
+            background: var(--border);
+            margin: 0 4px;
+        }
+        
+        /* 索引行 */
+        .index-row {
+            display: flex;
+            gap: 2px;
+            margin-left: 88px;
+            margin-bottom: 4px;
+        }
+        
+        .index-cell {
+            width: 28px;
+            text-align: center;
+            font-family: "Consolas", "Monaco", monospace;
+            font-size: 10px;
+            color: var(--text-secondary);
+        }
+        
+        /* 填充位置标记 */
+        .stuff-marker {
+            position: relative;
+        }
+        
+        .stuff-marker::after {
+            content: '▼';
+            position: absolute;
+            top: -16px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 10px;
+            color: var(--success);
+        }
+        
+        /* 结果对比区 */
+        .compare-area {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin-top: 16px;
+        }
+        
+        .compare-box {
+            background: var(--white);
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            padding: 12px;
+        }
+        
+        .compare-box .title {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+        }
+        
+        .compare-box .value {
+            font-family: "Consolas", "Monaco", monospace;
+            font-size: 13px;
+            color: var(--text);
+            word-break: break-all;
+        }
+        
+        .compare-box .stats {
+            margin-top: 8px;
+            font-size: 11px;
+            color: var(--text-secondary);
+        }
+        
+        /* ===== 控制区域 ===== */
+        .control-area {
+            border-top: 1px solid var(--border);
+            padding: 12px 20px;
+            background: var(--white);
+        }
+        
+        .control-row {
+            display: flex;
+            gap: 20px;
+            align-items: flex-start;
+        }
+        
+        .control-left {
+            flex: 1;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px 16px;
+            align-items: center;
+        }
+        
+        .control-right {
+            flex-shrink: 0;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            align-items: center;
+            justify-content: flex-end;
+        }
+        
+        .control-group {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-shrink: 0;
+        }
+        
+        .control-label {
+            font-size: 12px;
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+        
+        .control-input input {
+            font-family: "Consolas", "Monaco", monospace;
+            font-size: 13px;
+            padding: 6px 10px;
+            border: 1px solid var(--border);
+            border-radius: 3px;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+        
+        .control-input input:focus {
+            border-color: var(--primary);
+        }
+        
+        .control-input input.wide {
+            width: 280px;
+        }
+        
+        .btn {
+            padding: 6px 16px;
+            border: 1px solid transparent;
+            border-radius: 3px;
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        .btn-primary {
+            background: var(--primary);
+            color: var(--white);
+        }
+        
+        .btn-primary:hover:not(:disabled) {
+            background: #1e40af;
+        }
+        
+        .btn-success {
+            background: var(--success);
+            color: var(--white);
+        }
+        
+        .btn-success:hover:not(:disabled) {
+            background: #065f46;
+        }
+        
+        .btn-secondary {
+            background: var(--white);
+            color: var(--text-secondary);
+            border-color: var(--border);
+        }
+        
+        .btn-secondary:hover:not(:disabled) {
+            background: var(--bg-light);
+        }
+        
+        .action-hint {
+            font-size: 12px;
+            color: var(--danger);
+            font-weight: 600;
+            animation: hintBlink 1s ease-in-out infinite;
+            margin-right: 4px;
+        }
+        
+        @keyframes hintBlink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        
+        /* ===== 右侧面板 ===== */
+        .side-header {
+            padding: 10px 12px;
+            border-bottom: 1px solid var(--border);
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text);
+        }
+        
+        .step-list {
+            flex: 1;
+            overflow-y: auto;
+            padding: 10px;
+        }
+        
+        .step-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 8px;
+            padding: 8px 10px;
+            background: var(--white);
+            border: 1px solid var(--border);
+            border-radius: 3px;
+            font-size: 12px;
+            color: var(--text-secondary);
+            margin-bottom: 6px;
+        }
+        
+        .step-item.active {
+            border-color: var(--primary);
+            background: var(--primary-light);
+            color: var(--primary);
+        }
+        
+        .step-item.done {
+            border-color: var(--success);
+            color: var(--success);
+        }
+        
+        .step-num {
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: var(--border);
+            color: var(--white);
+            font-size: 10px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+        
+        .step-item.active .step-num { background: var(--primary); }
+        .step-item.done .step-num { background: var(--success); }
+        
+        .step-content {
+            flex: 1;
+        }
+        
+        /* 说明区域 */
+        .info-section {
+            padding: 10px 12px;
+            border-top: 1px solid var(--border);
+            background: var(--white);
+        }
+        
+        .info-title {
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            margin-bottom: 6px;
+        }
+        
+        .info-content {
+            font-size: 11px;
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+        
+        .info-content strong {
+            color: var(--text);
+        }
+        
+        /* 图例 */
+        .legend {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            padding: 10px 12px;
+            border-top: 1px solid var(--border);
+            background: var(--white);
+        }
+        
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 10px;
+            color: var(--text-secondary);
+        }
+        
+        .legend-box {
+            width: 14px;
+            height: 14px;
+            border-radius: 2px;
+            border: 1.5px solid;
+        }
+        
+        .legend-box.five {
+            border-color: var(--warning);
+            background: var(--warning-light);
+        }
+        
+        .legend-box.insert {
+            border-color: var(--success);
+            background: var(--success-light);
+        }
+        
+        .legend-box.current {
+            border-color: var(--primary);
+            background: var(--primary-light);
+        }
+        
+        .legend-box.flag {
+            border-color: var(--info);
+            background: var(--info-light);
+        }
+        
+        .legend-box.delete {
+            border-color: var(--danger);
+            background: var(--danger-light);
+        }
+        
+        /* 快速示例按钮 */
+        .quick-examples {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+        }
+        
+        .example-btn {
+            font-family: "Consolas", "Monaco", monospace;
+            font-size: 11px;
+            padding: 2px 8px;
+            border: 1px solid var(--border);
+            border-radius: 2px;
+            background: var(--white);
+            cursor: pointer;
+            color: var(--text-secondary);
+        }
+        
+        .example-btn:hover {
+            background: var(--bg-light);
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+    </style>
+</head>
+<body>
+    <div class="page">
+        <!-- 顶部标题栏 -->
+        <header class="page-header">
+            <h1 class="page-title">比特填充过程演示<code>Bit Stuffing</code></h1>
+            <span class="page-badge">计算机网络 · 数据链路层</span>
+        </header>
+        
+        <!-- 主体区域 -->
+        <div class="page-body">
+            <!-- 左侧主面板 -->
+            <div class="main-panel">
+                <!-- 可视化区域 -->
+                <div class="visual-area">
+                    <!-- 原始数据区 -->
+                    <div class="section-title" id="sectionOriginal">
+                        原始数据帧
+                        <span class="tag">发送方</span>
+                    </div>
+                    <div class="bit-container" id="originalContainer">
+                        <div class="index-row" id="indexRow"></div>
+                        <div class="bit-row">
+                            <span class="bit-label">数据帧:</span>
+                            <div class="bit-sequence" id="originalBits"></div>
+                        </div>
+                    </div>
+                    
+                    <!-- 填充过程区 -->
+                    <div class="section-title" id="sectionProcess">
+                        比特填充过程
+                        <span class="tag">连续5个1后插入0</span>
+                    </div>
+                    <div class="bit-container" id="processContainer">
+                        <div class="bit-row">
+                            <span class="bit-label">处理中:</span>
+                            <div class="bit-sequence" id="processBits"></div>
+                        </div>
+                        <div class="bit-row" style="margin-top: 8px;">
+                            <span class="bit-label">连续1计数:</span>
+                            <span id="consecutiveCount" style="font-family: Consolas, monospace; font-size: 14px; color: var(--primary);">0</span>
+                        </div>
+                    </div>
+                    
+                    <!-- 结果对比区 -->
+                    <div class="section-title">
+                        填充结果对比
+                    </div>
+                    <div class="compare-area">
+                        <div class="compare-box">
+                            <div class="title">原始数据</div>
+                            <div class="value" id="originalValue">-</div>
+                            <div class="stats" id="originalStats">长度: 0 比特</div>
+                        </div>
+                        <div class="compare-box">
+                            <div class="title">填充后数据</div>
+                            <div class="value" id="stuffedValue">-</div>
+                            <div class="stats" id="stuffedStats">长度: 0 比特 | 插入: 0 个0</div>
+                        </div>
+                    </div>
+                    
+                    <!-- 完整帧结构 -->
+                    <div class="section-title" id="sectionFrame" style="margin-top: 16px;">
+                        完整HDLC帧结构
+                        <span class="tag">含标志字段</span>
+                    </div>
+                    <div class="bit-container" id="frameContainer">
+                        <div class="bit-row">
+                            <span class="bit-label">完整帧:</span>
+                            <div class="bit-sequence" id="frameBits"></div>
+                        </div>
+                    </div>
+                    
+                    <!-- 接收方处理区 -->
+                    <div class="section-title" id="sectionReceive" style="margin-top: 16px;">
+                        接收方处理过程
+                        <span class="tag">删除填充的0</span>
+                    </div>
+                    <div class="bit-container" id="receiveContainer">
+                        <div class="bit-row">
+                            <span class="bit-label">接收数据:</span>
+                            <div class="bit-sequence" id="receiveBits"></div>
+                        </div>
+                        <div class="bit-row" style="margin-top: 8px;">
+                            <span class="bit-label">连续1计数:</span>
+                            <span id="receiveCount" style="font-family: Consolas, monospace; font-size: 14px; color: var(--primary);">0</span>
+                        </div>
+                    </div>
+                    
+                    <!-- 恢复结果 -->
+                    <div class="section-title" id="sectionRecovered" style="margin-top: 16px;">
+                        数据恢复验证
+                    </div>
+                    <div class="bit-container" id="recoveredContainer">
+                        <div class="bit-row">
+                            <span class="bit-label">恢复数据:</span>
+                            <div class="bit-sequence" id="recoveredBits"></div>
+                        </div>
+                        <div class="bit-row" style="margin-top: 8px;">
+                            <span class="bit-label">验证结果:</span>
+                            <span id="verifyResult" style="font-family: Consolas, monospace; font-size: 13px; color: var(--text-secondary);">-</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 控制区域 -->
+                <div class="control-area">
+                    <div class="control-row">
+                        <div class="control-left">
+                            <div class="control-group">
+                                <span class="control-label">二进制数据</span>
+                                <div class="control-input">
+                                    <input type="text" id="inputData" class="wide" value="0111110111111011" placeholder="输入二进制串，如 0111110111111011">
+                                </div>
+                            </div>
+                            <div class="control-group">
+                                <span class="control-label">快速示例</span>
+                                <div class="quick-examples">
+                                    <button class="example-btn" data-value="0111110">5个1</button>
+                                    <button class="example-btn" data-value="01111101">6个1</button>
+                                    <button class="example-btn" data-value="011111111110">10个1</button>
+                                    <button class="example-btn" data-value="0111110111111011">混合</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="control-right">
+                            <span class="action-hint" id="hintStart">请选择 ▶</span>
+                            <button class="btn btn-primary" id="btnStart">发送方填充</button>
+                            <span class="action-hint" id="hintReceive" style="display:none;">请选择 ▶</span>
+                            <button class="btn btn-primary" id="btnReceive" disabled>接收方恢复</button>
+                            <span class="action-hint" id="hintStep" style="display:none;">请选择 ▶</span>
+                            <button class="btn btn-success" id="btnStep" disabled>单步执行</button>
+                            <button class="btn btn-success" id="btnAuto" disabled>自动演示</button>
+                            <button class="btn btn-secondary" id="btnReset">重置</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 右侧面板 -->
+            <div class="side-panel">
+                <div class="side-header">操作步骤</div>
+                <div class="step-list" id="stepList"></div>
+                
+                <div class="legend">
+                    <div class="legend-item">
+                        <div class="legend-box current"></div>
+                        <span>当前扫描</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-box five"></div>
+                        <span>连续5个1</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-box insert"></div>
+                        <span>插入的0</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-box delete"></div>
+                        <span>删除的0</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-box flag"></div>
+                        <span>标志字段</span>
+                    </div>
+                </div>
+                
+                <div class="info-section">
+                    <div class="info-title">比特填充原理</div>
+                    <div class="info-content">
+                        HDLC协议使用<strong>01111110</strong>作为帧标志。<br><br>
+                        为防止数据中出现假标志：<br>
+                        <strong>发送方</strong>：连续5个1后插入0<br>
+                        <strong>接收方</strong>：连续5个1后删除0<br><br>
+                        <strong>完整流程</strong>：<br>
+                        1. 填充 → 2. 加标志 → 3. 传输<br>
+                        4. 去标志 → 5. 去填充 → 6. 恢复
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+    (function() {
+        // 状态变量
+        var originalData = '';
+        var stuffedData = '';
+        var recoveredData = '';
+        var currentIndex = 0;
+        var receiveIndex = 0;
+        var consecutiveOnes = 0;
+        var receiveConsecutive = 0;
+        var isAnimating = false;
+        var autoTimer = null;
+        var stuffPositions = [];  // 记录插入0的位置
+        var deletePositions = []; // 记录删除0的位置
+        var steps = [];
+        var phase = 'idle';  // idle, stuffing, stuffed, receiving, done
+        
+        // DOM 引用
+        var inputData = document.getElementById('inputData');
+        var btnStart = document.getElementById('btnStart');
+        var btnReceive = document.getElementById('btnReceive');
+        var btnStep = document.getElementById('btnStep');
+        var btnAuto = document.getElementById('btnAuto');
+        var btnReset = document.getElementById('btnReset');
+        var hintStart = document.getElementById('hintStart');
+        var hintReceive = document.getElementById('hintReceive');
+        var hintStep = document.getElementById('hintStep');
+        var originalBits = document.getElementById('originalBits');
+        var processBits = document.getElementById('processBits');
+        var frameBits = document.getElementById('frameBits');
+        var receiveBits = document.getElementById('receiveBits');
+        var recoveredBits = document.getElementById('recoveredBits');
+        var indexRow = document.getElementById('indexRow');
+        var consecutiveCount = document.getElementById('consecutiveCount');
+        var receiveCount = document.getElementById('receiveCount');
+        var verifyResult = document.getElementById('verifyResult');
+        var stepList = document.getElementById('stepList');
+        var originalValue = document.getElementById('originalValue');
+        var stuffedValue = document.getElementById('stuffedValue');
+        var originalStats = document.getElementById('originalStats');
+        var stuffedStats = document.getElementById('stuffedStats');
+        
+        // Section 引用（用于自动滚动）
+        var sectionOriginal = document.getElementById('sectionOriginal');
+        var sectionProcess = document.getElementById('sectionProcess');
+        var sectionFrame = document.getElementById('sectionFrame');
+        var sectionReceive = document.getElementById('sectionReceive');
+        var sectionRecovered = document.getElementById('sectionRecovered');
+        
+        // 滚动到指定区域
+        function scrollToSection(element) {
+            if (element) {
+                element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+        }
+        
+        // 快速示例按钮
+        var exampleBtns = document.querySelectorAll('.example-btn');
+        for (var i = 0; i < exampleBtns.length; i++) {
+            exampleBtns[i].onclick = function() {
+                inputData.value = this.getAttribute('data-value');
+            };
+        }
+        
+        // 验证输入
+        function validateInput(data) {
+            if (!data) {
+                alert('请输入二进制数据');
+                return false;
+            }
+            if (!/^[01]+$/.test(data)) {
+                alert('请只输入0和1');
+                return false;
+            }
+            if (data.length > 64) {
+                alert('数据长度不能超过64位');
+                return false;
+            }
+            return true;
+        }
+        
+        // 渲染原始数据
+        function renderOriginal() {
+            originalBits.innerHTML = '';
+            indexRow.innerHTML = '';
+            
+            for (var i = 0; i < originalData.length; i++) {
+                // 索引
+                var idx = document.createElement('div');
+                idx.className = 'index-cell';
+                idx.textContent = i;
+                indexRow.appendChild(idx);
+                
+                // 比特单元
+                var cell = document.createElement('div');
+                cell.className = 'bit-cell';
+                cell.textContent = originalData[i];
+                cell.id = 'orig-' + i;
+                originalBits.appendChild(cell);
+            }
+            
+            originalValue.textContent = originalData;
+            originalStats.textContent = '长度: ' + originalData.length + ' 比特';
+        }
+        
+        // 渲染处理过程
+        function renderProcess() {
+            processBits.innerHTML = '';
+            
+            for (var i = 0; i < stuffedData.length; i++) {
+                var cell = document.createElement('div');
+                cell.className = 'bit-cell';
+                cell.textContent = stuffedData[i];
+                cell.id = 'proc-' + i;
+                
+                // 判断是否为插入的0
+                if (stuffPositions.indexOf(i) !== -1) {
+                    cell.classList.add('highlight-insert');
+                }
+                
+                processBits.appendChild(cell);
+            }
+            
+            consecutiveCount.textContent = consecutiveOnes;
+        }
+        
+        // 渲染完整帧（含标志字段）
+        function renderFrame() {
+            frameBits.innerHTML = '';
+            var flag = '01111110';
+            var fullFrame = flag + stuffedData + flag;
+            
+            for (var i = 0; i < fullFrame.length; i++) {
+                var cell = document.createElement('div');
+                cell.className = 'bit-cell';
+                cell.textContent = fullFrame[i];
+                
+                // 标志字段高亮
+                if (i < 8 || i >= fullFrame.length - 8) {
+                    cell.classList.add('flag');
+                } else if (stuffPositions.indexOf(i - 8) !== -1) {
+                    cell.classList.add('highlight-insert');
+                }
+                
+                frameBits.appendChild(cell);
+                
+                // 分隔符
+                if (i === 7 || i === fullFrame.length - 9) {
+                    var sep = document.createElement('div');
+                    sep.className = 'bit-separator';
+                    frameBits.appendChild(sep);
+                }
+            }
+        }
+        
+        // 渲染接收过程
+        function renderReceive() {
+            receiveBits.innerHTML = '';
+            
+            for (var i = 0; i < stuffedData.length; i++) {
+                var cell = document.createElement('div');
+                cell.className = 'bit-cell';
+                cell.textContent = stuffedData[i];
+                cell.id = 'recv-' + i;
+                
+                // 高亮被删除的0
+                if (deletePositions.indexOf(i) !== -1) {
+                    cell.classList.add('highlight-delete');
+                }
+                // 高亮原来插入的0
+                else if (stuffPositions.indexOf(i) !== -1) {
+                    cell.classList.add('highlight-insert');
+                }
+                
+                receiveBits.appendChild(cell);
+            }
+            
+            receiveCount.textContent = receiveConsecutive;
+        }
+        
+        // 渲染恢复结果
+        function renderRecovered() {
+            recoveredBits.innerHTML = '';
+            
+            for (var i = 0; i < recoveredData.length; i++) {
+                var cell = document.createElement('div');
+                cell.className = 'bit-cell';
+                cell.textContent = recoveredData[i];
+                recoveredBits.appendChild(cell);
+            }
+        }
+        
+        // 添加步骤
+        function addStep(text, type) {
+            steps.push({ text: text, type: type || 'normal' });
+            renderSteps();
+        }
+        
+        // 渲染步骤列表
+        function renderSteps() {
+            stepList.innerHTML = '';
+            for (var i = 0; i < steps.length; i++) {
+                var item = document.createElement('div');
+                item.className = 'step-item';
+                if (i === steps.length - 1) {
+                    item.classList.add('active');
+                } else {
+                    item.classList.add('done');
+                }
+                
+                var num = document.createElement('div');
+                num.className = 'step-num';
+                num.textContent = i + 1;
+                
+                var content = document.createElement('div');
+                content.className = 'step-content';
+                content.textContent = steps[i].text;
+                
+                item.appendChild(num);
+                item.appendChild(content);
+                stepList.appendChild(item);
+            }
+            
+            stepList.scrollTop = stepList.scrollHeight;
+        }
+        
+        // 更新统计
+        function updateStats() {
+            var insertCount = stuffPositions.length;
+            stuffedValue.textContent = stuffedData || '-';
+            stuffedStats.textContent = '长度: ' + stuffedData.length + ' 比特 | 插入: ' + insertCount + ' 个0';
+        }
+        
+        // 高亮原始数据中的位置
+        function highlightOriginal(index, type) {
+            // 清除之前的高亮
+            var cells = originalBits.querySelectorAll('.bit-cell');
+            for (var i = 0; i < cells.length; i++) {
+                cells[i].classList.remove('highlight-current', 'highlight-five');
+            }
+            
+            if (index >= 0 && index < originalData.length) {
+                var cell = document.getElementById('orig-' + index);
+                if (cell) {
+                    cell.classList.add(type || 'highlight-current');
+                }
+            }
+            
+            // 高亮连续的1
+            if (consecutiveOnes > 0 && type !== 'highlight-five') {
+                var start = index - consecutiveOnes + 1;
+                for (var j = Math.max(0, start); j <= index; j++) {
+                    var c = document.getElementById('orig-' + j);
+                    if (c && originalData[j] === '1') {
+                        c.classList.add('highlight-five');
+                    }
+                }
+            }
+        }
+        
+        // 高亮接收数据中的位置
+        function highlightReceive(index, type) {
+            // 清除之前的高亮
+            var cells = receiveBits.querySelectorAll('.bit-cell');
+            for (var i = 0; i < cells.length; i++) {
+                // 保留删除和插入的高亮
+                if (!cells[i].classList.contains('highlight-delete') && 
+                    !cells[i].classList.contains('highlight-insert')) {
+                    cells[i].classList.remove('highlight-current', 'highlight-five');
+                }
+            }
+            
+            if (index >= 0 && index < stuffedData.length) {
+                var cell = document.getElementById('recv-' + index);
+                if (cell && !cell.classList.contains('highlight-delete')) {
+                    cell.classList.add(type || 'highlight-current');
+                }
+            }
+        }
+        
+        // 发送方单步执行
+        function stepStuffing() {
+            if (currentIndex >= originalData.length) {
+                return false;
+            }
+            
+            var bit = originalData[currentIndex];
+            
+            // 高亮当前位置
+            highlightOriginal(currentIndex, 'highlight-current');
+            
+            if (bit === '1') {
+                consecutiveOnes++;
+                stuffedData += '1';
+                addStep('位置' + currentIndex + ': 读取1, 连续1计数=' + consecutiveOnes);
+                
+                if (consecutiveOnes === 5) {
+                    // 需要插入0
+                    var insertPos = stuffedData.length;
+                    stuffedData += '0';
+                    stuffPositions.push(insertPos);
+                    addStep('检测到连续5个1, 在位置' + insertPos + '插入0');
+                    consecutiveOnes = 0;
+                }
+            } else {
+                stuffedData += '0';
+                addStep('位置' + currentIndex + ': 读取0, 连续1计数重置');
+                consecutiveOnes = 0;
+            }
+            
+            currentIndex++;
+            renderProcess();
+            updateStats();
+            
+            // 检查是否处理完成
+            if (currentIndex >= originalData.length) {
+                addStep('发送方填充完成! 共插入 ' + stuffPositions.length + ' 个0');
+                updateStats();
+                renderFrame();
+                // 滚动到完整帧结构区
+                scrollToSection(sectionFrame);
+                finishStuffing();
+                return false;
+            }
+            
+            return true;
+        }
+        
+        // 接收方单步执行
+        function stepReceiving() {
+            if (receiveIndex >= stuffedData.length) {
+                return false;
+            }
+            
+            var bit = stuffedData[receiveIndex];
+            
+            // 高亮当前位置
+            highlightReceive(receiveIndex, 'highlight-current');
+            
+            // 检查是否是填充的0（需要删除）
+            if (receiveConsecutive === 5 && bit === '0') {
+                // 这是填充的0，需要删除
+                deletePositions.push(receiveIndex);
+                addStep('位置' + receiveIndex + ': 连续5个1后的0, 删除!');
+                receiveConsecutive = 0;
+                
+                // 标记为删除
+                var cell = document.getElementById('recv-' + receiveIndex);
+                if (cell) {
+                    cell.classList.remove('highlight-insert', 'highlight-current');
+                    cell.classList.add('highlight-delete');
+                }
+            } else {
+                // 正常数据，添加到恢复数据中
+                recoveredData += bit;
+                
+                if (bit === '1') {
+                    receiveConsecutive++;
+                    addStep('位置' + receiveIndex + ': 读取1, 连续1计数=' + receiveConsecutive);
+                } else {
+                    addStep('位置' + receiveIndex + ': 读取0, 连续1计数重置');
+                    receiveConsecutive = 0;
+                }
+            }
+            
+            receiveIndex++;
+            receiveCount.textContent = receiveConsecutive;
+            renderRecovered();
+            
+            // 检查是否处理完成
+            if (receiveIndex >= stuffedData.length) {
+                var isMatch = recoveredData === originalData;
+                addStep('接收方恢复完成! 删除 ' + deletePositions.length + ' 个0');
+                
+                if (isMatch) {
+                    verifyResult.textContent = '验证成功: 恢复数据与原始数据完全一致';
+                    verifyResult.style.color = 'var(--success)';
+                } else {
+                    verifyResult.textContent = '验证失败: 数据不匹配';
+                    verifyResult.style.color = 'var(--danger)';
+                }
+                
+                // 滚动到数据恢复验证区
+                scrollToSection(sectionRecovered);
+                finishReceiving();
+                return false;
+            }
+            
+            return true;
+        }
+        
+        // 单步执行（根据当前阶段）
+        function stepForward() {
+            if (phase === 'stuffing') {
+                return stepStuffing();
+            } else if (phase === 'receiving') {
+                return stepReceiving();
+            }
+            return false;
+        }
+        
+        // 完成填充阶段
+        function finishStuffing() {
+            phase = 'stuffed';
+            isAnimating = false;
+            if (autoTimer) {
+                clearInterval(autoTimer);
+                autoTimer = null;
+            }
+            btnStep.disabled = true;
+            btnAuto.disabled = true;
+            btnAuto.textContent = '自动演示';
+            btnReceive.disabled = false;
+            updateHints('stuffed');
+        }
+        
+        // 完成接收阶段
+        function finishReceiving() {
+            phase = 'done';
+            isAnimating = false;
+            if (autoTimer) {
+                clearInterval(autoTimer);
+                autoTimer = null;
+            }
+            btnStep.disabled = true;
+            btnAuto.disabled = true;
+            btnAuto.textContent = '自动演示';
+            updateHints('done');
+        }
+        
+        // 更新提示
+        function updateHints(currentPhase) {
+            hintStart.style.display = 'none';
+            hintReceive.style.display = 'none';
+            hintStep.style.display = 'none';
+            
+            if (currentPhase === 'idle') {
+                hintStart.style.display = 'inline';
+            } else if (currentPhase === 'stuffing' || currentPhase === 'receiving') {
+                hintStep.style.display = 'inline';
+            } else if (currentPhase === 'stuffed') {
+                hintReceive.style.display = 'inline';
+            }
+        }
+        
+        // 开始发送方填充
+        function startStuffing() {
+            var data = inputData.value.trim();
+            if (!validateInput(data)) return;
+            
+            // 初始化状态
+            originalData = data;
+            stuffedData = '';
+            recoveredData = '';
+            currentIndex = 0;
+            receiveIndex = 0;
+            consecutiveOnes = 0;
+            receiveConsecutive = 0;
+            stuffPositions = [];
+            deletePositions = [];
+            steps = [];
+            isAnimating = true;
+            phase = 'stuffing';
+            
+            // 渲染
+            renderOriginal();
+            renderProcess();
+            frameBits.innerHTML = '<span style="color: var(--text-secondary); font-size: 12px;">填充完成后显示</span>';
+            receiveBits.innerHTML = '<span style="color: var(--text-secondary); font-size: 12px;">接收方处理时显示</span>';
+            recoveredBits.innerHTML = '';
+            verifyResult.textContent = '-';
+            verifyResult.style.color = 'var(--text-secondary)';
+            updateStats();
+            
+            addStep('[发送方] 开始比特填充，扫描数据帧');
+            
+            // 滚动到原始数据区
+            scrollToSection(sectionOriginal);
+            
+            // 启用/禁用按钮
+            btnStart.disabled = true;
+            btnReceive.disabled = true;
+            btnStep.disabled = false;
+            btnAuto.disabled = false;
+            inputData.disabled = true;
+            
+            updateHints('stuffing');
+        }
+        
+        // 开始接收方恢复
+        function startReceiving() {
+            receiveIndex = 0;
+            receiveConsecutive = 0;
+            recoveredData = '';
+            deletePositions = [];
+            phase = 'receiving';
+            isAnimating = true;
+            
+            // 渲染接收数据
+            renderReceive();
+            receiveCount.textContent = '0';
+            recoveredBits.innerHTML = '';
+            
+            addStep('[接收方] 开始去除填充，扫描接收数据');
+            
+            // 滚动到接收方处理区
+            scrollToSection(sectionReceive);
+            
+            // 启用/禁用按钮
+            btnReceive.disabled = true;
+            btnStep.disabled = false;
+            btnAuto.disabled = false;
+            
+            updateHints('receiving');
+        }
+        
+        // 自动演示
+        function toggleAuto() {
+            if (autoTimer) {
+                clearInterval(autoTimer);
+                autoTimer = null;
+                btnAuto.textContent = '自动演示';
+            } else {
+                btnAuto.textContent = '暂停';
+                autoTimer = setInterval(function() {
+                    var continueRunning = stepForward();
+                    if (!continueRunning) {
+                        if (autoTimer) {
+                            clearInterval(autoTimer);
+                            autoTimer = null;
+                        }
+                    }
+                }, 500);
+            }
+        }
+        
+        // 重置
+        function reset() {
+            if (autoTimer) {
+                clearInterval(autoTimer);
+                autoTimer = null;
+            }
+            
+            originalData = '';
+            stuffedData = '';
+            recoveredData = '';
+            currentIndex = 0;
+            receiveIndex = 0;
+            consecutiveOnes = 0;
+            receiveConsecutive = 0;
+            stuffPositions = [];
+            deletePositions = [];
+            steps = [];
+            isAnimating = false;
+            phase = 'idle';
+            
+            originalBits.innerHTML = '';
+            processBits.innerHTML = '';
+            frameBits.innerHTML = '';
+            receiveBits.innerHTML = '';
+            recoveredBits.innerHTML = '';
+            indexRow.innerHTML = '';
+            stepList.innerHTML = '';
+            consecutiveCount.textContent = '0';
+            receiveCount.textContent = '0';
+            verifyResult.textContent = '-';
+            verifyResult.style.color = 'var(--text-secondary)';
+            originalValue.textContent = '-';
+            stuffedValue.textContent = '-';
+            originalStats.textContent = '长度: 0 比特';
+            stuffedStats.textContent = '长度: 0 比特 | 插入: 0 个0';
+            
+            btnStart.disabled = false;
+            btnReceive.disabled = true;
+            btnStep.disabled = true;
+            btnAuto.disabled = true;
+            btnAuto.textContent = '自动演示';
+            inputData.disabled = false;
+            
+            updateHints('idle');
+        }
+        
+        // 事件绑定
+        btnStart.onclick = startStuffing;
+        btnReceive.onclick = startReceiving;
+        btnStep.onclick = stepForward;
+        btnAuto.onclick = toggleAuto;
+        btnReset.onclick = reset;
+        
+        // 回车键触发开始
+        inputData.onkeypress = function(e) {
+            if (e.key === 'Enter' && !btnStart.disabled) {
+                startStuffing();
+            }
+        };
+        
+        // 初始化
+        updateHints('idle');
+    })();
+    </script>
+</body>
+</html>

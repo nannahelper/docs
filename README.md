@@ -391,6 +391,10 @@
 | 局域网与无线网络 | 以太网、VLAN、Wi-Fi 标准 |
 | 网络安全与模拟测试 | 防火墙、加密技术、综合模拟题 |
 
+#### 计算机网络：自顶向下（第 9 版）备考教材
+
+以 Kurose & Ross《Computer Networking: A Top-Down Approach》第 9 版为主线，覆盖应用层、传输层、网络层、链路层、无线移动与网络安全，配套 23 个交互演示、3 份单元测验和 2 套模拟卷。 [查看课程首页](content/networking-top-down/index.md)
+
 #### 信息安全教程
 
 从"我的密码安全吗"到"如何构建纵深防御体系"，覆盖信息安全全链条核心知识。
@@ -502,6 +506,7 @@
     │
     │   # === 计算机等级考试 ===
     ├── cert3-network/               # 网络技术教程
+    ├── networking-top-down/         # 计算机网络自顶向下备考教材
     ├── cert3-security/              # 信息安全教程
     ├── cert3-embedded/              # 嵌入式系统教程
     │

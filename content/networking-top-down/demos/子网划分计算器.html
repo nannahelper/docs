@@ -1,0 +1,1526 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>子网划分计算器 - FLSM vs VLSM</title>
+    <style>
+        /* ===== 408教学风格基础样式 ===== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        :root {
+            --primary: #1a56db;
+            --primary-light: #e1effe;
+            --success: #047857;
+            --success-light: #d1fae5;
+            --danger: #b91c1c;
+            --danger-light: #fee2e2;
+            --warning: #d97706;
+            --warning-light: #fef3c7;
+            --text: #1f2937;
+            --text-secondary: #6b7280;
+            --border: #d1d5db;
+            --bg-light: #f9fafb;
+            --white: #ffffff;
+        }
+        
+        body {
+            font-family: system-ui, -apple-system, "Segoe UI", "Microsoft YaHei", sans-serif;
+            background: var(--white);
+            color: var(--text);
+            font-size: 14px;
+            line-height: 1.5;
+        }
+        
+        /* ===== 页面布局 ===== */
+        .page {
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            max-width: 1600px;
+            margin: 0 auto;
+            border-left: 1px solid var(--border);
+            border-right: 1px solid var(--border);
+        }
+        
+        .page-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 8px 16px;
+            border-bottom: 1px solid var(--border);
+            background: var(--bg-light);
+        }
+        
+        .page-title {
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--text);
+        }
+        
+        .page-title code {
+            font-family: "Consolas", "Monaco", monospace;
+            background: var(--primary-light);
+            color: var(--primary);
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-size: 13px;
+            margin-left: 8px;
+        }
+        
+        .page-badge {
+            font-size: 12px;
+            color: var(--text-secondary);
+            background: var(--white);
+            padding: 4px 10px;
+            border: 1px solid var(--border);
+            border-radius: 3px;
+        }
+        
+        .page-body {
+            display: flex;
+            flex: 1;
+            overflow: hidden;
+        }
+        
+        .main-panel {
+            flex: 0 0 78%;
+            display: flex;
+            flex-direction: column;
+            border-right: 1px solid var(--border);
+        }
+        
+        .side-panel {
+            flex: 0 0 22%;
+            display: flex;
+            flex-direction: column;
+            background: var(--bg-light);
+        }
+        
+        /* ===== 控制面板 ===== */
+        .control-area {
+            padding: 12px 16px;
+            background: var(--white);
+            border-bottom: 1px solid var(--border);
+        }
+        
+        .control-section {
+            margin-bottom: 10px;
+        }
+        
+        .control-section:last-child {
+            margin-bottom: 0;
+        }
+        
+        .control-row {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        
+        .control-group {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        
+        .control-label {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text);
+            white-space: nowrap;
+        }
+        
+        .control-input input {
+            padding: 6px 10px;
+            border: 1px solid var(--border);
+            border-radius: 3px;
+            font-family: "Consolas", "Monaco", monospace;
+            font-size: 14px;
+        }
+        
+        .control-input input:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+        
+        .input-cidr {
+            width: 180px;
+        }
+        
+        .input-host {
+            width: 80px;
+        }
+        
+        .input-name {
+            width: 100px;
+        }
+        
+        .btn {
+            padding: 6px 14px;
+            border: 1px solid transparent;
+            border-radius: 3px;
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .btn-primary {
+            background: var(--primary);
+            color: var(--white);
+            border-color: var(--primary);
+        }
+        
+        .btn-primary:hover {
+            background: #1e40af;
+        }
+        
+        .btn-success {
+            background: var(--success);
+            color: var(--white);
+        }
+        
+        .btn-success:hover {
+            background: #065f46;
+        }
+        
+        .btn-danger {
+            background: var(--danger);
+            color: var(--white);
+        }
+        
+        .btn-danger:hover {
+            background: #991b1b;
+        }
+        
+        .btn-secondary {
+            background: var(--white);
+            color: var(--text-secondary);
+            border-color: var(--border);
+        }
+        
+        .btn-secondary:hover {
+            background: var(--bg-light);
+        }
+        
+        .btn-small {
+            padding: 4px 10px;
+            font-size: 12px;
+        }
+        
+        /* 子网需求列表 */
+        .subnet-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            align-items: center;
+        }
+        
+        .subnet-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            background: var(--bg-light);
+            padding: 4px 8px;
+            border: 1px solid var(--border);
+            border-radius: 3px;
+        }
+        
+        .subnet-item-name {
+            font-size: 12px;
+            color: var(--text);
+            font-weight: 500;
+        }
+        
+        .subnet-item-hosts {
+            font-family: "Consolas", "Monaco", monospace;
+            font-size: 12px;
+            color: var(--primary);
+            font-weight: 600;
+        }
+        
+        .subnet-item-remove {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            cursor: pointer;
+            font-size: 14px;
+            padding: 0 4px;
+        }
+        
+        .subnet-item-remove:hover {
+            color: var(--danger);
+        }
+        
+        .error-msg {
+            display: none;
+            color: var(--danger);
+            font-size: 12px;
+            margin-top: 8px;
+            padding: 8px 12px;
+            background: var(--danger-light);
+            border-radius: 3px;
+        }
+        
+        .error-msg.show {
+            display: block;
+        }
+        
+        /* ===== 可视化区域 ===== */
+        .visual-area {
+            flex: 1;
+            padding: 16px;
+            overflow-y: auto;
+            background: var(--bg-light);
+        }
+        
+        .placeholder {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            color: var(--text-secondary);
+            text-align: center;
+        }
+        
+        .placeholder-icon {
+            font-size: 48px;
+            margin-bottom: 16px;
+            opacity: 0.3;
+        }
+        
+        .placeholder-text {
+            font-size: 14px;
+        }
+        
+        /* 对比容器 */
+        .compare-container {
+            display: none;
+        }
+        
+        .compare-container.show {
+            display: block;
+        }
+        
+        /* 源地址块信息 */
+        .source-block {
+            background: var(--white);
+            border: 1px solid var(--border);
+            border-radius: 3px;
+            padding: 12px 16px;
+            margin-bottom: 12px;
+        }
+        
+        .source-title {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+        }
+        
+        .source-info {
+            display: flex;
+            gap: 24px;
+            flex-wrap: wrap;
+        }
+        
+        .source-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .source-label {
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+        
+        .source-value {
+            font-family: "Consolas", "Monaco", monospace;
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text);
+        }
+        
+        .source-value.primary {
+            color: var(--primary);
+        }
+        
+        /* 方案对比 */
+        .schemes-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+        
+        .scheme-panel {
+            background: var(--white);
+            border: 1px solid var(--border);
+            border-radius: 3px;
+            overflow: hidden;
+        }
+        
+        .scheme-header {
+            padding: 10px 14px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .scheme-title {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text);
+        }
+        
+        .scheme-badge {
+            font-size: 11px;
+            padding: 2px 8px;
+            border-radius: 3px;
+            font-weight: 500;
+        }
+        
+        .scheme-badge.flsm {
+            background: var(--warning-light);
+            color: var(--warning);
+        }
+        
+        .scheme-badge.vlsm {
+            background: var(--success-light);
+            color: var(--success);
+        }
+        
+        .scheme-content {
+            padding: 12px;
+        }
+        
+        /* 统计信息 */
+        .scheme-stats {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+        
+        .stat-card {
+            background: var(--bg-light);
+            padding: 8px 10px;
+            border-radius: 3px;
+            text-align: center;
+        }
+        
+        .stat-card-label {
+            font-size: 10px;
+            color: var(--text-secondary);
+            margin-bottom: 2px;
+        }
+        
+        .stat-card-value {
+            font-family: "Consolas", "Monaco", monospace;
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text);
+        }
+        
+        .stat-card-value.success {
+            color: var(--success);
+        }
+        
+        .stat-card-value.danger {
+            color: var(--danger);
+        }
+        
+        .stat-card-value.warning {
+            color: var(--warning);
+        }
+        
+        /* 子网表格 */
+        .subnet-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 12px;
+        }
+        
+        .subnet-table th,
+        .subnet-table td {
+            padding: 6px 8px;
+            border: 1px solid var(--border);
+            text-align: left;
+        }
+        
+        .subnet-table th {
+            background: var(--bg-light);
+            font-weight: 600;
+            color: var(--text-secondary);
+            font-size: 11px;
+        }
+        
+        .subnet-table td {
+            font-family: "Consolas", "Monaco", monospace;
+        }
+        
+        .subnet-table .name-cell {
+            font-family: inherit;
+            font-weight: 500;
+        }
+        
+        .subnet-table .util-cell {
+            text-align: center;
+        }
+        
+        .util-bar {
+            height: 4px;
+            background: var(--border);
+            border-radius: 2px;
+            margin-top: 4px;
+            overflow: hidden;
+        }
+        
+        .util-bar-fill {
+            height: 100%;
+            border-radius: 2px;
+            transition: width 0.3s;
+        }
+        
+        .util-bar-fill.high {
+            background: var(--success);
+        }
+        
+        .util-bar-fill.medium {
+            background: var(--warning);
+        }
+        
+        .util-bar-fill.low {
+            background: var(--danger);
+        }
+        
+        /* 二进制展示 */
+        .binary-section {
+            background: var(--white);
+            border: 1px solid var(--border);
+            border-radius: 3px;
+            padding: 12px 16px;
+        }
+        
+        .binary-title {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            margin-bottom: 10px;
+        }
+        
+        .binary-list {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+        
+        .binary-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .binary-label {
+            width: 80px;
+            font-size: 12px;
+            font-weight: 500;
+            color: var(--text);
+            flex-shrink: 0;
+        }
+        
+        .binary-value {
+            display: flex;
+            gap: 3px;
+            font-family: "Consolas", "Monaco", monospace;
+            font-size: 12px;
+        }
+        
+        .binary-octet {
+            display: flex;
+            gap: 1px;
+        }
+        
+        .binary-bit {
+            width: 14px;
+            height: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--white);
+            border: 1px solid var(--border);
+            font-size: 11px;
+        }
+        
+        .binary-bit.network {
+            background: var(--primary-light);
+            border-color: var(--primary);
+            color: var(--primary);
+            font-weight: 600;
+        }
+        
+        .binary-bit.subnet {
+            background: var(--warning-light);
+            border-color: var(--warning);
+            color: var(--warning);
+            font-weight: 600;
+        }
+        
+        .binary-bit.host {
+            background: var(--success-light);
+            border-color: var(--success);
+            color: var(--success);
+        }
+        
+        .binary-dot {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 10px;
+            color: var(--text-secondary);
+            font-weight: bold;
+        }
+        
+        .binary-decimal {
+            margin-left: 10px;
+            font-size: 12px;
+            color: var(--text-secondary);
+            display: flex;
+            align-items: center;
+        }
+        
+        .binary-prefix {
+            margin-left: 8px;
+            font-size: 11px;
+            color: var(--primary);
+            font-weight: 600;
+        }
+        
+        /* ===== 右侧说明面板 ===== */
+        .side-header {
+            padding: 10px 12px;
+            border-bottom: 1px solid var(--border);
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text);
+        }
+        
+        .side-content {
+            flex: 1;
+            overflow-y: auto;
+            padding: 12px;
+        }
+        
+        .info-block {
+            background: var(--white);
+            border: 1px solid var(--border);
+            border-radius: 3px;
+            padding: 10px 12px;
+            margin-bottom: 10px;
+        }
+        
+        .info-title {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text);
+            margin-bottom: 6px;
+        }
+        
+        .info-content {
+            font-size: 11px;
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+        
+        .info-content code {
+            font-family: "Consolas", "Monaco", monospace;
+            background: var(--bg-light);
+            padding: 1px 4px;
+            border-radius: 2px;
+            color: var(--primary);
+        }
+        
+        .formula {
+            font-family: "Consolas", "Monaco", monospace;
+            font-size: 11px;
+            background: var(--bg-light);
+            padding: 6px 8px;
+            border-radius: 3px;
+            margin-top: 6px;
+        }
+        
+        .legend {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-top: 6px;
+        }
+        
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 10px;
+        }
+        
+        .legend-color {
+            width: 12px;
+            height: 12px;
+            border-radius: 2px;
+            border: 1px solid;
+        }
+        
+        .legend-color.network {
+            background: var(--primary-light);
+            border-color: var(--primary);
+        }
+        
+        .legend-color.subnet {
+            background: var(--warning-light);
+            border-color: var(--warning);
+        }
+        
+        .legend-color.host {
+            background: var(--success-light);
+            border-color: var(--success);
+        }
+        
+        /* 总结对比 */
+        .compare-summary {
+            background: var(--white);
+            border: 1px solid var(--border);
+            border-radius: 3px;
+            padding: 12px 16px;
+            margin-top: 12px;
+        }
+        
+        .compare-summary-title {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            margin-bottom: 10px;
+        }
+        
+        .compare-summary-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 10px;
+        }
+        
+        .compare-item {
+            text-align: center;
+        }
+        
+        .compare-item-label {
+            font-size: 11px;
+            color: var(--text-secondary);
+            margin-bottom: 4px;
+        }
+        
+        .compare-item-values {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+        }
+        
+        .compare-value {
+            font-family: "Consolas", "Monaco", monospace;
+            font-size: 13px;
+            font-weight: 600;
+            padding: 2px 8px;
+            border-radius: 3px;
+        }
+        
+        .compare-value.flsm {
+            background: var(--warning-light);
+            color: var(--warning);
+        }
+        
+        .compare-value.vlsm {
+            background: var(--success-light);
+            color: var(--success);
+        }
+        
+        .compare-value.better {
+            border: 2px solid var(--success);
+        }
+    </style>
+</head>
+<body>
+    <div class="page">
+        <!-- 顶部标题栏 -->
+        <header class="page-header">
+            <h1 class="page-title">子网划分计算器<code>FLSM vs VLSM</code></h1>
+            <span class="page-badge">计算机网络 · 子网划分</span>
+        </header>
+        
+        <!-- 主体区域 -->
+        <div class="page-body">
+            <!-- 左侧主面板 -->
+            <div class="main-panel">
+                <!-- 输入控制区 -->
+                <div class="control-area">
+                    <div class="control-section">
+                        <div class="control-row">
+                            <div class="control-group">
+                                <span class="control-label">地址块</span>
+                                <div class="control-input">
+                                    <input type="text" id="inputCidr" class="input-cidr" placeholder="192.168.1.0/24">
+                                </div>
+                            </div>
+                            <div class="control-group">
+                                <span class="control-label">部门名</span>
+                                <div class="control-input">
+                                    <input type="text" id="inputName" class="input-name" placeholder="研发部">
+                                </div>
+                            </div>
+                            <div class="control-group">
+                                <span class="control-label">主机数</span>
+                                <div class="control-input">
+                                    <input type="number" id="inputHosts" class="input-host" placeholder="50" min="1">
+                                </div>
+                            </div>
+                            <button class="btn btn-success btn-small" id="btnAddSubnet">添加</button>
+                            <button class="btn btn-primary" id="btnCalculate">计算划分</button>
+                            <button class="btn btn-secondary" id="btnClear">清空</button>
+                            <button class="btn btn-secondary" id="btnExample">示例</button>
+                        </div>
+                    </div>
+                    <div class="control-section">
+                        <div class="control-row">
+                            <span class="control-label" style="color: var(--text-secondary);">子网需求:</span>
+                            <div class="subnet-list" id="subnetList">
+                                <span style="font-size: 12px; color: var(--text-secondary);">请添加各部门的主机需求</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="error-msg" id="errorMsg"></div>
+                </div>
+                
+                <!-- 可视化区域 -->
+                <div class="visual-area" id="visualArea">
+                    <div class="placeholder" id="placeholder">
+                        <div class="placeholder-icon">IP</div>
+                        <div class="placeholder-text">输入CIDR地址块和各部门主机需求，点击"计算划分"查看结果</div>
+                    </div>
+                    
+                    <div class="compare-container" id="compareContainer">
+                        <!-- 源地址块信息 -->
+                        <div class="source-block">
+                            <div class="source-title">原始地址块</div>
+                            <div class="source-info" id="sourceInfo">
+                                <!-- 动态生成 -->
+                            </div>
+                        </div>
+                        
+                        <!-- 方案对比 -->
+                        <div class="schemes-grid">
+                            <!-- FLSM方案 -->
+                            <div class="scheme-panel">
+                                <div class="scheme-header">
+                                    <span class="scheme-title">定长子网划分</span>
+                                    <span class="scheme-badge flsm">FLSM</span>
+                                </div>
+                                <div class="scheme-content">
+                                    <div class="scheme-stats" id="flsmStats">
+                                        <!-- 动态生成 -->
+                                    </div>
+                                    <table class="subnet-table">
+                                        <thead>
+                                            <tr>
+                                                <th>部门</th>
+                                                <th>子网地址</th>
+                                                <th>可用范围</th>
+                                                <th>需求/可用</th>
+                                                <th>利用率</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="flsmTable">
+                                            <!-- 动态生成 -->
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            
+                            <!-- VLSM方案 -->
+                            <div class="scheme-panel">
+                                <div class="scheme-header">
+                                    <span class="scheme-title">变长子网划分</span>
+                                    <span class="scheme-badge vlsm">VLSM</span>
+                                </div>
+                                <div class="scheme-content">
+                                    <div class="scheme-stats" id="vlsmStats">
+                                        <!-- 动态生成 -->
+                                    </div>
+                                    <table class="subnet-table">
+                                        <thead>
+                                            <tr>
+                                                <th>部门</th>
+                                                <th>子网地址</th>
+                                                <th>可用范围</th>
+                                                <th>需求/可用</th>
+                                                <th>利用率</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="vlsmTable">
+                                            <!-- 动态生成 -->
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- 二进制展示 -->
+                        <div class="binary-section">
+                            <div class="binary-title">二进制划分过程 (VLSM)</div>
+                            <div class="binary-list" id="binaryList">
+                                <!-- 动态生成 -->
+                            </div>
+                        </div>
+                        
+                        <!-- 总结对比 -->
+                        <div class="compare-summary">
+                            <div class="compare-summary-title">方案对比总结</div>
+                            <div class="compare-summary-grid" id="compareSummary">
+                                <!-- 动态生成 -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 右侧说明面板 -->
+            <div class="side-panel">
+                <div class="side-header">说明</div>
+                <div class="side-content">
+                    <div class="info-block">
+                        <div class="info-title">FLSM 定长子网</div>
+                        <div class="info-content">
+                            所有子网使用相同的前缀长度，按最大需求分配。
+                            <div class="formula">前缀 = 32 - ceil(log2(最大主机数+2))</div>
+                        </div>
+                    </div>
+                    
+                    <div class="info-block">
+                        <div class="info-title">VLSM 变长子网</div>
+                        <div class="info-content">
+                            每个子网按实际需求分配，从大到小排序后依次划分。
+                            <div class="formula">各子网独立计算最佳前缀</div>
+                        </div>
+                    </div>
+                    
+                    <div class="info-block">
+                        <div class="info-title">计算公式</div>
+                        <div class="info-content">
+                            可用主机 = 2^(32-n) - 2<br>
+                            利用率 = 需求 / 可用 × 100%<br>
+                            浪费 = 可用 - 需求
+                        </div>
+                    </div>
+                    
+                    <div class="info-block">
+                        <div class="info-title">颜色图例</div>
+                        <div class="legend">
+                            <div class="legend-item">
+                                <div class="legend-color network"></div>
+                                <span>网络位</span>
+                            </div>
+                            <div class="legend-item">
+                                <div class="legend-color subnet"></div>
+                                <span>子网位</span>
+                            </div>
+                            <div class="legend-item">
+                                <div class="legend-color host"></div>
+                                <span>主机位</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="info-block">
+                        <div class="info-title">使用说明</div>
+                        <div class="info-content">
+                            1. 输入总地址块（如 <code>192.168.0.0/22</code>）<br>
+                            2. 添加各部门名称和主机需求<br>
+                            3. 点击"计算划分"查看两种方案对比
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+    (function() {
+        // DOM引用
+        var inputCidr = document.getElementById('inputCidr');
+        var inputName = document.getElementById('inputName');
+        var inputHosts = document.getElementById('inputHosts');
+        var btnAddSubnet = document.getElementById('btnAddSubnet');
+        var btnCalculate = document.getElementById('btnCalculate');
+        var btnClear = document.getElementById('btnClear');
+        var btnExample = document.getElementById('btnExample');
+        var errorMsg = document.getElementById('errorMsg');
+        var placeholder = document.getElementById('placeholder');
+        var compareContainer = document.getElementById('compareContainer');
+        var subnetList = document.getElementById('subnetList');
+        
+        // 状态
+        var subnets = []; // [{name, hosts}]
+        
+        // ===== 工具函数 =====
+        
+        // 解析CIDR
+        function parseCidr(cidr) {
+            var parts = cidr.trim().split('/');
+            if (parts.length !== 2) {
+                return { error: '格式错误：请使用 IP/前缀 格式' };
+            }
+            
+            var ipStr = parts[0];
+            var prefix = parseInt(parts[1], 10);
+            
+            if (isNaN(prefix) || prefix < 0 || prefix > 32) {
+                return { error: '前缀长度必须在 0-32 之间' };
+            }
+            
+            var octets = ipStr.split('.');
+            if (octets.length !== 4) {
+                return { error: 'IP地址格式错误' };
+            }
+            
+            var ipOctets = [];
+            for (var i = 0; i < 4; i++) {
+                var octet = parseInt(octets[i], 10);
+                if (isNaN(octet) || octet < 0 || octet > 255) {
+                    return { error: 'IP地址无效' };
+                }
+                ipOctets.push(octet);
+            }
+            
+            return { ip: ipOctets, prefix: prefix };
+        }
+        
+        // IP转32位整数
+        function ipToInt(octets) {
+            return ((octets[0] << 24) | (octets[1] << 16) | (octets[2] << 8) | octets[3]) >>> 0;
+        }
+        
+        // 32位整数转IP数组
+        function intToIp(num) {
+            return [
+                (num >>> 24) & 0xFF,
+                (num >>> 16) & 0xFF,
+                (num >>> 8) & 0xFF,
+                num & 0xFF
+            ];
+        }
+        
+        // 格式化IP
+        function formatIp(octets) {
+            return octets.join('.');
+        }
+        
+        // 计算网络地址
+        function getNetworkAddress(ipInt, prefix) {
+            var mask = prefix === 0 ? 0 : (0xFFFFFFFF << (32 - prefix)) >>> 0;
+            return (ipInt & mask) >>> 0;
+        }
+        
+        // 计算广播地址
+        function getBroadcastAddress(networkInt, prefix) {
+            var hostBits = 32 - prefix;
+            var hostMask = hostBits === 32 ? 0xFFFFFFFF : (1 << hostBits) - 1;
+            return (networkInt | hostMask) >>> 0;
+        }
+        
+        // 计算所需前缀（根据主机数）
+        function getPrefixForHosts(hosts) {
+            // 需要的地址数 = 主机数 + 2（网络地址和广播地址）
+            var needed = hosts + 2;
+            var hostBits = Math.ceil(Math.log2(needed));
+            if (hostBits < 2) hostBits = 2; // 最少/30
+            return 32 - hostBits;
+        }
+        
+        // 转二进制字符串
+        function toBinary(num) {
+            var bin = num.toString(2);
+            while (bin.length < 8) bin = '0' + bin;
+            return bin;
+        }
+        
+        // ===== FLSM划分 =====
+        function calculateFLSM(networkInt, originalPrefix, subnetReqs) {
+            // 找最大主机需求
+            var maxHosts = 0;
+            for (var i = 0; i < subnetReqs.length; i++) {
+                if (subnetReqs[i].hosts > maxHosts) {
+                    maxHosts = subnetReqs[i].hosts;
+                }
+            }
+            
+            // 计算统一前缀
+            var subnetPrefix = getPrefixForHosts(maxHosts);
+            if (subnetPrefix < originalPrefix) {
+                return { error: '地址块不足：需要的前缀 /' + subnetPrefix + ' 小于原始前缀 /' + originalPrefix };
+            }
+            
+            // 计算可划分的子网数
+            var subnetBits = subnetPrefix - originalPrefix;
+            var maxSubnets = Math.pow(2, subnetBits);
+            
+            if (subnetReqs.length > maxSubnets) {
+                return { error: '地址块不足：最多可划分 ' + maxSubnets + ' 个子网，但需要 ' + subnetReqs.length + ' 个' };
+            }
+            
+            // 划分子网
+            var subnets = [];
+            var subnetSize = Math.pow(2, 32 - subnetPrefix);
+            var usablePerSubnet = subnetSize - 2;
+            var currentAddr = networkInt;
+            
+            for (var i = 0; i < subnetReqs.length; i++) {
+                var req = subnetReqs[i];
+                var broadcast = getBroadcastAddress(currentAddr, subnetPrefix);
+                
+                subnets.push({
+                    name: req.name,
+                    needed: req.hosts,
+                    networkInt: currentAddr,
+                    network: intToIp(currentAddr),
+                    prefix: subnetPrefix,
+                    broadcast: intToIp(broadcast),
+                    firstHost: intToIp(currentAddr + 1),
+                    lastHost: intToIp(broadcast - 1),
+                    usable: usablePerSubnet,
+                    utilization: (req.hosts / usablePerSubnet * 100).toFixed(1),
+                    waste: usablePerSubnet - req.hosts
+                });
+                
+                currentAddr += subnetSize;
+            }
+            
+            // 统计
+            var totalUsed = subnetReqs.length * subnetSize;
+            var totalNeeded = 0;
+            var totalUsable = subnetReqs.length * usablePerSubnet;
+            for (var i = 0; i < subnetReqs.length; i++) {
+                totalNeeded += subnetReqs[i].hosts;
+            }
+            
+            return {
+                subnets: subnets,
+                prefix: subnetPrefix,
+                totalUsed: totalUsed,
+                totalNeeded: totalNeeded,
+                totalUsable: totalUsable,
+                totalWaste: totalUsable - totalNeeded,
+                utilization: (totalNeeded / totalUsable * 100).toFixed(1)
+            };
+        }
+        
+        // ===== VLSM划分 =====
+        function calculateVLSM(networkInt, originalPrefix, subnetReqs) {
+            // 按主机数降序排列
+            var sorted = subnetReqs.slice().sort(function(a, b) {
+                return b.hosts - a.hosts;
+            });
+            
+            // 检查总地址是否足够
+            var totalOriginal = Math.pow(2, 32 - originalPrefix);
+            var totalNeededAddrs = 0;
+            for (var i = 0; i < sorted.length; i++) {
+                var prefix = getPrefixForHosts(sorted[i].hosts);
+                totalNeededAddrs += Math.pow(2, 32 - prefix);
+            }
+            
+            if (totalNeededAddrs > totalOriginal) {
+                return { error: '地址块不足：需要 ' + totalNeededAddrs + ' 个地址，但只有 ' + totalOriginal + ' 个' };
+            }
+            
+            // 依次划分
+            var subnets = [];
+            var currentAddr = networkInt;
+            var totalUsed = 0;
+            var totalNeeded = 0;
+            var totalUsable = 0;
+            
+            for (var i = 0; i < sorted.length; i++) {
+                var req = sorted[i];
+                var subnetPrefix = getPrefixForHosts(req.hosts);
+                
+                if (subnetPrefix < originalPrefix) {
+                    return { error: '单个子网需求过大' };
+                }
+                
+                var subnetSize = Math.pow(2, 32 - subnetPrefix);
+                var usable = subnetSize - 2;
+                var broadcast = getBroadcastAddress(currentAddr, subnetPrefix);
+                
+                subnets.push({
+                    name: req.name,
+                    needed: req.hosts,
+                    networkInt: currentAddr,
+                    network: intToIp(currentAddr),
+                    prefix: subnetPrefix,
+                    broadcast: intToIp(broadcast),
+                    firstHost: intToIp(currentAddr + 1),
+                    lastHost: intToIp(broadcast - 1),
+                    usable: usable,
+                    utilization: (req.hosts / usable * 100).toFixed(1),
+                    waste: usable - req.hosts
+                });
+                
+                currentAddr += subnetSize;
+                totalUsed += subnetSize;
+                totalNeeded += req.hosts;
+                totalUsable += usable;
+            }
+            
+            // 按原始顺序重排
+            var orderedSubnets = [];
+            for (var i = 0; i < subnetReqs.length; i++) {
+                for (var j = 0; j < subnets.length; j++) {
+                    if (subnets[j].name === subnetReqs[i].name) {
+                        orderedSubnets.push(subnets[j]);
+                        break;
+                    }
+                }
+            }
+            
+            return {
+                subnets: orderedSubnets,
+                totalUsed: totalUsed,
+                totalNeeded: totalNeeded,
+                totalUsable: totalUsable,
+                totalWaste: totalUsable - totalNeeded,
+                utilization: (totalNeeded / totalUsable * 100).toFixed(1)
+            };
+        }
+        
+        // ===== 渲染函数 =====
+        
+        // 渲染子网列表
+        function renderSubnetList() {
+            if (subnets.length === 0) {
+                subnetList.innerHTML = '<span style="font-size: 12px; color: var(--text-secondary);">请添加各部门的主机需求</span>';
+                return;
+            }
+            
+            var html = '';
+            for (var i = 0; i < subnets.length; i++) {
+                var s = subnets[i];
+                html += '<div class="subnet-item" data-index="' + i + '">';
+                html += '<span class="subnet-item-name">' + s.name + '</span>';
+                html += '<span class="subnet-item-hosts">' + s.hosts + '台</span>';
+                html += '<button class="subnet-item-remove" data-index="' + i + '">×</button>';
+                html += '</div>';
+            }
+            subnetList.innerHTML = html;
+            
+            // 绑定删除事件
+            var removeButtons = subnetList.querySelectorAll('.subnet-item-remove');
+            for (var i = 0; i < removeButtons.length; i++) {
+                removeButtons[i].onclick = function(e) {
+                    var idx = parseInt(e.target.getAttribute('data-index'), 10);
+                    subnets.splice(idx, 1);
+                    renderSubnetList();
+                };
+            }
+        }
+        
+        // 渲染统计卡片
+        function renderStats(containerId, data) {
+            var container = document.getElementById(containerId);
+            container.innerHTML = 
+                '<div class="stat-card">' +
+                    '<div class="stat-card-label">子网数</div>' +
+                    '<div class="stat-card-value">' + data.subnets.length + '</div>' +
+                '</div>' +
+                '<div class="stat-card">' +
+                    '<div class="stat-card-label">总利用率</div>' +
+                    '<div class="stat-card-value ' + (parseFloat(data.utilization) > 70 ? 'success' : (parseFloat(data.utilization) > 40 ? 'warning' : 'danger')) + '">' + data.utilization + '%</div>' +
+                '</div>' +
+                '<div class="stat-card">' +
+                    '<div class="stat-card-label">已分配</div>' +
+                    '<div class="stat-card-value">' + data.totalUsed + '</div>' +
+                '</div>' +
+                '<div class="stat-card">' +
+                    '<div class="stat-card-label">浪费地址</div>' +
+                    '<div class="stat-card-value danger">' + data.totalWaste + '</div>' +
+                '</div>';
+        }
+        
+        // 渲染子网表格
+        function renderTable(tableId, subnetsData) {
+            var tbody = document.getElementById(tableId);
+            var html = '';
+            
+            for (var i = 0; i < subnetsData.length; i++) {
+                var s = subnetsData[i];
+                var util = parseFloat(s.utilization);
+                var utilClass = util > 70 ? 'high' : (util > 40 ? 'medium' : 'low');
+                
+                html += '<tr>';
+                html += '<td class="name-cell">' + s.name + '</td>';
+                html += '<td>' + formatIp(s.network) + '/' + s.prefix + '</td>';
+                html += '<td>' + formatIp(s.firstHost) + ' ~ ' + formatIp(s.lastHost) + '</td>';
+                html += '<td>' + s.needed + '/' + s.usable + '</td>';
+                html += '<td class="util-cell">' + s.utilization + '%<div class="util-bar"><div class="util-bar-fill ' + utilClass + '" style="width:' + s.utilization + '%"></div></div></td>';
+                html += '</tr>';
+            }
+            
+            tbody.innerHTML = html;
+        }
+        
+        // 渲染二进制列表
+        function renderBinaryList(originalPrefix, subnetsData) {
+            var container = document.getElementById('binaryList');
+            var html = '';
+            
+            for (var i = 0; i < subnetsData.length; i++) {
+                var s = subnetsData[i];
+                html += '<div class="binary-row">';
+                html += '<div class="binary-label">' + s.name + '</div>';
+                html += '<div class="binary-value">';
+                
+                var ipInt = s.networkInt;
+                var bitIndex = 0;
+                
+                for (var oct = 0; oct < 4; oct++) {
+                    if (oct > 0) {
+                        html += '<div class="binary-dot">.</div>';
+                    }
+                    html += '<div class="binary-octet">';
+                    var octetValue = (ipInt >>> (24 - oct * 8)) & 0xFF;
+                    var bin = toBinary(octetValue);
+                    
+                    for (var bit = 0; bit < 8; bit++) {
+                        var cls = 'binary-bit';
+                        if (bitIndex < originalPrefix) {
+                            cls += ' network';
+                        } else if (bitIndex < s.prefix) {
+                            cls += ' subnet';
+                        } else {
+                            cls += ' host';
+                        }
+                        html += '<div class="' + cls + '">' + bin[bit] + '</div>';
+                        bitIndex++;
+                    }
+                    html += '</div>';
+                }
+                
+                html += '<div class="binary-decimal">' + formatIp(s.network) + '</div>';
+                html += '<div class="binary-prefix">/' + s.prefix + '</div>';
+                html += '</div>';
+                html += '</div>';
+            }
+            
+            container.innerHTML = html;
+        }
+        
+        // 渲染对比总结
+        function renderCompareSummary(flsmData, vlsmData) {
+            var container = document.getElementById('compareSummary');
+            
+            var items = [
+                { label: '总利用率', flsm: flsmData.utilization + '%', vlsm: vlsmData.utilization + '%', better: parseFloat(vlsmData.utilization) >= parseFloat(flsmData.utilization) ? 'vlsm' : 'flsm' },
+                { label: '浪费地址', flsm: flsmData.totalWaste, vlsm: vlsmData.totalWaste, better: vlsmData.totalWaste <= flsmData.totalWaste ? 'vlsm' : 'flsm' },
+                { label: '已用地址', flsm: flsmData.totalUsed, vlsm: vlsmData.totalUsed, better: vlsmData.totalUsed <= flsmData.totalUsed ? 'vlsm' : 'flsm' },
+                { label: '可用主机', flsm: flsmData.totalUsable, vlsm: vlsmData.totalUsable, better: 'none' },
+                { label: '配置复杂度', flsm: '简单', vlsm: '复杂', better: 'flsm' }
+            ];
+            
+            var html = '';
+            for (var i = 0; i < items.length; i++) {
+                var item = items[i];
+                html += '<div class="compare-item">';
+                html += '<div class="compare-item-label">' + item.label + '</div>';
+                html += '<div class="compare-item-values">';
+                html += '<span class="compare-value flsm' + (item.better === 'flsm' ? ' better' : '') + '">' + item.flsm + '</span>';
+                html += '<span class="compare-value vlsm' + (item.better === 'vlsm' ? ' better' : '') + '">' + item.vlsm + '</span>';
+                html += '</div>';
+                html += '</div>';
+            }
+            
+            container.innerHTML = html;
+        }
+        
+        // 显示错误
+        function showError(msg) {
+            errorMsg.textContent = msg;
+            errorMsg.classList.add('show');
+        }
+        
+        // 隐藏错误
+        function hideError() {
+            errorMsg.classList.remove('show');
+        }
+        
+        // ===== 事件处理 =====
+        
+        // 添加子网
+        function addSubnet() {
+            var name = inputName.value.trim();
+            var hosts = parseInt(inputHosts.value, 10);
+            
+            if (!name) {
+                showError('请输入部门名称');
+                return;
+            }
+            
+            if (isNaN(hosts) || hosts < 1) {
+                showError('请输入有效的主机数（至少1）');
+                return;
+            }
+            
+            hideError();
+            subnets.push({ name: name, hosts: hosts });
+            inputName.value = '';
+            inputHosts.value = '';
+            inputName.focus();
+            renderSubnetList();
+        }
+        
+        // 计算划分
+        function calculate() {
+            hideError();
+            
+            var cidr = inputCidr.value.trim();
+            if (!cidr) {
+                showError('请输入CIDR地址块');
+                return;
+            }
+            
+            var parsed = parseCidr(cidr);
+            if (parsed.error) {
+                showError(parsed.error);
+                return;
+            }
+            
+            if (subnets.length === 0) {
+                showError('请至少添加一个子网需求');
+                return;
+            }
+            
+            // 计算网络地址
+            var ipInt = ipToInt(parsed.ip);
+            var networkInt = getNetworkAddress(ipInt, parsed.prefix);
+            var broadcastInt = getBroadcastAddress(networkInt, parsed.prefix);
+            
+            // 计算FLSM
+            var flsmResult = calculateFLSM(networkInt, parsed.prefix, subnets);
+            if (flsmResult.error) {
+                showError('FLSM: ' + flsmResult.error);
+                return;
+            }
+            
+            // 计算VLSM
+            var vlsmResult = calculateVLSM(networkInt, parsed.prefix, subnets);
+            if (vlsmResult.error) {
+                showError('VLSM: ' + vlsmResult.error);
+                return;
+            }
+            
+            // 显示结果
+            placeholder.style.display = 'none';
+            compareContainer.classList.add('show');
+            
+            // 渲染源地址块信息
+            var totalAddrs = Math.pow(2, 32 - parsed.prefix);
+            var sourceHtml = 
+                '<div class="source-item"><span class="source-label">网络地址</span><span class="source-value primary">' + formatIp(intToIp(networkInt)) + '/' + parsed.prefix + '</span></div>' +
+                '<div class="source-item"><span class="source-label">广播地址</span><span class="source-value">' + formatIp(intToIp(broadcastInt)) + '</span></div>' +
+                '<div class="source-item"><span class="source-label">总地址数</span><span class="source-value">' + totalAddrs.toLocaleString() + '</span></div>' +
+                '<div class="source-item"><span class="source-label">可用主机</span><span class="source-value">' + (totalAddrs - 2).toLocaleString() + '</span></div>' +
+                '<div class="source-item"><span class="source-label">子网需求</span><span class="source-value">' + subnets.length + ' 个</span></div>';
+            document.getElementById('sourceInfo').innerHTML = sourceHtml;
+            
+            // 渲染FLSM
+            renderStats('flsmStats', flsmResult);
+            renderTable('flsmTable', flsmResult.subnets);
+            
+            // 渲染VLSM
+            renderStats('vlsmStats', vlsmResult);
+            renderTable('vlsmTable', vlsmResult.subnets);
+            
+            // 渲染二进制（按VLSM分配顺序，即主机数降序）
+            var sortedForBinary = vlsmResult.subnets.slice().sort(function(a, b) {
+                return b.needed - a.needed;
+            });
+            renderBinaryList(parsed.prefix, sortedForBinary);
+            
+            // 渲染对比总结
+            renderCompareSummary(flsmResult, vlsmResult);
+        }
+        
+        // 清空
+        function clearAll() {
+            inputCidr.value = '';
+            inputName.value = '';
+            inputHosts.value = '';
+            subnets = [];
+            renderSubnetList();
+            hideError();
+            placeholder.style.display = 'flex';
+            compareContainer.classList.remove('show');
+        }
+        
+        // 加载示例
+        function loadExample() {
+            inputCidr.value = '192.168.0.0/22';
+            subnets = [
+                { name: '研发部', hosts: 120 },
+                { name: '销售部', hosts: 60 },
+                { name: '财务部', hosts: 28 },
+                { name: '人事部', hosts: 12 },
+                { name: '服务器', hosts: 6 }
+            ];
+            renderSubnetList();
+            calculate();
+        }
+        
+        // 事件绑定
+        btnAddSubnet.onclick = addSubnet;
+        btnCalculate.onclick = calculate;
+        btnClear.onclick = clearAll;
+        btnExample.onclick = loadExample;
+        
+        // 回车添加
+        inputHosts.onkeypress = function(e) {
+            if (e.key === 'Enter') {
+                addSubnet();
+            }
+        };
+        
+        inputName.onkeypress = function(e) {
+            if (e.key === 'Enter') {
+                inputHosts.focus();
+            }
+        };
+        
+        inputCidr.onkeypress = function(e) {
+            if (e.key === 'Enter') {
+                if (subnets.length > 0) {
+                    calculate();
+                } else {
+                    inputName.focus();
+                }
+            }
+        };
+        
+        // 初始化
+        renderSubnetList();
+    })();
+    </script>
+</body>
+</html>

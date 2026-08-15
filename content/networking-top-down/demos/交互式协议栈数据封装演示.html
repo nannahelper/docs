@@ -1,0 +1,1217 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>协议栈封装与解封装演示</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        :root {
+            /* 主色调 */
+            --primary: #1a56db;
+            --primary-light: #e1effe;
+            /* 功能色 */
+            --success: #047857;
+            --success-light: #d1fae5;
+            --danger: #b91c1c;
+            --danger-light: #fee2e2;
+            --warning: #d97706;
+            --warning-light: #fef3c7;
+            /* 中性色 */
+            --text: #1f2937;
+            --text-secondary: #6b7280;
+            --border: #d1d5db;
+            --bg-light: #f9fafb;
+            --white: #ffffff;
+            /* 协议层颜色 */
+            --layer-app: #7c3aed;
+            --layer-app-light: #ede9fe;
+            --layer-trans: #0891b2;
+            --layer-trans-light: #cffafe;
+            --layer-net: #059669;
+            --layer-net-light: #d1fae5;
+            --layer-link: #d97706;
+            --layer-link-light: #fef3c7;
+            --layer-phy: #dc2626;
+            --layer-phy-light: #fee2e2;
+        }
+        
+        body {
+            font-family: system-ui, -apple-system, "Segoe UI", "Microsoft YaHei", sans-serif;
+            background: var(--white);
+            color: var(--text);
+            font-size: 14px;
+            line-height: 1.5;
+        }
+        
+        /* 页面布局 */
+        .page {
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            max-width: 1400px;
+            margin: 0 auto;
+            border-left: 1px solid var(--border);
+            border-right: 1px solid var(--border);
+        }
+        
+        /* 顶部标题栏 */
+        .page-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 8px 16px;
+            border-bottom: 1px solid var(--border);
+            background: var(--bg-light);
+        }
+        
+        .page-title {
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--text);
+        }
+        
+        .page-title code {
+            font-family: "Consolas", "Monaco", monospace;
+            background: var(--primary-light);
+            color: var(--primary);
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-size: 13px;
+            margin-left: 8px;
+        }
+        
+        .page-badge {
+            font-size: 12px;
+            color: var(--text-secondary);
+            background: var(--white);
+            padding: 4px 10px;
+            border: 1px solid var(--border);
+            border-radius: 3px;
+        }
+        
+        /* 主体区域 */
+        .page-body {
+            display: flex;
+            flex: 1;
+            overflow: hidden;
+        }
+        
+        .main-panel {
+            flex: 0 0 80%;
+            display: flex;
+            flex-direction: column;
+            border-right: 1px solid var(--border);
+        }
+        
+        .side-panel {
+            flex: 0 0 20%;
+            display: flex;
+            flex-direction: column;
+            background: var(--bg-light);
+        }
+        
+        /* 可视化区域 */
+        .visual-area {
+            flex: 1;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+        
+        .visual-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            background: var(--bg-light);
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            padding: 20px;
+            overflow: auto;
+        }
+        
+        .endpoints-row {
+            display: flex;
+            gap: 40px;
+            flex: 1;
+        }
+        
+        /* 发送端和接收端 */
+        .endpoint {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .endpoint-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text);
+            margin-bottom: 12px;
+            padding: 4px 12px;
+            background: var(--white);
+            border: 1px solid var(--border);
+            border-radius: 3px;
+        }
+        
+        /* 协议栈 */
+        .protocol-stack {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            width: 100%;
+            max-width: 380px;
+        }
+        
+        .layer-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .layer-name {
+            width: 80px;
+            font-size: 12px;
+            font-weight: 600;
+            text-align: right;
+            flex-shrink: 0;
+        }
+        
+        .layer-name.app { color: var(--layer-app); }
+        .layer-name.trans { color: var(--layer-trans); }
+        .layer-name.net { color: var(--layer-net); }
+        .layer-name.link { color: var(--layer-link); }
+        .layer-name.phy { color: var(--layer-phy); }
+        
+        /* PDU容器 */
+        .pdu-container {
+            flex: 1;
+            min-height: 48px;
+            display: flex;
+            align-items: center;
+            background: var(--white);
+            border: 1px solid var(--border);
+            border-radius: 3px;
+            padding: 6px;
+            position: relative;
+        }
+        
+        .pdu-container.active {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 2px var(--primary-light);
+        }
+        
+        /* PDU结构 */
+        .pdu {
+            display: flex;
+            align-items: stretch;
+            height: 36px;
+            opacity: 0;
+            transform: scale(0.9);
+            transition: all 0.3s ease;
+        }
+        
+        .pdu.visible {
+            opacity: 1;
+            transform: scale(1);
+        }
+        
+        .pdu-header {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0 8px;
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--white);
+            border-radius: 2px 0 0 2px;
+            white-space: nowrap;
+        }
+        
+        .pdu-header.app { background: var(--layer-app); }
+        .pdu-header.trans { background: var(--layer-trans); }
+        .pdu-header.net { background: var(--layer-net); }
+        .pdu-header.link { background: var(--layer-link); }
+        
+        .pdu-data {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0 12px;
+            font-size: 11px;
+            font-weight: 500;
+            background: var(--bg-light);
+            border: 1px solid var(--border);
+            border-left: none;
+            min-width: 60px;
+        }
+        
+        .pdu-data.only {
+            border-radius: 2px;
+            border-left: 1px solid var(--border);
+        }
+        
+        .pdu-trailer {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0 6px;
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--white);
+            border-radius: 0 2px 2px 0;
+        }
+        
+        .pdu-trailer.link { background: var(--layer-link); }
+        
+        /* 比特流 */
+        .bits-stream {
+            font-family: "Consolas", "Monaco", monospace;
+            font-size: 10px;
+            letter-spacing: 1px;
+            color: var(--layer-phy);
+            background: var(--layer-phy-light);
+            padding: 8px 12px;
+            border-radius: 2px;
+            opacity: 0;
+            transform: scale(0.9);
+            transition: all 0.3s ease;
+        }
+        
+        .bits-stream.visible {
+            opacity: 1;
+            transform: scale(1);
+        }
+        
+        /* 网络区域 - 底部横向布局 */
+        .network-area {
+            width: 100%;
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+            padding: 0;
+            margin-top: 0;
+            height: 80px;
+            position: relative;
+        }
+        
+        .network-connector {
+            flex: 1;
+            height: 100%;
+            position: relative;
+        }
+        
+        .connector-path {
+            position: absolute;
+            top: 0;
+            height: 100%;
+        }
+        
+        .network-connector.left .connector-path {
+            right: 0;
+            width: 55%;
+            border-left: 2px solid var(--text);
+            border-bottom: 2px solid var(--text);
+        }
+        
+        .network-connector.left .connector-path::after {
+            content: '';
+            position: absolute;
+            right: -8px;
+            bottom: -5px;
+            width: 0;
+            height: 0;
+            border-top: 5px solid transparent;
+            border-bottom: 5px solid transparent;
+            border-left: 8px solid var(--text);
+        }
+        
+        .network-connector.right .connector-path {
+            left: 0;
+            width: 55%;
+            border-right: 2px solid var(--text);
+            border-bottom: 2px solid var(--text);
+        }
+        
+        /* 右侧箭头指向物理层（向上） */
+        .network-connector.right .connector-path::before {
+            content: '';
+            position: absolute;
+            right: -5px;
+            top: -8px;
+            width: 0;
+            height: 0;
+            border-left: 5px solid transparent;
+            border-right: 5px solid transparent;
+            border-bottom: 8px solid var(--text);
+        }
+        
+        .cloud-shape {
+            width: 120px;
+            height: 60px;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            align-self: flex-end;
+            margin-bottom: -30px;
+            z-index: 1;
+        }
+        
+        .cloud-shape svg {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+        }
+        
+        .cloud-shape span {
+            position: relative;
+            z-index: 1;
+            font-size: 13px;
+            color: var(--text);
+        }
+        
+        /* 公式说明区 */
+        .formula-area {
+            margin-top: 16px;
+            padding: 12px 16px;
+            background: var(--white);
+            border: 1px solid var(--border);
+            border-radius: 4px;
+        }
+        
+        .formula-title {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text);
+            margin-bottom: 8px;
+        }
+        
+        .formula-content {
+            display: flex;
+            gap: 24px;
+            flex-wrap: wrap;
+        }
+        
+        .formula-item {
+            font-family: "Consolas", "Monaco", monospace;
+            font-size: 13px;
+            color: var(--text-secondary);
+            padding: 4px 8px;
+            background: var(--bg-light);
+            border-radius: 3px;
+        }
+        
+        .formula-item.active {
+            color: var(--primary);
+            background: var(--primary-light);
+            font-weight: 600;
+        }
+        
+        .formula-item strong {
+            color: var(--text);
+        }
+        
+        /* 控制面板 */
+        .control-area {
+            border-top: 1px solid var(--border);
+            padding: 12px 20px;
+            background: var(--white);
+        }
+        
+        .control-row {
+            display: flex;
+            gap: 20px;
+            align-items: flex-start;
+        }
+        
+        .control-left {
+            flex: 1;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px 16px;
+            align-items: center;
+        }
+        
+        .control-right {
+            flex-shrink: 0;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            align-items: center;
+            justify-content: flex-end;
+        }
+        
+        .control-group {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-shrink: 0;
+        }
+        
+        .control-label {
+            font-size: 13px;
+            color: var(--text-secondary);
+        }
+        
+        .control-input input {
+            width: 120px;
+            padding: 6px 8px;
+            border: 1px solid var(--border);
+            border-radius: 3px;
+            font-family: "Consolas", "Monaco", monospace;
+            font-size: 13px;
+        }
+        
+        .control-input input:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+        
+        .btn {
+            padding: 6px 16px;
+            border: 1px solid transparent;
+            border-radius: 3px;
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        .btn-send {
+            background: var(--success);
+            color: var(--white);
+            border-color: var(--success);
+        }
+        
+        .btn-send:hover:not(:disabled) {
+            background: #065f46;
+        }
+        
+        .btn-recv {
+            background: var(--primary);
+            color: var(--white);
+            border-color: var(--primary);
+        }
+        
+        .btn-recv:hover:not(:disabled) {
+            background: #1e40af;
+        }
+        
+        .btn-secondary {
+            background: var(--white);
+            color: var(--text-secondary);
+            border-color: var(--border);
+        }
+        
+        .btn-secondary:hover:not(:disabled) {
+            background: var(--bg-light);
+            color: var(--text);
+        }
+        
+        .action-hint {
+            font-size: 12px;
+            color: var(--danger);
+            font-weight: 600;
+            animation: hintBlink 1s ease-in-out infinite;
+            margin-right: 4px;
+        }
+        
+        @keyframes hintBlink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        
+        /* 右侧面板 */
+        .side-header {
+            padding: 10px 12px;
+            border-bottom: 1px solid var(--border);
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text);
+        }
+        
+        .side-content {
+            flex: 1;
+            overflow-y: auto;
+            padding: 12px;
+        }
+        
+        .step-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        
+        .step-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 8px;
+            padding: 8px 10px;
+            background: var(--white);
+            border: 1px solid var(--border);
+            border-radius: 3px;
+            font-size: 12px;
+            line-height: 1.4;
+            color: var(--text-secondary);
+        }
+        
+        .step-item.active {
+            border-color: var(--primary);
+            background: var(--primary-light);
+            color: var(--primary);
+        }
+        
+        .step-item.done {
+            border-color: var(--success);
+            color: var(--success);
+        }
+        
+        .step-num {
+            flex-shrink: 0;
+            width: 18px;
+            height: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            background: var(--border);
+            color: var(--white);
+            font-size: 10px;
+            font-weight: 600;
+        }
+        
+        .step-item.active .step-num {
+            background: var(--primary);
+        }
+        
+        .step-item.done .step-num {
+            background: var(--success);
+        }
+        
+        .step-text {
+            flex: 1;
+        }
+        
+        /* 图例 */
+        .legend {
+            padding: 10px 12px;
+            border-top: 1px solid var(--border);
+            background: var(--white);
+        }
+        
+        .legend-title {
+            font-size: 11px;
+            color: var(--text-secondary);
+            margin-bottom: 6px;
+        }
+        
+        .legend-items {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+        
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 11px;
+        }
+        
+        .legend-color {
+            width: 12px;
+            height: 12px;
+            border-radius: 2px;
+        }
+        
+        .legend-color.app { background: var(--layer-app); }
+        .legend-color.trans { background: var(--layer-trans); }
+        .legend-color.net { background: var(--layer-net); }
+        .legend-color.link { background: var(--layer-link); }
+        .legend-color.phy { background: var(--layer-phy); }
+        
+        .side-footer {
+            padding: 10px 12px;
+            border-top: 1px solid var(--border);
+            font-size: 11px;
+            color: var(--text-secondary);
+            background: var(--white);
+        }
+        
+        .side-footer code {
+            font-family: "Consolas", "Monaco", monospace;
+            color: var(--primary);
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+    <div class="page">
+        <header class="page-header">
+            <h1 class="page-title">协议栈封装与解封装<code>PDU/SDU/PCI</code></h1>
+            <span class="page-badge">计算机网络 · 体系结构</span>
+        </header>
+        
+        <div class="page-body">
+            <div class="main-panel">
+                <div class="visual-area">
+                    <div class="visual-container">
+                        <div class="endpoints-row">
+                            <!-- 发送端 -->
+                            <div class="endpoint" id="senderEndpoint">
+                                <div class="endpoint-title">发送端</div>
+                                <div class="protocol-stack" id="senderStack">
+                                    <!-- 应用层 -->
+                                    <div class="layer-row">
+                                        <span class="layer-name app">应用层</span>
+                                        <div class="pdu-container" id="sender-app">
+                                            <div class="pdu" id="pdu-send-app">
+                                                <div class="pdu-data only" id="data-send-app">Data</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- 传输层 -->
+                                    <div class="layer-row">
+                                        <span class="layer-name trans">传输层</span>
+                                        <div class="pdu-container" id="sender-trans">
+                                            <div class="pdu" id="pdu-send-trans">
+                                                <div class="pdu-header trans">TH</div>
+                                                <div class="pdu-data">Data</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- 网络层 -->
+                                    <div class="layer-row">
+                                        <span class="layer-name net">网络层</span>
+                                        <div class="pdu-container" id="sender-net">
+                                            <div class="pdu" id="pdu-send-net">
+                                                <div class="pdu-header net">NH</div>
+                                                <div class="pdu-header trans">TH</div>
+                                                <div class="pdu-data">Data</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- 数据链路层 -->
+                                    <div class="layer-row">
+                                        <span class="layer-name link">链路层</span>
+                                        <div class="pdu-container" id="sender-link">
+                                            <div class="pdu" id="pdu-send-link">
+                                                <div class="pdu-header link">FH</div>
+                                                <div class="pdu-header net">NH</div>
+                                                <div class="pdu-header trans">TH</div>
+                                                <div class="pdu-data">Data</div>
+                                                <div class="pdu-trailer link">FT</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- 物理层 -->
+                                    <div class="layer-row">
+                                        <span class="layer-name phy">物理层</span>
+                                        <div class="pdu-container" id="sender-phy">
+                                            <div class="bits-stream" id="bits-send">01101000 01100101 01101100 01101100 01101111</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- 接收端 -->
+                            <div class="endpoint" id="receiverEndpoint">
+                                <div class="endpoint-title">接收端</div>
+                                <div class="protocol-stack" id="receiverStack">
+                                    <!-- 应用层 -->
+                                    <div class="layer-row">
+                                        <span class="layer-name app">应用层</span>
+                                        <div class="pdu-container" id="receiver-app">
+                                            <div class="pdu" id="pdu-recv-app">
+                                                <div class="pdu-data only" id="data-recv-app">Data</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- 传输层 -->
+                                    <div class="layer-row">
+                                        <span class="layer-name trans">传输层</span>
+                                        <div class="pdu-container" id="receiver-trans">
+                                            <div class="pdu" id="pdu-recv-trans">
+                                                <div class="pdu-header trans">TH</div>
+                                                <div class="pdu-data">Data</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- 网络层 -->
+                                    <div class="layer-row">
+                                        <span class="layer-name net">网络层</span>
+                                        <div class="pdu-container" id="receiver-net">
+                                            <div class="pdu" id="pdu-recv-net">
+                                                <div class="pdu-header net">NH</div>
+                                                <div class="pdu-header trans">TH</div>
+                                                <div class="pdu-data">Data</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- 数据链路层 -->
+                                    <div class="layer-row">
+                                        <span class="layer-name link">链路层</span>
+                                        <div class="pdu-container" id="receiver-link">
+                                            <div class="pdu" id="pdu-recv-link">
+                                                <div class="pdu-header link">FH</div>
+                                                <div class="pdu-header net">NH</div>
+                                                <div class="pdu-header trans">TH</div>
+                                                <div class="pdu-data">Data</div>
+                                                <div class="pdu-trailer link">FT</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- 物理层 -->
+                                    <div class="layer-row">
+                                        <span class="layer-name phy">物理层</span>
+                                        <div class="pdu-container" id="receiver-phy">
+                                            <div class="bits-stream" id="bits-recv">01101000 01100101 01101100 01101100 01101111</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- 网络连接区域 -->
+                        <div class="network-area">
+                            <div class="network-connector left">
+                                <div class="connector-path"></div>
+                            </div>
+                            <div class="cloud-shape">
+                                <svg viewBox="0 0 120 60" fill="none">
+                                    <path d="M100,45 
+                                        Q105,45 108,40 Q112,35 108,28 Q110,20 100,18 
+                                        Q98,10 85,10 Q75,5 60,12 Q45,5 35,12 
+                                        Q20,10 18,20 Q8,22 10,32 Q5,40 15,45 
+                                        Q12,50 25,50 L95,50 Q108,50 100,45 Z" 
+                                        stroke="#333" stroke-width="1.5" fill="#fff"/>
+                                </svg>
+                                <span>因特网</span>
+                            </div>
+                            <div class="network-connector right">
+                                <div class="connector-path"></div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 公式说明 -->
+                    <div class="formula-area">
+                        <div class="formula-title">核心概念</div>
+                        <div class="formula-content">
+                            <div class="formula-item" id="formula1"><strong>n-PDU</strong> = n-SDU + n-PCI</div>
+                            <div class="formula-item" id="formula2"><strong>n-PDU</strong> = (n-1)-SDU</div>
+                            <div class="formula-item" id="formula3"><strong>PDU</strong>: Protocol Data Unit</div>
+                            <div class="formula-item" id="formula4"><strong>SDU</strong>: Service Data Unit</div>
+                            <div class="formula-item" id="formula5"><strong>PCI</strong>: Protocol Control Info</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 控制面板 -->
+                <div class="control-area">
+                    <div class="control-row">
+                        <div class="control-left">
+                            <div class="control-group">
+                                <span class="control-label">发送数据:</span>
+                                <div class="control-input">
+                                    <input type="text" id="inputData" value="Hello" placeholder="输入数据">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="control-right">
+                            <span class="action-hint" id="hintSend">请选择 ▶</span>
+                            <button class="btn btn-send" id="btnSend">发送数据</button>
+                            <span class="action-hint" id="hintRecv" style="display:none;">请选择 ▶</span>
+                            <button class="btn btn-recv" id="btnRecv" disabled>接收数据</button>
+                            <span class="action-hint" id="hintStep" style="display:none;">请选择 ▶</span>
+                            <button class="btn btn-secondary" id="btnStep" disabled>单步执行</button>
+                            <button class="btn btn-secondary" id="btnAuto" disabled>自动演示</button>
+                            <button class="btn btn-secondary" id="btnReset">重置</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 右侧消息面板 -->
+            <div class="side-panel">
+                <div class="side-header">操作步骤</div>
+                <div class="side-content">
+                    <div class="step-list" id="stepsList">
+                        <div class="step-item">
+                            <span class="step-num">1</span>
+                            <span class="step-text">点击"发送数据"开始封装演示</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="legend">
+                    <div class="legend-title">各层标识</div>
+                    <div class="legend-items">
+                        <div class="legend-item"><span class="legend-color app"></span>应用层 (Data)</div>
+                        <div class="legend-item"><span class="legend-color trans"></span>传输层 (TH: 端口号)</div>
+                        <div class="legend-item"><span class="legend-color net"></span>网络层 (NH: IP地址)</div>
+                        <div class="legend-item"><span class="legend-color link"></span>链路层 (FH/FT: MAC)</div>
+                        <div class="legend-item"><span class="legend-color phy"></span>物理层 (比特流)</div>
+                    </div>
+                </div>
+                <div class="side-footer">
+                    <code>TH</code>=传输头 <code>NH</code>=网络头<br>
+                    <code>FH</code>=帧头 <code>FT</code>=帧尾
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+    (function() {
+        // 状态
+        var state = {
+            phase: 'idle',      // idle, sending, sent, receiving, received
+            stepIndex: 0,
+            isAnimating: false,
+            isAutoMode: false,
+            userData: 'Hello'
+        };
+        
+        // 层级信息
+        var layers = ['app', 'trans', 'net', 'link', 'phy'];
+        var layerNames = {
+            app: '应用层',
+            trans: '传输层',
+            net: '网络层',
+            link: '数据链路层',
+            phy: '物理层'
+        };
+        
+        // DOM元素引用
+        var btnSend = document.getElementById('btnSend');
+        var btnRecv = document.getElementById('btnRecv');
+        var btnStep = document.getElementById('btnStep');
+        var btnAuto = document.getElementById('btnAuto');
+        var btnReset = document.getElementById('btnReset');
+        var inputData = document.getElementById('inputData');
+        var stepsList = document.getElementById('stepsList');
+        var hintSend = document.getElementById('hintSend');
+        var hintRecv = document.getElementById('hintRecv');
+        var hintStep = document.getElementById('hintStep');
+        
+        // 封装步骤
+        var sendSteps = [
+            { layer: 'app', desc: '应用层生成原始数据', formula: 1 },
+            { layer: 'trans', desc: '传输层添加传输头(TH)，形成段(Segment)', formula: 1 },
+            { layer: 'net', desc: '网络层添加网络头(NH)，形成分组(Packet)', formula: 2 },
+            { layer: 'link', desc: '链路层添加帧头(FH)和帧尾(FT)，形成帧(Frame)', formula: 2 },
+            { layer: 'phy', desc: '物理层转换为比特流传输', formula: null }
+        ];
+        
+        // 解封装步骤
+        var recvSteps = [
+            { layer: 'phy', desc: '物理层接收比特流', formula: null },
+            { layer: 'link', desc: '链路层剥离帧头(FH)和帧尾(FT)', formula: 2 },
+            { layer: 'net', desc: '网络层剥离网络头(NH)', formula: 2 },
+            { layer: 'trans', desc: '传输层剥离传输头(TH)', formula: 1 },
+            { layer: 'app', desc: '应用层获得原始数据', formula: 1 }
+        ];
+        
+        // 更新步骤显示
+        function updateSteps(steps, activeIndex) {
+            var html = '';
+            for (var i = 0; i < steps.length; i++) {
+                var className = 'step-item';
+                if (i < activeIndex) className += ' done';
+                if (i === activeIndex) className += ' active';
+                html += '<div class="' + className + '">' +
+                    '<span class="step-num">' + (i + 1) + '</span>' +
+                    '<span class="step-text">' + steps[i].desc + '</span>' +
+                    '</div>';
+            }
+            stepsList.innerHTML = html;
+        }
+        
+        // 更新公式高亮
+        function highlightFormula(index) {
+            for (var i = 1; i <= 5; i++) {
+                var el = document.getElementById('formula' + i);
+                el.classList.remove('active');
+            }
+            if (index) {
+                document.getElementById('formula' + index).classList.add('active');
+            }
+        }
+        
+        // 更新按钮状态
+        function updateButtons() {
+            var isIdle = state.phase === 'idle';
+            var isSent = state.phase === 'sent';
+            var isReceived = state.phase === 'received';
+            var isSending = state.phase === 'sending';
+            var isReceiving = state.phase === 'receiving';
+            
+            btnSend.disabled = !isIdle || state.isAnimating;
+            btnRecv.disabled = !isSent || state.isAnimating;
+            btnStep.disabled = (!isSending && !isReceiving) || state.isAnimating;
+            btnAuto.disabled = (!isSending && !isReceiving) || state.isAnimating;
+            
+            // 更新提示
+            hintSend.style.display = isIdle && !state.isAnimating ? 'inline' : 'none';
+            hintRecv.style.display = isSent && !state.isAnimating ? 'inline' : 'none';
+            hintStep.style.display = (isSending || isReceiving) && !state.isAnimating ? 'inline' : 'none';
+        }
+        
+        // 更新数据显示
+        function updateDataDisplay() {
+            var data = state.userData;
+            document.getElementById('data-send-app').textContent = data;
+            document.getElementById('data-recv-app').textContent = data;
+            
+            // 更新所有PDU中的数据部分
+            var pduDatas = document.querySelectorAll('.pdu-data:not(.only)');
+            for (var i = 0; i < pduDatas.length; i++) {
+                pduDatas[i].textContent = data;
+            }
+        }
+        
+        // 隐藏所有PDU
+        function hideAllPDUs(side) {
+            var prefix = side === 'send' ? 'pdu-send-' : 'pdu-recv-';
+            var bitsId = side === 'send' ? 'bits-send' : 'bits-recv';
+            
+            for (var i = 0; i < layers.length - 1; i++) {
+                var el = document.getElementById(prefix + layers[i]);
+                if (el) el.classList.remove('visible');
+            }
+            document.getElementById(bitsId).classList.remove('visible');
+            
+            // 移除所有容器的高亮
+            var containers = document.querySelectorAll('.pdu-container');
+            for (var j = 0; j < containers.length; j++) {
+                containers[j].classList.remove('active');
+            }
+        }
+        
+        // 显示指定层的PDU
+        function showPDU(side, layer, highlight) {
+            var prefix = side === 'send' ? 'pdu-send-' : 'pdu-recv-';
+            var containerId = (side === 'send' ? 'sender-' : 'receiver-') + layer;
+            var bitsId = side === 'send' ? 'bits-send' : 'bits-recv';
+            
+            // 移除所有高亮
+            var containers = document.querySelectorAll('.pdu-container');
+            for (var i = 0; i < containers.length; i++) {
+                containers[i].classList.remove('active');
+            }
+            
+            if (layer === 'phy') {
+                document.getElementById(bitsId).classList.add('visible');
+            } else {
+                var el = document.getElementById(prefix + layer);
+                if (el) el.classList.add('visible');
+            }
+            
+            if (highlight) {
+                document.getElementById(containerId).classList.add('active');
+            }
+        }
+        
+        // 隐藏指定层的PDU
+        function hidePDU(side, layer) {
+            var prefix = side === 'send' ? 'pdu-send-' : 'pdu-recv-';
+            var bitsId = side === 'send' ? 'bits-send' : 'bits-recv';
+            
+            if (layer === 'phy') {
+                document.getElementById(bitsId).classList.remove('visible');
+            } else {
+                var el = document.getElementById(prefix + layer);
+                if (el) el.classList.remove('visible');
+            }
+        }
+        
+        // 更新网络连接线（不变色）
+        function updateCloudArrows(sending, receiving) {
+            // 网络连接线保持不变，不做颜色变化
+        }
+        
+        // 开始发送
+        function startSend() {
+            if (state.isAnimating) return;
+            
+            state.userData = inputData.value || 'Hello';
+            updateDataDisplay();
+            
+            state.phase = 'sending';
+            state.stepIndex = 0;
+            
+            hideAllPDUs('send');
+            hideAllPDUs('recv');
+            updateCloudArrows(false, false);
+            
+            updateSteps(sendSteps, -1);
+            updateButtons();
+        }
+        
+        // 开始接收
+        function startRecv() {
+            if (state.isAnimating) return;
+            
+            state.phase = 'receiving';
+            state.stepIndex = 0;
+            
+            // 接收端初始显示完整帧
+            hideAllPDUs('recv');
+            showPDU('recv', 'link', false);
+            showPDU('recv', 'phy', false);
+            
+            updateSteps(recvSteps, -1);
+            updateButtons();
+        }
+        
+        // 执行单步
+        function doStep() {
+            if (state.isAnimating) return;
+            
+            state.isAnimating = true;
+            updateButtons();
+            
+            if (state.phase === 'sending') {
+                executeSendStep();
+            } else if (state.phase === 'receiving') {
+                executeRecvStep();
+            }
+        }
+        
+        // 执行发送步骤
+        function executeSendStep() {
+            var step = sendSteps[state.stepIndex];
+            
+            updateSteps(sendSteps, state.stepIndex);
+            highlightFormula(step.formula);
+            
+            showPDU('send', step.layer, true);
+            
+            if (step.layer === 'phy') {
+                updateCloudArrows(true, false);
+            }
+            
+            setTimeout(function() {
+                state.stepIndex++;
+                state.isAnimating = false;
+                
+                if (state.stepIndex >= sendSteps.length) {
+                    state.phase = 'sent';
+                    // 发送完成后在接收端显示比特流
+                    showPDU('recv', 'phy', false);
+                }
+                
+                updateButtons();
+                
+                if (state.isAutoMode && state.phase === 'sending') {
+                    setTimeout(doStep, 800);
+                } else if (state.isAutoMode && state.phase === 'sent') {
+                    state.isAutoMode = false;
+                }
+            }, 500);
+        }
+        
+        // 执行接收步骤
+        function executeRecvStep() {
+            var step = recvSteps[state.stepIndex];
+            
+            updateSteps(recvSteps, state.stepIndex);
+            highlightFormula(step.formula);
+            
+            // 接收端的逻辑：逐层显示剥离后的结果
+            var containerId = 'receiver-' + step.layer;
+            
+            // 移除所有高亮
+            var containers = document.querySelectorAll('.pdu-container');
+            for (var i = 0; i < containers.length; i++) {
+                containers[i].classList.remove('active');
+            }
+            document.getElementById(containerId).classList.add('active');
+            
+            if (state.stepIndex === 0) {
+                // 物理层接收
+                updateCloudArrows(false, true);
+            } else if (state.stepIndex === 1) {
+                // 链路层剥离 - 显示网络层PDU
+                showPDU('recv', 'net', false);
+                updateCloudArrows(false, false);
+            } else if (state.stepIndex === 2) {
+                // 网络层剥离 - 显示传输层PDU
+                showPDU('recv', 'trans', false);
+            } else if (state.stepIndex === 3) {
+                // 传输层剥离 - 显示应用层PDU
+                showPDU('recv', 'app', false);
+            } else if (state.stepIndex === 4) {
+                // 应用层获得数据
+                showPDU('recv', 'app', true);
+            }
+            
+            setTimeout(function() {
+                state.stepIndex++;
+                state.isAnimating = false;
+                
+                if (state.stepIndex >= recvSteps.length) {
+                    state.phase = 'received';
+                    highlightFormula(null);
+                }
+                
+                updateButtons();
+                
+                if (state.isAutoMode && state.phase === 'receiving') {
+                    setTimeout(doStep, 800);
+                } else if (state.isAutoMode && state.phase === 'received') {
+                    state.isAutoMode = false;
+                }
+            }, 500);
+        }
+        
+        // 自动演示
+        function doAuto() {
+            if (state.isAnimating) return;
+            state.isAutoMode = true;
+            doStep();
+        }
+        
+        // 重置
+        function doReset() {
+            state.phase = 'idle';
+            state.stepIndex = 0;
+            state.isAnimating = false;
+            state.isAutoMode = false;
+            
+            hideAllPDUs('send');
+            hideAllPDUs('recv');
+            updateCloudArrows(false, false);
+            highlightFormula(null);
+            
+            updateSteps([{ desc: '点击"发送数据"开始封装演示' }], -1);
+            updateButtons();
+        }
+        
+        // 事件绑定
+        btnSend.onclick = startSend;
+        btnRecv.onclick = startRecv;
+        btnStep.onclick = doStep;
+        btnAuto.onclick = doAuto;
+        btnReset.onclick = doReset;
+        
+        // 初始化
+        updateButtons();
+    })();
+    </script>
+</body>
+</html>

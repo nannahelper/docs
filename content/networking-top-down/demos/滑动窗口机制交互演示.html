@@ -1,0 +1,1499 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>滑动窗口协议演示</title>
+    <style>
+        /* ===== 408教学风格基础样式 ===== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        :root {
+            --primary: #1a56db;
+            --primary-light: #e1effe;
+            --success: #047857;
+            --success-light: #d1fae5;
+            --danger: #b91c1c;
+            --danger-light: #fee2e2;
+            --warning: #d97706;
+            --warning-light: #fef3c7;
+            --text: #1f2937;
+            --text-secondary: #6b7280;
+            --border: #d1d5db;
+            --bg-light: #f9fafb;
+            --white: #ffffff;
+        }
+        
+        body {
+            font-family: system-ui, -apple-system, "Segoe UI", "Microsoft YaHei", sans-serif;
+            background: var(--white);
+            color: var(--text);
+            font-size: 14px;
+            line-height: 1.5;
+        }
+        
+        /* ===== 页面布局 ===== */
+        .page {
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            max-width: 1400px;
+            margin: 0 auto;
+            border-left: 1px solid var(--border);
+            border-right: 1px solid var(--border);
+        }
+        
+        .page-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 8px 16px;
+            border-bottom: 1px solid var(--border);
+            background: var(--bg-light);
+        }
+        
+        .page-title {
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--text);
+        }
+        
+        .page-title code {
+            font-family: "Consolas", "Monaco", monospace;
+            background: var(--primary-light);
+            color: var(--primary);
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-size: 13px;
+            margin-left: 8px;
+        }
+        
+        .page-badge {
+            font-size: 12px;
+            color: var(--text-secondary);
+            background: var(--white);
+            padding: 4px 10px;
+            border: 1px solid var(--border);
+            border-radius: 3px;
+        }
+        
+        .page-body {
+            display: flex;
+            flex: 1;
+            overflow: hidden;
+        }
+        
+        .main-panel {
+            flex: 0 0 78%;
+            display: flex;
+            flex-direction: column;
+            border-right: 1px solid var(--border);
+        }
+        
+        .side-panel {
+            flex: 0 0 22%;
+            display: flex;
+            flex-direction: column;
+            background: var(--bg-light);
+        }
+        
+        /* ===== 可视化区域 ===== */
+        .visual-area {
+            flex: 1;
+            padding: 16px 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            overflow: hidden;
+        }
+        
+        .window-section {
+            background: var(--bg-light);
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            padding: 12px 16px;
+            overflow: visible;
+        }
+        
+        .window-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+        
+        .window-title {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text);
+        }
+        
+        .window-title span {
+            color: var(--text-secondary);
+            font-weight: 400;
+            margin-left: 8px;
+        }
+        
+        .window-info {
+            font-family: "Consolas", "Monaco", monospace;
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+        
+        .window-info strong {
+            color: var(--primary);
+        }
+        
+        /* 序号槽位 */
+        .seq-container {
+            display: flex;
+            gap: 2px;
+            position: relative;
+            padding-bottom: 45px;
+        }
+        
+        .seq-slot {
+            width: 52px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .seq-num {
+            font-family: "Consolas", "Monaco", monospace;
+            font-size: 11px;
+            color: var(--text-secondary);
+            margin-bottom: 4px;
+        }
+        
+        .seq-cell {
+            width: 48px;
+            height: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid var(--border);
+            background: var(--white);
+            font-family: "Consolas", "Monaco", monospace;
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--text);
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        
+        .seq-cell.in-window {
+            border-color: var(--primary);
+            background: var(--primary-light);
+        }
+        
+        .seq-cell.sent {
+            border-color: var(--warning);
+            background: var(--warning-light);
+            color: var(--warning);
+        }
+        
+        .seq-cell.acked {
+            border-color: var(--success);
+            background: var(--success-light);
+            color: var(--success);
+        }
+        
+        .seq-cell.lost {
+            border-color: var(--danger);
+            background: var(--danger-light);
+            color: var(--danger);
+        }
+        
+        .seq-cell.received {
+            border-color: var(--success);
+            background: var(--success-light);
+            color: var(--success);
+        }
+        
+        .seq-cell.expected {
+            border-color: var(--primary);
+            background: var(--primary-light);
+            color: var(--primary);
+        }
+        
+        /* 接收动画 - 更明显的闪烁效果 */
+        .seq-cell.receiving {
+            animation: receiveFlash 0.6s ease;
+        }
+        
+        @keyframes receiveFlash {
+            0% { transform: scale(1); box-shadow: none; }
+            25% { transform: scale(1.2); background: var(--success-light); border-color: var(--success); box-shadow: 0 0 15px var(--success); }
+            50% { transform: scale(1.15); background: var(--success-light); border-color: var(--success); box-shadow: 0 0 10px var(--success); }
+            75% { transform: scale(1.1); }
+            100% { transform: scale(1); box-shadow: none; }
+        }
+        
+        /* 发送动画 */
+        .seq-cell.sending {
+            animation: sendPulse 0.4s ease;
+        }
+        
+        @keyframes sendPulse {
+            0% { transform: scale(1); box-shadow: none; }
+            50% { transform: scale(0.85); opacity: 0.6; box-shadow: 0 0 10px var(--warning); }
+            100% { transform: scale(1); opacity: 1; box-shadow: none; }
+        }
+        
+        /* 窗口指示器 */
+        .window-indicator {
+            position: absolute;
+            bottom: -22px;
+            height: 20px;
+            border: 2px solid var(--primary);
+            border-top: none;
+            background: rgba(26, 86, 219, 0.08);
+            pointer-events: none;
+            transition: all 0.4s ease;
+            border-radius: 0 0 4px 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .window-label {
+            font-size: 11px;
+            font-family: "Consolas", "Monaco", monospace;
+            color: var(--primary);
+            font-weight: 600;
+            white-space: nowrap;
+        }
+        
+        /* 已接收帧历史 */
+        .received-history {
+            margin-top: 8px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            min-height: 28px;
+        }
+        
+        .received-history-label {
+            font-size: 11px;
+            color: var(--text-secondary);
+            white-space: nowrap;
+        }
+        
+        .received-frames {
+            display: flex;
+            gap: 4px;
+            flex-wrap: wrap;
+        }
+        
+        .received-frame-tag {
+            padding: 2px 8px;
+            background: var(--success-light);
+            border: 1px solid var(--success);
+            border-radius: 3px;
+            font-family: "Consolas", "Monaco", monospace;
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--success);
+            animation: frameTagAppear 0.3s ease;
+        }
+        
+        @keyframes frameTagAppear {
+            0% { transform: scale(0); opacity: 0; }
+            50% { transform: scale(1.2); }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        
+        /* 传输通道 */
+        .channel-section {
+            flex: 1;
+            min-height: 120px;
+            background: var(--white);
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .channel-label {
+            position: absolute;
+            font-size: 11px;
+            color: var(--text-secondary);
+            background: var(--white);
+            padding: 2px 6px;
+        }
+        
+        .channel-label.forward {
+            top: 25%;
+            left: 10px;
+        }
+        
+        .channel-label.backward {
+            bottom: 25%;
+            left: 10px;
+        }
+        
+        .channel-line {
+            position: absolute;
+            left: 60px;
+            right: 20px;
+            height: 1px;
+            background: var(--border);
+        }
+        
+        .channel-line.forward {
+            top: 35%;
+        }
+        
+        .channel-line.backward {
+            bottom: 35%;
+        }
+        
+        /* 帧动画 */
+        .frame-packet {
+            position: absolute;
+            width: 40px;
+            height: 26px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid var(--primary);
+            background: var(--primary-light);
+            border-radius: 4px;
+            font-family: "Consolas", "Monaco", monospace;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--primary);
+            transition: left 1s ease-in-out;
+            box-shadow: 0 2px 8px rgba(26, 86, 219, 0.3);
+        }
+        
+        .frame-packet.ack {
+            border-color: var(--success);
+            background: var(--success-light);
+            color: var(--success);
+            width: 42px;
+        }
+        
+        .frame-packet.lost {
+            border-color: var(--danger);
+            background: var(--danger-light);
+            color: var(--danger);
+            animation: frameLost 0.3s ease forwards;
+        }
+        
+        @keyframes frameLost {
+            0% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.2); }
+            100% { transform: scale(0.5); opacity: 0; }
+        }
+        
+        .frame-packet.arrived {
+            animation: frameArrive 0.3s ease forwards;
+        }
+        
+        @keyframes frameArrive {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+            100% { transform: scale(1); opacity: 0; }
+        }
+        
+        /* ===== 控制面板 ===== */
+        .control-area {
+            border-top: 1px solid var(--border);
+            padding: 12px 20px;
+            background: var(--white);
+        }
+        
+        .control-row {
+            display: flex;
+            gap: 20px;
+            align-items: flex-start;
+        }
+        
+        .control-left {
+            flex: 1;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px 20px;
+            align-items: center;
+        }
+        
+        .control-right {
+            flex-shrink: 0;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            align-items: center;
+            justify-content: flex-end;
+        }
+        
+        .control-group {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-shrink: 0;
+        }
+        
+        .control-label {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text);
+            white-space: nowrap;
+        }
+        
+        .control-group input, .control-group select {
+            padding: 5px 8px;
+            border: 1px solid var(--border);
+            border-radius: 3px;
+            font-family: "Consolas", "Monaco", monospace;
+            font-size: 13px;
+        }
+        
+        .control-group input[type="number"] {
+            width: 50px;
+            text-align: center;
+        }
+        
+        .control-group select {
+            min-width: 70px;
+        }
+        
+        .control-group input:focus, .control-group select:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+        
+        .checkbox-label {
+            font-size: 12px;
+            color: var(--text-secondary);
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            cursor: pointer;
+        }
+        
+        .checkbox-label input {
+            cursor: pointer;
+        }
+        
+        .btn {
+            padding: 6px 14px;
+            border: 1px solid transparent;
+            border-radius: 3px;
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        .btn-primary {
+            background: var(--primary);
+            color: var(--white);
+            border-color: var(--primary);
+        }
+        
+        .btn-primary:hover:not(:disabled) {
+            background: #1e40af;
+        }
+        
+        .btn-success {
+            background: var(--success);
+            color: var(--white);
+            border-color: var(--success);
+        }
+        
+        .btn-success:hover:not(:disabled) {
+            background: #065f46;
+        }
+        
+        .btn-danger {
+            background: var(--danger);
+            color: var(--white);
+            border-color: var(--danger);
+        }
+        
+        .btn-danger:hover:not(:disabled) {
+            background: #991b1b;
+        }
+        
+        .btn-warning {
+            background: var(--warning);
+            color: var(--white);
+            border-color: var(--warning);
+        }
+        
+        .btn-warning:hover:not(:disabled) {
+            background: #b45309;
+        }
+        
+        .btn-secondary {
+            background: var(--white);
+            color: var(--text-secondary);
+            border-color: var(--border);
+        }
+        
+        .btn-secondary:hover:not(:disabled) {
+            background: var(--bg-light);
+            color: var(--text);
+        }
+        
+        .action-hint {
+            font-size: 12px;
+            color: var(--danger);
+            font-weight: 600;
+            animation: hintBlink 1s ease-in-out infinite;
+            margin-right: 4px;
+        }
+        
+        @keyframes hintBlink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        
+        /* ===== 右侧消息面板 ===== */
+        .side-header {
+            padding: 10px 12px;
+            border-bottom: 1px solid var(--border);
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text);
+        }
+        
+        .side-content {
+            flex: 1;
+            overflow-y: auto;
+            padding: 10px;
+        }
+        
+        .log-list {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+        
+        .log-item {
+            padding: 6px 8px;
+            background: var(--white);
+            border: 1px solid var(--border);
+            border-radius: 3px;
+            font-size: 11px;
+            line-height: 1.4;
+            color: var(--text-secondary);
+        }
+        
+        .log-item.send {
+            border-left: 3px solid var(--primary);
+        }
+        
+        .log-item.ack {
+            border-left: 3px solid var(--success);
+        }
+        
+        .log-item.lost {
+            border-left: 3px solid var(--danger);
+        }
+        
+        .log-item.timeout {
+            border-left: 3px solid var(--warning);
+        }
+        
+        .log-item .log-time {
+            font-family: "Consolas", "Monaco", monospace;
+            color: var(--text-secondary);
+            margin-right: 6px;
+        }
+        
+        .log-item .log-text {
+            color: var(--text);
+        }
+        
+        /* 图例 */
+        .legend-section {
+            padding: 10px 12px;
+            border-top: 1px solid var(--border);
+            background: var(--white);
+        }
+        
+        .legend-title {
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--text);
+            margin-bottom: 6px;
+        }
+        
+        .legend-list {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+        
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 10px;
+            color: var(--text-secondary);
+        }
+        
+        .legend-box {
+            width: 14px;
+            height: 14px;
+            border: 2px solid;
+            border-radius: 2px;
+        }
+        
+        .legend-box.in-window {
+            border-color: var(--primary);
+            background: var(--primary-light);
+        }
+        
+        .legend-box.sent {
+            border-color: var(--warning);
+            background: var(--warning-light);
+        }
+        
+        .legend-box.acked {
+            border-color: var(--success);
+            background: var(--success-light);
+        }
+        
+        .legend-box.lost {
+            border-color: var(--danger);
+            background: var(--danger-light);
+        }
+        
+        /* 协议说明 */
+        .protocol-info {
+            padding: 10px 12px;
+            border-top: 1px solid var(--border);
+            background: var(--white);
+            font-size: 11px;
+            color: var(--text-secondary);
+        }
+        
+        .protocol-info code {
+            font-family: "Consolas", "Monaco", monospace;
+            color: var(--primary);
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+    <div class="page">
+        <header class="page-header">
+            <h1 class="page-title">滑动窗口协议<code>Sliding Window</code></h1>
+            <span class="page-badge">计算机网络 · 数据链路层</span>
+        </header>
+        
+        <div class="page-body">
+            <div class="main-panel">
+                <div class="visual-area">
+                    <!-- 发送方窗口 -->
+                    <div class="window-section">
+                        <div class="window-header">
+                            <div class="window-title">发送方<span>Sender</span></div>
+                            <div class="window-info">
+                                发送窗口 W<sub>S</sub> = <strong id="senderWsValue">4</strong>，
+                                下一发送 = <strong id="nextSendValue">0</strong>，
+                                待确认基序号 = <strong id="sendBaseValue">0</strong>
+                            </div>
+                        </div>
+                        <div class="seq-container" id="senderSeqContainer">
+                            <!-- 动态生成 -->
+                        </div>
+                    </div>
+                    
+                    <!-- 传输通道 -->
+                    <div class="channel-section" id="channelSection">
+                        <span class="channel-label forward">数据帧 ▶</span>
+                        <span class="channel-label backward">◀ ACK</span>
+                        <div class="channel-line forward"></div>
+                        <div class="channel-line backward"></div>
+                        <!-- 动态添加帧动画 -->
+                    </div>
+                    
+                    <!-- 接收方窗口 -->
+                    <div class="window-section">
+                        <div class="window-header">
+                            <div class="window-title">接收方<span>Receiver</span></div>
+                            <div class="window-info">
+                                接收窗口 W<sub>R</sub> = <strong id="receiverWrValue">1</strong>，
+                                期待接收 = <strong id="expectedSeqValue">0</strong>，
+                                已接收 = <strong id="receivedCountValue">0</strong> 帧
+                            </div>
+                        </div>
+                        <div class="seq-container" id="receiverSeqContainer">
+                            <!-- 动态生成 -->
+                        </div>
+                        <div class="received-history" id="receivedHistory">
+                            <!-- 显示最近接收的帧记录 -->
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 控制面板 -->
+                <div class="control-area">
+                    <div class="control-row">
+                        <div class="control-left">
+                            <div class="control-group">
+                                <span class="control-label">协议</span>
+                                <select id="protocolSelect">
+                                    <option value="sw">停等</option>
+                                    <option value="gbn" selected>GBN</option>
+                                    <option value="sr">SR</option>
+                                </select>
+                            </div>
+                            <div class="control-group">
+                                <span class="control-label">序号位</span>
+                                <input type="number" id="seqBitsInput" value="3" min="2" max="4">
+                            </div>
+                            <div class="control-group">
+                                <span class="control-label">W<sub>S</sub></span>
+                                <input type="number" id="sendWindowInput" value="4" min="1" max="7">
+                            </div>
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="simulateLossCheck"> 自动丢包
+                            </label>
+                        </div>
+                        <div class="control-right">
+                            <span class="action-hint" id="hintSend">请选择 ▶</span>
+                            <button class="btn btn-primary" id="btnSendFrame">发送帧</button>
+                            <button class="btn btn-success" id="btnReceiveAck">接收ACK</button>
+                            <button class="btn btn-warning" id="btnSimulateLoss">丢包</button>
+                            <button class="btn btn-secondary" id="btnTimeout">超时重传</button>
+                            <button class="btn btn-secondary" id="btnReset">重置</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 右侧面板 -->
+            <div class="side-panel">
+                <div class="side-header">事件日志</div>
+                <div class="side-content">
+                    <div class="log-list" id="logList">
+                        <!-- 动态生成 -->
+                    </div>
+                </div>
+                
+                <div class="legend-section">
+                    <div class="legend-title">状态图例</div>
+                    <div class="legend-list">
+                        <div class="legend-item">
+                            <div class="legend-box in-window"></div>
+                            <span>窗口内可发送</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-box sent"></div>
+                            <span>已发送待确认</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-box acked"></div>
+                            <span>已确认</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-box lost"></div>
+                            <span>丢失/超时</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="protocol-info">
+                    <strong>GBN</strong>: W<sub>S</sub> = 2<sup>n</sup>-1, W<sub>R</sub> = 1<br>
+                    <strong>SR</strong>: W<sub>S</sub> = W<sub>R</sub> = 2<sup>n-1</sup><br>
+                    序号空间 = <code id="seqSpaceValue">0~7</code>
+                </div>
+            </div>
+        </div>
+    </div>
+
+<script>
+(function() {
+    // ===== 配置 =====
+    var SEQ_BITS = 3;
+    var SEQ_SIZE = 8; // 2^3
+    var SEND_WINDOW = 4;
+    var RECV_WINDOW = 1;
+    var PROTOCOL = 'gbn';
+    
+    // ===== 状态 =====
+    var state = {
+        sendBase: 0,        // 发送窗口基序号
+        nextSeqNum: 0,      // 下一个要发送的序号
+        expectedSeq: 0,     // 接收方期待的序号
+        sentFrames: {},     // 已发送帧状态: 'sent', 'acked', 'lost'
+        receivedFrames: {}, // 接收方收到的帧
+        pendingAcks: [],    // 待接收的ACK
+        receivedHistory: [], // 已接收帧的历史记录
+        totalReceived: 0,   // 已接收帧总数
+        isAnimating: false,
+        logCount: 0
+    };
+    
+    // ===== DOM引用 =====
+    var senderContainer = document.getElementById('senderSeqContainer');
+    var receiverContainer = document.getElementById('receiverSeqContainer');
+    var channelSection = document.getElementById('channelSection');
+    var logList = document.getElementById('logList');
+    
+    var protocolSelect = document.getElementById('protocolSelect');
+    var seqBitsInput = document.getElementById('seqBitsInput');
+    var sendWindowInput = document.getElementById('sendWindowInput');
+    var simulateLossCheck = document.getElementById('simulateLossCheck');
+    
+    var btnSendFrame = document.getElementById('btnSendFrame');
+    var btnReceiveAck = document.getElementById('btnReceiveAck');
+    var btnSimulateLoss = document.getElementById('btnSimulateLoss');
+    var btnTimeout = document.getElementById('btnTimeout');
+    var btnReset = document.getElementById('btnReset');
+    var hintSend = document.getElementById('hintSend');
+    
+    // ===== 初始化 =====
+    function init() {
+        updateProtocolSettings();
+        renderSenderWindow();
+        renderReceiverWindow();
+        updateInfoDisplay();
+        updateButtonStates();
+        addLog('系统初始化，协议: ' + getProtocolName(), 'send');
+    }
+    
+    function getProtocolName() {
+        switch(PROTOCOL) {
+            case 'sw': return '停等协议 (Stop-and-Wait)';
+            case 'gbn': return 'GBN (Go-Back-N)';
+            case 'sr': return 'SR (Selective Repeat)';
+            default: return PROTOCOL;
+        }
+    }
+    
+    function updateProtocolSettings() {
+        PROTOCOL = protocolSelect.value;
+        SEQ_BITS = parseInt(seqBitsInput.value) || 3;
+        SEQ_SIZE = Math.pow(2, SEQ_BITS);
+        
+        if (PROTOCOL === 'sw') {
+            SEND_WINDOW = 1;
+            RECV_WINDOW = 1;
+        } else if (PROTOCOL === 'gbn') {
+            SEND_WINDOW = Math.min(parseInt(sendWindowInput.value) || 4, SEQ_SIZE - 1);
+            RECV_WINDOW = 1;
+        } else if (PROTOCOL === 'sr') {
+            var maxW = Math.floor(SEQ_SIZE / 2);
+            SEND_WINDOW = Math.min(parseInt(sendWindowInput.value) || maxW, maxW);
+            RECV_WINDOW = SEND_WINDOW;
+        }
+        
+        sendWindowInput.value = SEND_WINDOW;
+        sendWindowInput.max = PROTOCOL === 'sr' ? Math.floor(SEQ_SIZE / 2) : SEQ_SIZE - 1;
+        
+        document.getElementById('seqSpaceValue').textContent = '0~' + (SEQ_SIZE - 1);
+        document.getElementById('senderWsValue').textContent = SEND_WINDOW;
+        document.getElementById('receiverWrValue').textContent = RECV_WINDOW;
+    }
+    
+    // ===== 渲染发送方窗口 =====
+    function renderSenderWindow() {
+        senderContainer.innerHTML = '';
+        
+        for (var i = 0; i < SEQ_SIZE; i++) {
+            var slot = document.createElement('div');
+            slot.className = 'seq-slot';
+            
+            var numEl = document.createElement('div');
+            numEl.className = 'seq-num';
+            numEl.textContent = i;
+            
+            var cell = document.createElement('div');
+            cell.className = 'seq-cell';
+            cell.id = 'sender-cell-' + i;
+            cell.textContent = i;
+            
+            // 判断状态
+            var inWindow = isInSendWindow(i);
+            var frameState = state.sentFrames[i];
+            
+            if (frameState === 'acked') {
+                cell.classList.add('acked');
+            } else if (frameState === 'lost') {
+                cell.classList.add('lost');
+            } else if (frameState === 'sent') {
+                cell.classList.add('sent');
+            } else if (inWindow) {
+                cell.classList.add('in-window');
+            }
+            
+            slot.appendChild(numEl);
+            slot.appendChild(cell);
+            senderContainer.appendChild(slot);
+        }
+        
+        // 添加窗口指示器
+        updateWindowIndicator('sender');
+    }
+    
+    function isInSendWindow(seq) {
+        var windowEnd = (state.sendBase + SEND_WINDOW - 1) % SEQ_SIZE;
+        if (state.sendBase <= windowEnd) {
+            return seq >= state.sendBase && seq <= windowEnd;
+        } else {
+            return seq >= state.sendBase || seq <= windowEnd;
+        }
+    }
+    
+    // ===== 渲染接收方窗口 =====
+    function renderReceiverWindow() {
+        receiverContainer.innerHTML = '';
+        
+        for (var i = 0; i < SEQ_SIZE; i++) {
+            var slot = document.createElement('div');
+            slot.className = 'seq-slot';
+            
+            var numEl = document.createElement('div');
+            numEl.className = 'seq-num';
+            numEl.textContent = i;
+            
+            var cell = document.createElement('div');
+            cell.className = 'seq-cell';
+            cell.id = 'receiver-cell-' + i;
+            cell.textContent = i;
+            
+            // 判断状态
+            var inWindow = isInRecvWindow(i);
+            var received = state.receivedFrames[i];
+            
+            if (received) {
+                cell.classList.add('received');
+            } else if (i === state.expectedSeq) {
+                cell.classList.add('expected');
+            } else if (inWindow && RECV_WINDOW > 1) {
+                cell.classList.add('in-window');
+            }
+            
+            slot.appendChild(numEl);
+            slot.appendChild(cell);
+            receiverContainer.appendChild(slot);
+        }
+        
+        updateWindowIndicator('receiver');
+    }
+    
+    function isInRecvWindow(seq) {
+        if (RECV_WINDOW === 1) {
+            return seq === state.expectedSeq;
+        }
+        var windowEnd = (state.expectedSeq + RECV_WINDOW - 1) % SEQ_SIZE;
+        if (state.expectedSeq <= windowEnd) {
+            return seq >= state.expectedSeq && seq <= windowEnd;
+        } else {
+            return seq >= state.expectedSeq || seq <= windowEnd;
+        }
+    }
+    
+    // ===== 窗口指示器 =====
+    function updateWindowIndicator(type) {
+        var container = type === 'sender' ? senderContainer : receiverContainer;
+        var existingIndicator = container.querySelector('.window-indicator');
+        if (existingIndicator) {
+            existingIndicator.remove();
+        }
+        
+        var base, windowSize;
+        if (type === 'sender') {
+            base = state.sendBase;
+            windowSize = SEND_WINDOW;
+        } else {
+            base = state.expectedSeq;
+            windowSize = RECV_WINDOW;
+        }
+        
+        var indicator = document.createElement('div');
+        indicator.className = 'window-indicator';
+        
+        var slotWidth = 54;
+        var startX = base * slotWidth + 2;
+        var width = windowSize * slotWidth - 4;
+        
+        // 处理窗口跨越边界的情况（简化处理，只显示到末尾）
+        var windowEnd = (base + windowSize - 1) % SEQ_SIZE;
+        if (windowEnd < base) {
+            width = (SEQ_SIZE - base) * slotWidth - 4;
+        }
+        
+        indicator.style.left = startX + 'px';
+        indicator.style.width = width + 'px';
+        
+        // 创建标签元素（放在指示器内部）
+        var label = document.createElement('span');
+        label.className = 'window-label';
+        label.textContent = type === 'sender' ? 'W_S' : 'W_R';
+        
+        indicator.appendChild(label);
+        container.appendChild(indicator);
+    }
+    
+    // ===== 发送帧 =====
+    function sendFrame() {
+        if (state.isAnimating) return;
+        
+        // 检查是否可以发送
+        if (!canSendMore()) {
+            addLog('发送窗口已满，等待ACK', 'timeout');
+            return;
+        }
+        
+        var seq = state.nextSeqNum;
+        state.sentFrames[seq] = 'sent';
+        state.nextSeqNum = (state.nextSeqNum + 1) % SEQ_SIZE;
+        
+        addLog('发送帧 ' + seq, 'send');
+        renderSenderWindow();
+        updateInfoDisplay();
+        
+        // 模拟丢包
+        var willLose = simulateLossCheck.checked && Math.random() < 0.3;
+        
+        // 动画：帧从发送方到接收方
+        animateFrame(seq, 'forward', willLose, function() {
+            if (!willLose) {
+                receiveFrame(seq);
+            } else {
+                state.sentFrames[seq] = 'lost';
+                addLog('帧 ' + seq + ' 丢失！', 'lost');
+                renderSenderWindow();
+            }
+            updateButtonStates();
+        });
+    }
+    
+    function canSendMore() {
+        // 检查nextSeqNum是否在窗口内
+        var unacked = 0;
+        for (var key in state.sentFrames) {
+            if (state.sentFrames[key] === 'sent' || state.sentFrames[key] === 'lost') {
+                unacked++;
+            }
+        }
+        return unacked < SEND_WINDOW;
+    }
+    
+    // ===== 接收帧（接收方） =====
+    function receiveFrame(seq) {
+        if (PROTOCOL === 'sr') {
+            // SR: 接收窗口内的帧都可以缓存
+            if (isInRecvWindow(seq)) {
+                state.receivedFrames[seq] = true;
+                addReceivedFrame(seq);
+                addLog('接收方收到帧 ' + seq + '，缓存', 'ack');
+                
+                // 检查是否可以滑动窗口
+                while (state.receivedFrames[state.expectedSeq]) {
+                    delete state.receivedFrames[state.expectedSeq];
+                    state.pendingAcks.push(state.expectedSeq);
+                    state.expectedSeq = (state.expectedSeq + 1) % SEQ_SIZE;
+                }
+            }
+        } else {
+            // GBN/停等: 只接收期待的帧
+            if (seq === state.expectedSeq) {
+                state.pendingAcks.push(seq);
+                addReceivedFrame(seq);
+                addLog('接收方收到帧 ' + seq + '，返回ACK ' + seq, 'ack');
+                state.expectedSeq = (state.expectedSeq + 1) % SEQ_SIZE;
+            } else {
+                addLog('接收方收到乱序帧 ' + seq + '，丢弃', 'lost');
+            }
+        }
+        
+        renderReceiverWindow();
+        updateInfoDisplay();
+        updateReceivedHistory();
+    }
+    
+    // 记录已接收的帧
+    function addReceivedFrame(seq) {
+        state.totalReceived++;
+        state.receivedHistory.push(seq);
+        // 只保留最近10个记录
+        if (state.receivedHistory.length > 10) {
+            state.receivedHistory.shift();
+        }
+    }
+    
+    // 更新已接收帧显示
+    function updateReceivedHistory() {
+        var container = document.getElementById('receivedHistory');
+        var countEl = document.getElementById('receivedCountValue');
+        
+        countEl.textContent = state.totalReceived;
+        
+        container.innerHTML = '';
+        
+        if (state.receivedHistory.length > 0) {
+            var label = document.createElement('span');
+            label.className = 'received-history-label';
+            label.textContent = '最近接收:';
+            container.appendChild(label);
+            
+            var framesContainer = document.createElement('div');
+            framesContainer.className = 'received-frames';
+            
+            for (var i = 0; i < state.receivedHistory.length; i++) {
+                var tag = document.createElement('span');
+                tag.className = 'received-frame-tag';
+                tag.textContent = state.receivedHistory[i];
+                framesContainer.appendChild(tag);
+            }
+            
+            container.appendChild(framesContainer);
+        }
+    }
+    
+    // ===== 接收ACK（发送方） =====
+    function receiveAck() {
+        if (state.isAnimating) return;
+        
+        if (state.pendingAcks.length === 0) {
+            addLog('没有待确认的ACK', 'timeout');
+            return;
+        }
+        
+        var ackSeq = state.pendingAcks.shift();
+        
+        // 动画：ACK从接收方到发送方
+        animateFrame('ACK' + ackSeq, 'backward', false, function() {
+            processAck(ackSeq);
+            updateButtonStates();
+        });
+    }
+    
+    function processAck(ackSeq) {
+        if (PROTOCOL === 'sr') {
+            // SR: 只确认特定帧
+            state.sentFrames[ackSeq] = 'acked';
+            addLog('收到ACK ' + ackSeq, 'ack');
+            
+            // 滑动窗口到第一个未确认的帧
+            while (state.sentFrames[state.sendBase] === 'acked') {
+                delete state.sentFrames[state.sendBase];
+                state.sendBase = (state.sendBase + 1) % SEQ_SIZE;
+            }
+        } else {
+            // GBN/停等: 累积确认
+            addLog('收到ACK ' + ackSeq + ' (累积确认)', 'ack');
+            
+            // 确认所有 <= ackSeq 的帧
+            var current = state.sendBase;
+            while (current !== (ackSeq + 1) % SEQ_SIZE) {
+                state.sentFrames[current] = 'acked';
+                current = (current + 1) % SEQ_SIZE;
+            }
+            
+            // 滑动窗口
+            state.sendBase = (ackSeq + 1) % SEQ_SIZE;
+            
+            // 清理已确认的帧
+            for (var key in state.sentFrames) {
+                if (state.sentFrames[key] === 'acked') {
+                    delete state.sentFrames[key];
+                }
+            }
+        }
+        
+        renderSenderWindow();
+        updateInfoDisplay();
+    }
+    
+    // ===== 模拟丢包 =====
+    function simulateLoss() {
+        if (state.isAnimating) return;
+        
+        // 找到第一个sent状态的帧
+        var lostSeq = -1;
+        for (var i = 0; i < SEQ_SIZE; i++) {
+            var seq = (state.sendBase + i) % SEQ_SIZE;
+            if (state.sentFrames[seq] === 'sent') {
+                lostSeq = seq;
+                break;
+            }
+        }
+        
+        if (lostSeq === -1) {
+            addLog('没有可丢失的帧', 'timeout');
+            return;
+        }
+        
+        state.sentFrames[lostSeq] = 'lost';
+        addLog('模拟帧 ' + lostSeq + ' 丢失', 'lost');
+        renderSenderWindow();
+        updateButtonStates();
+    }
+    
+    // ===== 超时重传 =====
+    function handleTimeout() {
+        if (state.isAnimating) return;
+        
+        // 检查是否有丢失的帧
+        var hasLost = false;
+        for (var key in state.sentFrames) {
+            if (state.sentFrames[key] === 'lost') {
+                hasLost = true;
+                break;
+            }
+        }
+        
+        if (!hasLost) {
+            addLog('没有需要重传的帧', 'timeout');
+            return;
+        }
+        
+        if (PROTOCOL === 'sr') {
+            // SR: 只重传丢失的帧
+            for (var key in state.sentFrames) {
+                if (state.sentFrames[key] === 'lost') {
+                    var seq = parseInt(key);
+                    state.sentFrames[seq] = 'sent';
+                    addLog('超时，重传帧 ' + seq, 'timeout');
+                    
+                    // 简化处理：直接发送成功
+                    animateFrame(seq, 'forward', false, function(s) {
+                        return function() {
+                            receiveFrame(s);
+                            renderSenderWindow();
+                            updateButtonStates();
+                        };
+                    }(seq));
+                    break; // 一次只重传一个
+                }
+            }
+        } else {
+            // GBN: 从丢失的帧开始全部重传
+            addLog('超时，GBN回退重传从帧 ' + state.sendBase + ' 开始', 'timeout');
+            
+            // 重置所有sent/lost状态的帧
+            for (var key in state.sentFrames) {
+                delete state.sentFrames[key];
+            }
+            state.nextSeqNum = state.sendBase;
+            
+            renderSenderWindow();
+            updateInfoDisplay();
+        }
+        
+        updateButtonStates();
+    }
+    
+    // ===== 帧动画 =====
+    function animateFrame(label, direction, willLose, callback) {
+        state.isAnimating = true;
+        setButtonsEnabled(false);
+        
+        var packet = document.createElement('div');
+        packet.className = 'frame-packet';
+        var isAck = String(label).indexOf('ACK') === 0;
+        if (isAck) {
+            packet.classList.add('ack');
+        }
+        packet.textContent = label;
+        
+        var rect = channelSection.getBoundingClientRect();
+        var lineTop = direction === 'forward' ? rect.height * 0.35 : rect.height * 0.65;
+        
+        packet.style.top = (lineTop - 12) + 'px';
+        
+        // 获取序号用于触发接收动画
+        var seqNum = isAck ? parseInt(String(label).replace('ACK', '')) : parseInt(label);
+        
+        if (direction === 'forward') {
+            packet.style.left = '70px';
+            // 发送方发送动画
+            triggerSendAnimation(seqNum);
+        } else {
+            packet.style.left = (rect.width - 90) + 'px';
+        }
+        
+        channelSection.appendChild(packet);
+        
+        // 触发重排后开始动画
+        setTimeout(function() {
+            if (direction === 'forward') {
+                if (willLose) {
+                    packet.style.left = (rect.width / 2) + 'px';
+                    setTimeout(function() {
+                        packet.classList.add('lost');
+                        packet.textContent = '';
+                    }, 500);
+                } else {
+                    packet.style.left = (rect.width - 90) + 'px';
+                }
+            } else {
+                packet.style.left = '70px';
+            }
+        }, 50);
+        
+        // 帧到达时触发接收动画
+        setTimeout(function() {
+            if (!willLose) {
+                // 帧到达动画
+                packet.classList.add('arrived');
+                
+                if (direction === 'forward') {
+                    // 数据帧到达接收方
+                    triggerReceiveAnimation(seqNum, 'receiver');
+                } else {
+                    // ACK到达发送方
+                    triggerReceiveAnimation(seqNum, 'sender');
+                }
+            }
+        }, 950);
+        
+        setTimeout(function() {
+            packet.remove();
+            state.isAnimating = false;
+            setButtonsEnabled(true);
+            if (callback) callback();
+        }, 1400);
+    }
+    
+    // 触发发送动画
+    function triggerSendAnimation(seq) {
+        var cell = document.getElementById('sender-cell-' + seq);
+        if (cell) {
+            cell.classList.add('sending');
+            setTimeout(function() {
+                cell.classList.remove('sending');
+            }, 400);
+        }
+    }
+    
+    // 触发接收动画
+    function triggerReceiveAnimation(seq, target) {
+        var cellId = target === 'receiver' ? 'receiver-cell-' + seq : 'sender-cell-' + seq;
+        var cell = document.getElementById(cellId);
+        if (cell) {
+            cell.classList.add('receiving');
+            setTimeout(function() {
+                cell.classList.remove('receiving');
+            }, 500);
+        }
+    }
+    
+    // ===== 更新显示 =====
+    function updateInfoDisplay() {
+        document.getElementById('nextSendValue').textContent = state.nextSeqNum;
+        document.getElementById('sendBaseValue').textContent = state.sendBase;
+        document.getElementById('expectedSeqValue').textContent = state.expectedSeq;
+    }
+    
+    function updateButtonStates() {
+        var canSend = canSendMore() && !state.isAnimating;
+        var hasAcks = state.pendingAcks.length > 0;
+        var hasLost = false;
+        var hasSent = false;
+        
+        for (var key in state.sentFrames) {
+            if (state.sentFrames[key] === 'lost') hasLost = true;
+            if (state.sentFrames[key] === 'sent') hasSent = true;
+        }
+        
+        btnSendFrame.disabled = !canSend;
+        btnReceiveAck.disabled = !hasAcks || state.isAnimating;
+        btnSimulateLoss.disabled = !hasSent || state.isAnimating;
+        btnTimeout.disabled = !hasLost || state.isAnimating;
+        
+        // 更新提示
+        hintSend.style.display = canSend ? 'inline' : 'none';
+    }
+    
+    function setButtonsEnabled(enabled) {
+        btnSendFrame.disabled = !enabled;
+        btnReceiveAck.disabled = !enabled;
+        btnSimulateLoss.disabled = !enabled;
+        btnTimeout.disabled = !enabled;
+        btnReset.disabled = !enabled;
+    }
+    
+    // ===== 日志 =====
+    function addLog(text, type) {
+        state.logCount++;
+        var item = document.createElement('div');
+        item.className = 'log-item ' + (type || '');
+        
+        var timeSpan = document.createElement('span');
+        timeSpan.className = 'log-time';
+        timeSpan.textContent = '[' + state.logCount + ']';
+        
+        var textSpan = document.createElement('span');
+        textSpan.className = 'log-text';
+        textSpan.textContent = text;
+        
+        item.appendChild(timeSpan);
+        item.appendChild(textSpan);
+        
+        logList.insertBefore(item, logList.firstChild);
+        
+        // 限制日志数量
+        while (logList.children.length > 50) {
+            logList.removeChild(logList.lastChild);
+        }
+    }
+    
+    // ===== 重置 =====
+    function reset() {
+        state.sendBase = 0;
+        state.nextSeqNum = 0;
+        state.expectedSeq = 0;
+        state.sentFrames = {};
+        state.receivedFrames = {};
+        state.pendingAcks = [];
+        state.receivedHistory = [];
+        state.totalReceived = 0;
+        state.isAnimating = false;
+        state.logCount = 0;
+        
+        logList.innerHTML = '';
+        
+        updateProtocolSettings();
+        renderSenderWindow();
+        renderReceiverWindow();
+        updateInfoDisplay();
+        updateButtonStates();
+        updateReceivedHistory();
+        addLog('系统重置，协议: ' + getProtocolName(), 'send');
+    }
+    
+    // ===== 事件绑定 =====
+    btnSendFrame.onclick = sendFrame;
+    btnReceiveAck.onclick = receiveAck;
+    btnSimulateLoss.onclick = simulateLoss;
+    btnTimeout.onclick = handleTimeout;
+    btnReset.onclick = reset;
+    
+    protocolSelect.onchange = function() {
+        reset();
+    };
+    
+    seqBitsInput.onchange = function() {
+        reset();
+    };
+    
+    sendWindowInput.onchange = function() {
+        reset();
+    };
+    
+    // ===== 启动 =====
+    init();
+})();
+</script>
+</body>
+</html>

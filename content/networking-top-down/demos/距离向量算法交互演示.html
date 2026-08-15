@@ -1,0 +1,1321 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>距离向量算法可视化演示</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        :root {
+            --primary: #1a56db;
+            --primary-light: #e1effe;
+            --success: #047857;
+            --success-light: #d1fae5;
+            --danger: #b91c1c;
+            --danger-light: #fee2e2;
+            --warning: #d97706;
+            --warning-light: #fef3c7;
+            --text: #1f2937;
+            --text-secondary: #6b7280;
+            --border: #d1d5db;
+            --bg-light: #f9fafb;
+            --white: #ffffff;
+        }
+        
+        body {
+            font-family: system-ui, -apple-system, "Segoe UI", "Microsoft YaHei", sans-serif;
+            background: var(--white);
+            color: var(--text);
+            font-size: 14px;
+            line-height: 1.5;
+        }
+        
+        .page {
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            max-width: 1500px;
+            margin: 0 auto;
+            border-left: 1px solid var(--border);
+            border-right: 1px solid var(--border);
+        }
+        
+        .page-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 8px 16px;
+            border-bottom: 1px solid var(--border);
+            background: var(--bg-light);
+        }
+        
+        .page-title {
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--text);
+        }
+        
+        .page-title code {
+            font-family: "Consolas", "Monaco", monospace;
+            background: var(--primary-light);
+            color: var(--primary);
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-size: 13px;
+            margin-left: 8px;
+        }
+        
+        .page-badge {
+            font-size: 12px;
+            color: var(--text-secondary);
+            background: var(--white);
+            padding: 4px 10px;
+            border: 1px solid var(--border);
+            border-radius: 3px;
+        }
+        
+        .page-body {
+            display: flex;
+            flex: 1;
+            overflow: hidden;
+        }
+        
+        .main-panel {
+            flex: 0 0 55%;
+            display: flex;
+            flex-direction: column;
+            border-right: 1px solid var(--border);
+        }
+        
+        .table-panel {
+            flex: 0 0 25%;
+            display: flex;
+            flex-direction: column;
+            border-right: 1px solid var(--border);
+            background: var(--bg-light);
+        }
+        
+        .side-panel {
+            flex: 0 0 20%;
+            display: flex;
+            flex-direction: column;
+            background: var(--bg-light);
+        }
+        
+        /* ===== 场景选择栏 ===== */
+        .scenario-bar {
+            padding: 10px 12px;
+            border-bottom: 1px solid var(--border);
+            background: var(--white);
+        }
+        
+        .scenario-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+        
+        .scenario-label {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text);
+            margin-right: 4px;
+        }
+        
+        .btn-scenario {
+            padding: 5px 12px;
+            border: 1px solid var(--border);
+            border-radius: 3px;
+            font-size: 12px;
+            font-weight: 500;
+            cursor: pointer;
+            background: var(--white);
+            color: var(--text-secondary);
+            transition: all 0.2s;
+        }
+        
+        .btn-scenario:hover {
+            background: var(--bg-light);
+            color: var(--text);
+        }
+        
+        .btn-scenario.active {
+            background: var(--primary);
+            color: var(--white);
+            border-color: var(--primary);
+        }
+        
+        .scenario-desc {
+            font-size: 11px;
+            color: var(--text-secondary);
+            margin-left: auto;
+            padding: 4px 8px;
+            background: var(--bg-light);
+            border-radius: 3px;
+        }
+        
+        /* ===== 网络拓扑可视化 ===== */
+        .visual-area {
+            flex: 1;
+            padding: 12px;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .visual-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 8px;
+        }
+        
+        .visual-label {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text);
+        }
+        
+        .visual-info {
+            font-family: "Consolas", "Monaco", monospace;
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+        
+        .visual-info strong {
+            color: var(--primary);
+        }
+        
+        .visual-container {
+            flex: 1;
+            background: var(--white);
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            overflow: hidden;
+            position: relative;
+            cursor: grab;
+            min-height: 280px;
+        }
+        
+        .visual-container.dragging {
+            cursor: grabbing;
+        }
+        
+        .visual-svg {
+            width: 100%;
+            height: 100%;
+        }
+        
+        .zoom-controls {
+            position: absolute;
+            bottom: 8px;
+            right: 8px;
+            display: flex;
+            gap: 4px;
+            background: var(--white);
+            border: 1px solid var(--border);
+            border-radius: 3px;
+            padding: 3px;
+        }
+        
+        .zoom-btn {
+            width: 24px;
+            height: 24px;
+            border: none;
+            background: var(--white);
+            cursor: pointer;
+            border-radius: 2px;
+            font-size: 14px;
+            color: var(--text);
+        }
+        
+        .zoom-btn:hover {
+            background: var(--bg-light);
+        }
+        
+        .zoom-level {
+            padding: 0 6px;
+            font-size: 11px;
+            color: var(--text-secondary);
+            display: flex;
+            align-items: center;
+        }
+        
+        /* 节点样式 */
+        .node-group {
+            cursor: pointer;
+        }
+        
+        .node-circle {
+            fill: var(--white);
+            stroke: var(--text);
+            stroke-width: 2;
+            transition: all 0.3s;
+        }
+        
+        .node-circle.highlight {
+            stroke: var(--warning);
+            stroke-width: 3;
+            fill: var(--warning-light);
+        }
+        
+        .node-text {
+            font-family: "Consolas", "Monaco", monospace;
+            font-size: 14px;
+            font-weight: 600;
+            fill: var(--text);
+            text-anchor: middle;
+            dominant-baseline: middle;
+            pointer-events: none;
+        }
+        
+        .edge-line {
+            stroke: var(--text-secondary);
+            stroke-width: 2;
+        }
+        
+        .edge-line.highlight {
+            stroke: var(--warning);
+            stroke-width: 3;
+        }
+        
+        .edge-weight {
+            font-family: "Consolas", "Monaco", monospace;
+            font-size: 12px;
+            font-weight: 600;
+            fill: var(--text);
+            text-anchor: middle;
+            dominant-baseline: middle;
+            pointer-events: none;
+        }
+        
+        .edge-weight-bg {
+            fill: var(--white);
+        }
+        
+        /* ===== 控制面板 ===== */
+        .control-area {
+            border-top: 1px solid var(--border);
+            padding: 10px 12px;
+            background: var(--white);
+        }
+        
+        .control-row {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        
+        .btn {
+            padding: 5px 12px;
+            border: 1px solid transparent;
+            border-radius: 3px;
+            font-size: 12px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        .btn-primary {
+            background: var(--primary);
+            color: var(--white);
+            border-color: var(--primary);
+        }
+        
+        .btn-primary:hover:not(:disabled) {
+            background: #1e40af;
+        }
+        
+        .btn-success {
+            background: var(--success);
+            color: var(--white);
+            border-color: var(--success);
+        }
+        
+        .btn-success:hover:not(:disabled) {
+            background: #065f46;
+        }
+        
+        .btn-secondary {
+            background: var(--white);
+            color: var(--text-secondary);
+            border-color: var(--border);
+        }
+        
+        .btn-secondary:hover:not(:disabled) {
+            background: var(--bg-light);
+            color: var(--text);
+        }
+        
+        .btn-danger {
+            background: var(--danger);
+            color: var(--white);
+            border-color: var(--danger);
+        }
+        
+        .action-hint {
+            font-size: 11px;
+            color: var(--danger);
+            font-weight: 600;
+            animation: hintBlink 1s ease-in-out infinite;
+        }
+        
+        @keyframes hintBlink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        
+        .speed-group {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            margin-left: auto;
+        }
+        
+        .speed-group label {
+            font-size: 11px;
+            color: var(--text-secondary);
+        }
+        
+        .speed-group select {
+            padding: 3px 6px;
+            border: 1px solid var(--border);
+            border-radius: 3px;
+            font-size: 11px;
+        }
+        
+        /* ===== 距离向量表面板 ===== */
+        .table-header {
+            padding: 10px 12px;
+            border-bottom: 1px solid var(--border);
+            background: var(--white);
+        }
+        
+        .table-title {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text);
+            margin-bottom: 4px;
+        }
+        
+        .table-subtitle {
+            font-size: 11px;
+            color: var(--text-secondary);
+        }
+        
+        .table-content {
+            flex: 1;
+            overflow-y: auto;
+            padding: 10px;
+        }
+        
+        .dv-table-container {
+            margin-bottom: 12px;
+        }
+        
+        .dv-table-title {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text);
+            margin-bottom: 6px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        
+        .dv-table-title .node-indicator {
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            background: var(--white);
+            border: 2px solid var(--text);
+            font-size: 9px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: "Consolas", "Monaco", monospace;
+        }
+        
+        .dv-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-family: "Consolas", "Monaco", monospace;
+            font-size: 12px;
+        }
+        
+        .dv-table th,
+        .dv-table td {
+            padding: 4px 8px;
+            border: 1px solid var(--border);
+            text-align: center;
+        }
+        
+        .dv-table th {
+            background: var(--bg-light);
+            font-weight: 600;
+            color: var(--text);
+        }
+        
+        .dv-table td {
+            background: var(--white);
+            color: var(--text-secondary);
+        }
+        
+        .dv-table td.updated {
+            background: var(--warning-light);
+            color: var(--warning);
+            font-weight: 600;
+        }
+        
+        .dv-table td.infinity {
+            color: var(--border);
+        }
+        
+        /* ===== 右侧面板 ===== */
+        .side-header {
+            padding: 10px 12px;
+            border-bottom: 1px solid var(--border);
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text);
+            background: var(--white);
+        }
+        
+        .side-content {
+            flex: 1;
+            overflow-y: auto;
+            padding: 10px;
+        }
+        
+        .log-list {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+        
+        .log-item {
+            padding: 6px 8px;
+            background: var(--white);
+            border: 1px solid var(--border);
+            border-radius: 3px;
+            font-size: 11px;
+            line-height: 1.4;
+            color: var(--text-secondary);
+        }
+        
+        .log-item.send { border-left: 3px solid var(--success); }
+        .log-item.receive { border-left: 3px solid var(--primary); }
+        .log-item.update { border-left: 3px solid var(--warning); }
+        .log-item.converge { border-left: 3px solid var(--success); }
+        .log-item.info { border-left: 3px solid var(--text-secondary); }
+        
+        .log-item .log-round {
+            font-family: "Consolas", "Monaco", monospace;
+            color: var(--primary);
+            font-weight: 600;
+            margin-right: 4px;
+        }
+        
+        .formula-section {
+            padding: 10px 12px;
+            border-top: 1px solid var(--border);
+            background: var(--white);
+        }
+        
+        .formula-title {
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--text);
+            margin-bottom: 6px;
+        }
+        
+        .formula-box {
+            background: var(--bg-light);
+            border: 1px solid var(--border);
+            border-radius: 3px;
+            padding: 8px;
+            font-family: "Consolas", "Monaco", monospace;
+            font-size: 11px;
+            line-height: 1.6;
+        }
+        
+        .formula-line {
+            margin-bottom: 4px;
+        }
+        
+        .formula-line:last-child {
+            margin-bottom: 0;
+        }
+        
+        .formula-line .var {
+            color: var(--primary);
+            font-weight: 600;
+        }
+        
+        .formula-line .op {
+            color: var(--text-secondary);
+        }
+        
+        .formula-line .result {
+            color: var(--success);
+            font-weight: 600;
+        }
+        
+        .formula-line .old {
+            color: var(--danger);
+            text-decoration: line-through;
+        }
+        
+        .legend-section {
+            padding: 10px 12px;
+            border-top: 1px solid var(--border);
+            background: var(--white);
+        }
+        
+        .legend-title {
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--text);
+            margin-bottom: 6px;
+        }
+        
+        .legend-list {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+        
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 10px;
+            color: var(--text-secondary);
+        }
+        
+        .legend-circle {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            border: 2px solid;
+        }
+        
+        .legend-circle.normal { border-color: var(--text); background: var(--white); }
+        .legend-circle.updated { border-color: var(--warning); background: var(--warning-light); }
+    </style>
+</head>
+<body>
+    <div class="page">
+        <header class="page-header">
+            <h1 class="page-title">距离向量算法<code>Distance Vector</code></h1>
+            <span class="page-badge">计算机网络 · 网络层</span>
+        </header>
+        
+        <div class="page-body">
+            <div class="main-panel">
+                <!-- 场景选择栏 -->
+                <div class="scenario-bar">
+                    <div class="scenario-row">
+                        <span class="scenario-label">选择场景:</span>
+                        <button class="btn-scenario active" id="btnScenario1">线性传播</button>
+                        <button class="btn-scenario" id="btnScenario2">多路径选择</button>
+                        <button class="btn-scenario" id="btnScenario3">复杂网络</button>
+                        <button class="btn-scenario" id="btnScenario4">三角捷径</button>
+                        <span class="scenario-desc" id="scenarioDesc">展示DV信息如何逐跳传播</span>
+                    </div>
+                </div>
+                
+                <div class="visual-area">
+                    <div class="visual-header">
+                        <span class="visual-label">网络拓扑</span>
+                        <span class="visual-info">节点: <strong id="nodeCount">0</strong> | 边: <strong id="edgeCount">0</strong> | 轮次: <strong id="roundCount">0</strong></span>
+                    </div>
+                    <div class="visual-container" id="visualContainer">
+                        <svg class="visual-svg" id="visualSvg">
+                            <defs>
+                                <marker id="arrowhead" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+                                    <polygon points="0 0, 8 3, 0 6" fill="#1a56db"/>
+                                </marker>
+                            </defs>
+                            <g id="edgesGroup"></g>
+                            <g id="nodesGroup"></g>
+                        </svg>
+                        <div class="zoom-controls">
+                            <button class="zoom-btn" id="btnZoomOut">-</button>
+                            <span class="zoom-level" id="zoomLevel">100%</span>
+                            <button class="zoom-btn" id="btnZoomIn">+</button>
+                            <button class="zoom-btn" id="btnZoomReset">⟲</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="control-area">
+                    <div class="control-row">
+                        <span class="action-hint" id="hintAction">请选择 ▶</span>
+                        <button class="btn btn-success" id="btnInit">初始化</button>
+                        <button class="btn btn-primary" id="btnStep" disabled>单步执行</button>
+                        <button class="btn btn-primary" id="btnAuto" disabled>自动演示</button>
+                        <button class="btn btn-secondary" id="btnReset" disabled>重置</button>
+                        <div class="speed-group">
+                            <label>速度:</label>
+                            <select id="speedSelect">
+                                <option value="1200">慢速</option>
+                                <option value="700" selected>正常</option>
+                                <option value="350">快速</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="table-panel">
+                <div class="table-header">
+                    <div class="table-title">距离向量表</div>
+                    <div class="table-subtitle" id="tableSubtitle">D(x,y) = 从x到y的最短距离估计</div>
+                </div>
+                <div class="table-content" id="tableContent">
+                    <div style="color: var(--text-secondary); font-size: 12px; text-align: center; padding: 20px;">
+                        点击"初始化"开始演示
+                    </div>
+                </div>
+            </div>
+            
+            <div class="side-panel">
+                <div class="side-header">执行日志</div>
+                <div class="side-content">
+                    <div class="log-list" id="logList"></div>
+                </div>
+                
+                <div class="formula-section">
+                    <div class="formula-title">Bellman-Ford 公式</div>
+                    <div class="formula-box" id="formulaBox">
+                        <div class="formula-line">
+                            <span class="var">D(x,y)</span> <span class="op">=</span> <span class="var">min</span><span class="op">{</span>
+                        </div>
+                        <div class="formula-line" style="padding-left: 12px;">
+                            <span class="var">c(x,v)</span> <span class="op">+</span> <span class="var">D(v,y)</span>
+                        </div>
+                        <div class="formula-line">
+                            <span class="op">}</span> <span style="color: var(--text-secondary); font-size: 10px;">对所有邻居v</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="legend-section">
+                    <div class="legend-title">图例说明</div>
+                    <div class="legend-list">
+                        <div class="legend-item">
+                            <div class="legend-circle normal"></div>
+                            <span>普通节点</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-circle updated"></div>
+                            <span>DV已更新</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+<script>
+(function() {
+    // ===== 场景配置 =====
+    var SCENARIOS = {
+        scenario1: {
+            name: '线性传播',
+            desc: '展示DV信息如何逐跳传播（需多轮收敛）',
+            nodes: [
+                { id: 'n1', x: 80, y: 150, label: 'A' },
+                { id: 'n2', x: 200, y: 150, label: 'B' },
+                { id: 'n3', x: 320, y: 150, label: 'C' },
+                { id: 'n4', x: 440, y: 150, label: 'D' }
+            ],
+            edges: [
+                { from: 'n1', to: 'n2', weight: 1 },
+                { from: 'n2', to: 'n3', weight: 2 },
+                { from: 'n3', to: 'n4', weight: 1 }
+            ]
+        },
+        scenario2: {
+            name: '多路径选择',
+            desc: '展示如何选择代价最小的路径',
+            nodes: [
+                { id: 'n1', x: 80, y: 150, label: 'A' },
+                { id: 'n2', x: 240, y: 80, label: 'B' },
+                { id: 'n3', x: 240, y: 220, label: 'C' },
+                { id: 'n4', x: 400, y: 150, label: 'D' }
+            ],
+            edges: [
+                { from: 'n1', to: 'n2', weight: 1 },
+                { from: 'n1', to: 'n3', weight: 5 },
+                { from: 'n2', to: 'n4', weight: 2 },
+                { from: 'n3', to: 'n4', weight: 1 }
+            ]
+        },
+        scenario3: {
+            name: '复杂网络',
+            desc: '展示5节点网络的收敛过程',
+            nodes: [
+                { id: 'n1', x: 240, y: 50, label: 'A' },
+                { id: 'n2', x: 360, y: 110, label: 'B' },
+                { id: 'n3', x: 320, y: 240, label: 'C' },
+                { id: 'n4', x: 160, y: 240, label: 'D' },
+                { id: 'n5', x: 120, y: 110, label: 'E' }
+            ],
+            edges: [
+                { from: 'n1', to: 'n2', weight: 2 },
+                { from: 'n1', to: 'n5', weight: 1 },
+                { from: 'n2', to: 'n3', weight: 3 },
+                { from: 'n3', to: 'n4', weight: 1 },
+                { from: 'n4', to: 'n5', weight: 2 },
+                { from: 'n1', to: 'n4', weight: 4 },
+                { from: 'n2', to: 'n5', weight: 2 }
+            ]
+        },
+        scenario4: {
+            name: '三角捷径',
+            desc: '展示通过中间节点找到更短路径',
+            nodes: [
+                { id: 'n1', x: 120, y: 100, label: 'X' },
+                { id: 'n2', x: 380, y: 100, label: 'Y' },
+                { id: 'n3', x: 250, y: 230, label: 'Z' }
+            ],
+            edges: [
+                { from: 'n1', to: 'n2', weight: 7 },
+                { from: 'n1', to: 'n3', weight: 2 },
+                { from: 'n3', to: 'n2', weight: 3 }
+            ]
+        }
+    };
+    
+    // ===== 常量配置 =====
+    var NODE_RADIUS = 22;
+    var INFINITY = 999;
+    
+    // ===== 状态 =====
+    var state = {
+        currentScenario: 'scenario1',
+        nodes: [],
+        edges: [],
+        distanceVectors: {},
+        nextHop: {},
+        phase: 'edit',
+        round: 0,
+        autoMode: false,
+        speed: 700,
+        logCount: 0,
+        hasChanges: false
+    };
+    
+    // ===== 缩放拖拽状态 =====
+    var zoomScale = 1;
+    var panX = 0;
+    var panY = 0;
+    var isDragging = false;
+    var dragStartX = 0;
+    var dragStartY = 0;
+    
+    // ===== DOM引用 =====
+    var visualContainer = document.getElementById('visualContainer');
+    var edgesGroup = document.getElementById('edgesGroup');
+    var nodesGroup = document.getElementById('nodesGroup');
+    var nodeCountEl = document.getElementById('nodeCount');
+    var edgeCountEl = document.getElementById('edgeCount');
+    var roundCountEl = document.getElementById('roundCount');
+    var tableContent = document.getElementById('tableContent');
+    var logList = document.getElementById('logList');
+    var formulaBox = document.getElementById('formulaBox');
+    var speedSelect = document.getElementById('speedSelect');
+    var hintAction = document.getElementById('hintAction');
+    var zoomLevelEl = document.getElementById('zoomLevel');
+    var scenarioDesc = document.getElementById('scenarioDesc');
+    
+    var btnScenario1 = document.getElementById('btnScenario1');
+    var btnScenario2 = document.getElementById('btnScenario2');
+    var btnScenario3 = document.getElementById('btnScenario3');
+    var btnScenario4 = document.getElementById('btnScenario4');
+    var btnInit = document.getElementById('btnInit');
+    var btnStep = document.getElementById('btnStep');
+    var btnAuto = document.getElementById('btnAuto');
+    var btnReset = document.getElementById('btnReset');
+    var btnZoomIn = document.getElementById('btnZoomIn');
+    var btnZoomOut = document.getElementById('btnZoomOut');
+    var btnZoomReset = document.getElementById('btnZoomReset');
+    
+    // ===== 工具函数 =====
+    function getNodeById(id) {
+        for (var i = 0; i < state.nodes.length; i++) {
+            if (state.nodes[i].id === id) return state.nodes[i];
+        }
+        return null;
+    }
+    
+    function getNeighbors(nodeId) {
+        var neighbors = [];
+        for (var i = 0; i < state.edges.length; i++) {
+            var e = state.edges[i];
+            if (e.from === nodeId) neighbors.push({ id: e.to, weight: e.weight });
+            if (e.to === nodeId) neighbors.push({ id: e.from, weight: e.weight });
+        }
+        return neighbors;
+    }
+    
+    function getEdgeWeight(from, to) {
+        for (var i = 0; i < state.edges.length; i++) {
+            var e = state.edges[i];
+            if ((e.from === from && e.to === to) || (e.from === to && e.to === from)) {
+                return e.weight;
+            }
+        }
+        return INFINITY;
+    }
+    
+    function formatDistance(d) {
+        return d >= INFINITY ? '∞' : d.toString();
+    }
+    
+    // ===== 缩放功能 =====
+    function updateTransform() {
+        var transform = 'translate(' + panX + ',' + panY + ') scale(' + zoomScale + ')';
+        edgesGroup.setAttribute('transform', transform);
+        nodesGroup.setAttribute('transform', transform);
+        zoomLevelEl.textContent = Math.round(zoomScale * 100) + '%';
+    }
+    
+    function zoomIn() {
+        zoomScale = Math.min(2, zoomScale + 0.1);
+        updateTransform();
+    }
+    
+    function zoomOut() {
+        zoomScale = Math.max(0.3, zoomScale - 0.1);
+        updateTransform();
+    }
+    
+    function zoomReset() {
+        zoomScale = 1;
+        panX = 0;
+        panY = 0;
+        updateTransform();
+    }
+    
+    // ===== 渲染函数 =====
+    function render() {
+        renderEdges();
+        renderNodes();
+        updateInfo();
+    }
+    
+    function renderNodes() {
+        var html = '';
+        for (var i = 0; i < state.nodes.length; i++) {
+            var n = state.nodes[i];
+            html += '<g class="node-group" data-id="' + n.id + '">';
+            html += '<circle class="node-circle" cx="' + n.x + '" cy="' + n.y + '" r="' + NODE_RADIUS + '" id="node-' + n.id + '"/>';
+            html += '<text class="node-text" x="' + n.x + '" y="' + n.y + '">' + n.label + '</text>';
+            html += '</g>';
+        }
+        nodesGroup.innerHTML = html;
+    }
+    
+    function renderEdges() {
+        var html = '';
+        for (var i = 0; i < state.edges.length; i++) {
+            var e = state.edges[i];
+            var from = getNodeById(e.from);
+            var to = getNodeById(e.to);
+            if (!from || !to) continue;
+            
+            var midX = (from.x + to.x) / 2;
+            var midY = (from.y + to.y) / 2;
+            
+            html += '<line class="edge-line" x1="' + from.x + '" y1="' + from.y + '" x2="' + to.x + '" y2="' + to.y + '" id="edge-' + i + '"/>';
+            html += '<rect class="edge-weight-bg" x="' + (midX - 10) + '" y="' + (midY - 8) + '" width="20" height="16" rx="2"/>';
+            html += '<text class="edge-weight" x="' + midX + '" y="' + midY + '">' + e.weight + '</text>';
+        }
+        edgesGroup.innerHTML = html;
+    }
+    
+    function renderDistanceVectorTables() {
+        if (state.nodes.length === 0 || state.phase === 'edit') {
+            tableContent.innerHTML = '<div style="color: var(--text-secondary); font-size: 12px; text-align: center; padding: 20px;">点击"初始化"开始演示</div>';
+            return;
+        }
+        
+        var html = '';
+        for (var i = 0; i < state.nodes.length; i++) {
+            var n = state.nodes[i];
+            var dv = state.distanceVectors[n.id] || {};
+            
+            html += '<div class="dv-table-container">';
+            html += '<div class="dv-table-title"><span class="node-indicator">' + n.label + '</span>节点 ' + n.label + ' 的距离向量</div>';
+            html += '<table class="dv-table">';
+            html += '<tr><th>目的地</th>';
+            for (var j = 0; j < state.nodes.length; j++) {
+                html += '<th>' + state.nodes[j].label + '</th>';
+            }
+            html += '</tr>';
+            html += '<tr><td>距离</td>';
+            for (var k = 0; k < state.nodes.length; k++) {
+                var dest = state.nodes[k];
+                var dist = dv[dest.id];
+                var cls = dist >= INFINITY ? 'infinity' : '';
+                if (dv['_updated_' + dest.id]) cls = 'updated';
+                html += '<td class="' + cls + '">' + formatDistance(dist) + '</td>';
+            }
+            html += '</tr>';
+            html += '</table>';
+            html += '</div>';
+        }
+        
+        tableContent.innerHTML = html;
+    }
+    
+    function updateInfo() {
+        nodeCountEl.textContent = state.nodes.length;
+        edgeCountEl.textContent = state.edges.length;
+        roundCountEl.textContent = state.round;
+    }
+    
+    function updateUI() {
+        var isEdit = state.phase === 'edit';
+        var isRunning = state.phase === 'running';
+        
+        btnInit.disabled = !isEdit || state.nodes.length < 2;
+        btnStep.disabled = !isRunning;
+        btnAuto.disabled = !isRunning || state.autoMode;
+        btnReset.disabled = isEdit;
+        
+        btnScenario1.disabled = !isEdit;
+        btnScenario2.disabled = !isEdit;
+        btnScenario3.disabled = !isEdit;
+        btnScenario4.disabled = !isEdit;
+        
+        if (isEdit) {
+            hintAction.textContent = '请选择 ▶';
+            hintAction.style.display = state.nodes.length >= 2 ? 'inline' : 'none';
+        } else if (isRunning) {
+            hintAction.textContent = '请选择 ▶';
+            hintAction.style.display = 'inline';
+        } else {
+            hintAction.style.display = 'none';
+        }
+    }
+    
+    function updateScenarioButtons() {
+        btnScenario1.classList.toggle('active', state.currentScenario === 'scenario1');
+        btnScenario2.classList.toggle('active', state.currentScenario === 'scenario2');
+        btnScenario3.classList.toggle('active', state.currentScenario === 'scenario3');
+        btnScenario4.classList.toggle('active', state.currentScenario === 'scenario4');
+        scenarioDesc.textContent = SCENARIOS[state.currentScenario].desc;
+    }
+    
+    // ===== 日志 =====
+    function addLog(text, type) {
+        state.logCount++;
+        var item = document.createElement('div');
+        item.className = 'log-item ' + (type || 'info');
+        
+        var roundSpan = document.createElement('span');
+        roundSpan.className = 'log-round';
+        roundSpan.textContent = '[R' + state.round + ']';
+        
+        item.appendChild(roundSpan);
+        item.appendChild(document.createTextNode(text));
+        logList.insertBefore(item, logList.firstChild);
+    }
+    
+    function clearLogs() {
+        logList.innerHTML = '';
+        state.logCount = 0;
+    }
+    
+    // ===== 公式展示 =====
+    function showFormula(nodeLabel, destLabel, calculations, oldDist, newDist) {
+        var html = '<div class="formula-line"><span class="var">D(' + nodeLabel + ',' + destLabel + ')</span> <span class="op">=</span> <span class="var">min</span><span class="op">{</span></div>';
+        
+        for (var i = 0; i < calculations.length; i++) {
+            var calc = calculations[i];
+            var style = calc.isMin ? 'color: var(--success); font-weight: 600;' : '';
+            html += '<div class="formula-line" style="padding-left: 12px; ' + style + '">';
+            html += 'c(' + nodeLabel + ',' + calc.via + ') + D(' + calc.via + ',' + destLabel + ') = ' + calc.cost + ' + ' + formatDistance(calc.dist) + ' = ' + formatDistance(calc.total);
+            if (calc.isMin) html += ' ✓';
+            html += '</div>';
+        }
+        
+        html += '<div class="formula-line"><span class="op">}</span></div>';
+        
+        if (newDist !== oldDist) {
+            html += '<div class="formula-line" style="margin-top: 6px; border-top: 1px dashed var(--border); padding-top: 6px;">';
+            html += '<span class="old">' + formatDistance(oldDist) + '</span> <span class="op">→</span> <span class="result">' + formatDistance(newDist) + '</span>';
+            html += '</div>';
+        }
+        
+        formulaBox.innerHTML = html;
+    }
+    
+    function resetFormula() {
+        formulaBox.innerHTML = '<div class="formula-line"><span class="var">D(x,y)</span> <span class="op">=</span> <span class="var">min</span><span class="op">{</span></div><div class="formula-line" style="padding-left: 12px;"><span class="var">c(x,v)</span> <span class="op">+</span> <span class="var">D(v,y)</span></div><div class="formula-line"><span class="op">}</span> <span style="color: var(--text-secondary); font-size: 10px;">对所有邻居v</span></div>';
+    }
+    
+    // ===== 场景加载 =====
+    function loadScenario(scenarioId) {
+        var scenario = SCENARIOS[scenarioId];
+        if (!scenario) return;
+        
+        state.currentScenario = scenarioId;
+        state.nodes = JSON.parse(JSON.stringify(scenario.nodes));
+        state.edges = JSON.parse(JSON.stringify(scenario.edges));
+        state.distanceVectors = {};
+        state.nextHop = {};
+        state.phase = 'edit';
+        state.round = 0;
+        state.autoMode = false;
+        
+        render();
+        renderDistanceVectorTables();
+        clearLogs();
+        resetFormula();
+        updateScenarioButtons();
+        updateUI();
+        zoomReset();
+    }
+    
+    // ===== 距离向量算法 =====
+    function initAlgorithm() {
+        if (state.nodes.length < 2) return;
+        
+        state.phase = 'running';
+        state.round = 0;
+        state.distanceVectors = {};
+        state.nextHop = {};
+        
+        for (var i = 0; i < state.nodes.length; i++) {
+            var n = state.nodes[i];
+            state.distanceVectors[n.id] = {};
+            state.nextHop[n.id] = {};
+            
+            for (var j = 0; j < state.nodes.length; j++) {
+                var dest = state.nodes[j];
+                if (n.id === dest.id) {
+                    state.distanceVectors[n.id][dest.id] = 0;
+                    state.nextHop[n.id][dest.id] = n.id;
+                } else {
+                    var weight = getEdgeWeight(n.id, dest.id);
+                    state.distanceVectors[n.id][dest.id] = weight;
+                    if (weight < INFINITY) {
+                        state.nextHop[n.id][dest.id] = dest.id;
+                    } else {
+                        state.nextHop[n.id][dest.id] = null;
+                    }
+                }
+            }
+        }
+        
+        render();
+        renderDistanceVectorTables();
+        clearLogs();
+        addLog('算法初始化：每个节点只知道直接邻居的距离', 'info');
+        updateUI();
+    }
+    
+    function executeOneRound() {
+        if (state.phase !== 'running') return;
+        
+        state.round++;
+        state.hasChanges = false;
+        
+        for (var nodeId in state.distanceVectors) {
+            var dv = state.distanceVectors[nodeId];
+            for (var key in dv) {
+                if (key.indexOf('_updated_') === 0) {
+                    delete dv[key];
+                }
+            }
+        }
+        
+        addLog('===== 第 ' + state.round + ' 轮 =====', 'info');
+        
+        var updates = [];
+        
+        for (var i = 0; i < state.nodes.length; i++) {
+            var node = state.nodes[i];
+            var myDV = state.distanceVectors[node.id];
+            var neighbors = getNeighbors(node.id);
+            
+            for (var j = 0; j < state.nodes.length; j++) {
+                var dest = state.nodes[j];
+                if (node.id === dest.id) continue;
+                
+                var oldDist = myDV[dest.id];
+                var newDist = oldDist;
+                var newNextHop = state.nextHop[node.id][dest.id];
+                var calculations = [];
+                
+                for (var k = 0; k < neighbors.length; k++) {
+                    var neighbor = neighbors[k];
+                    var neighborDV = state.distanceVectors[neighbor.id];
+                    var costToNeighbor = neighbor.weight;
+                    var neighborDistToDest = neighborDV[dest.id];
+                    var totalDist = costToNeighbor + neighborDistToDest;
+                    
+                    if (totalDist >= INFINITY) totalDist = INFINITY;
+                    
+                    var neighborNode = getNodeById(neighbor.id);
+                    calculations.push({
+                        via: neighborNode.label,
+                        cost: costToNeighbor,
+                        dist: neighborDistToDest,
+                        total: totalDist,
+                        isMin: false
+                    });
+                    
+                    if (totalDist < newDist) {
+                        newDist = totalDist;
+                        newNextHop = neighbor.id;
+                    }
+                }
+                
+                for (var m = 0; m < calculations.length; m++) {
+                    if (calculations[m].total === newDist) {
+                        calculations[m].isMin = true;
+                        break;
+                    }
+                }
+                
+                if (newDist !== oldDist) {
+                    updates.push({
+                        node: node,
+                        dest: dest,
+                        oldDist: oldDist,
+                        newDist: newDist,
+                        calculations: calculations,
+                        nextHop: newNextHop
+                    });
+                }
+            }
+        }
+        
+        for (var u = 0; u < updates.length; u++) {
+            var upd = updates[u];
+            state.distanceVectors[upd.node.id][upd.dest.id] = upd.newDist;
+            state.distanceVectors[upd.node.id]['_updated_' + upd.dest.id] = true;
+            state.nextHop[upd.node.id][upd.dest.id] = upd.nextHop;
+            state.hasChanges = true;
+            
+            var nextHopNode = getNodeById(upd.nextHop);
+            addLog(upd.node.label + '→' + upd.dest.label + ': ' + formatDistance(upd.oldDist) + '→' + formatDistance(upd.newDist) + ' (via ' + nextHopNode.label + ')', 'update');
+            
+            if (u === updates.length - 1) {
+                showFormula(upd.node.label, upd.dest.label, upd.calculations, upd.oldDist, upd.newDist);
+            }
+        }
+        
+        if (!state.hasChanges) {
+            state.phase = 'converged';
+            addLog('算法收敛！所有距离向量不再变化', 'converge');
+            state.autoMode = false;
+        } else {
+            addLog('本轮更新 ' + updates.length + ' 条记录', 'info');
+        }
+        
+        renderDistanceVectorTables();
+        updateInfo();
+        updateUI();
+    }
+    
+    function autoExecute() {
+        if (state.phase !== 'running') return;
+        
+        state.autoMode = true;
+        state.speed = parseInt(speedSelect.value) || 700;
+        updateUI();
+        
+        function runNext() {
+            if (state.phase !== 'running' || !state.autoMode) {
+                state.autoMode = false;
+                updateUI();
+                return;
+            }
+            
+            executeOneRound();
+            
+            if (state.phase === 'running') {
+                setTimeout(runNext, state.speed);
+            }
+        }
+        
+        runNext();
+    }
+    
+    function resetAlgorithm() {
+        loadScenario(state.currentScenario);
+    }
+    
+    // ===== 事件处理 =====
+    function onContainerMouseDown(e) {
+        isDragging = true;
+        dragStartX = e.clientX - panX;
+        dragStartY = e.clientY - panY;
+        visualContainer.classList.add('dragging');
+    }
+    
+    function onMouseMove(e) {
+        if (isDragging) {
+            panX = e.clientX - dragStartX;
+            panY = e.clientY - dragStartY;
+            updateTransform();
+        }
+    }
+    
+    function onMouseUp() {
+        isDragging = false;
+        visualContainer.classList.remove('dragging');
+    }
+    
+    function onWheel(e) {
+        e.preventDefault();
+        if (e.deltaY < 0) {
+            zoomIn();
+        } else {
+            zoomOut();
+        }
+    }
+    
+    // ===== 事件绑定 =====
+    btnScenario1.onclick = function() { loadScenario('scenario1'); };
+    btnScenario2.onclick = function() { loadScenario('scenario2'); };
+    btnScenario3.onclick = function() { loadScenario('scenario3'); };
+    btnScenario4.onclick = function() { loadScenario('scenario4'); };
+    btnInit.onclick = initAlgorithm;
+    btnStep.onclick = executeOneRound;
+    btnAuto.onclick = autoExecute;
+    btnReset.onclick = resetAlgorithm;
+    btnZoomIn.onclick = zoomIn;
+    btnZoomOut.onclick = zoomOut;
+    btnZoomReset.onclick = zoomReset;
+    
+    visualContainer.onmousedown = onContainerMouseDown;
+    document.onmousemove = onMouseMove;
+    document.onmouseup = onMouseUp;
+    visualContainer.onwheel = onWheel;
+    
+    // ===== 初始化：加载默认场景 =====
+    loadScenario('scenario1');
+    
+})();
+</script>
+</body>
+</html>

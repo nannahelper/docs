@@ -1,0 +1,932 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CIDR地址计算器</title>
+    <style>
+        /* ===== 408教学风格基础样式 ===== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        :root {
+            --primary: #1a56db;
+            --primary-light: #e1effe;
+            --success: #047857;
+            --success-light: #d1fae5;
+            --danger: #b91c1c;
+            --danger-light: #fee2e2;
+            --warning: #d97706;
+            --warning-light: #fef3c7;
+            --text: #1f2937;
+            --text-secondary: #6b7280;
+            --border: #d1d5db;
+            --bg-light: #f9fafb;
+            --white: #ffffff;
+        }
+        
+        body {
+            font-family: system-ui, -apple-system, "Segoe UI", "Microsoft YaHei", sans-serif;
+            background: var(--white);
+            color: var(--text);
+            font-size: 14px;
+            line-height: 1.5;
+        }
+        
+        /* ===== 页面布局 ===== */
+        .page {
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            max-width: 1400px;
+            margin: 0 auto;
+            border-left: 1px solid var(--border);
+            border-right: 1px solid var(--border);
+        }
+        
+        .page-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 8px 16px;
+            border-bottom: 1px solid var(--border);
+            background: var(--bg-light);
+        }
+        
+        .page-title {
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--text);
+        }
+        
+        .page-title code {
+            font-family: "Consolas", "Monaco", monospace;
+            background: var(--primary-light);
+            color: var(--primary);
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-size: 13px;
+            margin-left: 8px;
+        }
+        
+        .page-badge {
+            font-size: 12px;
+            color: var(--text-secondary);
+            background: var(--white);
+            padding: 4px 10px;
+            border: 1px solid var(--border);
+            border-radius: 3px;
+        }
+        
+        .page-body {
+            display: flex;
+            flex: 1;
+            overflow: hidden;
+        }
+        
+        .main-panel {
+            flex: 0 0 75%;
+            display: flex;
+            flex-direction: column;
+            border-right: 1px solid var(--border);
+        }
+        
+        .side-panel {
+            flex: 0 0 25%;
+            display: flex;
+            flex-direction: column;
+            background: var(--bg-light);
+        }
+        
+        /* ===== 控制面板（顶部输入区） ===== */
+        .control-area {
+            padding: 16px 20px;
+            background: var(--white);
+            border-bottom: 1px solid var(--border);
+        }
+        
+        .control-row {
+            display: flex;
+            gap: 16px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        
+        .control-group {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .control-label {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text);
+            white-space: nowrap;
+        }
+        
+        .control-input input {
+            padding: 8px 12px;
+            border: 1px solid var(--border);
+            border-radius: 3px;
+            font-family: "Consolas", "Monaco", monospace;
+            font-size: 15px;
+            width: 220px;
+        }
+        
+        .control-input input:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+        
+        .btn {
+            padding: 8px 20px;
+            border: 1px solid transparent;
+            border-radius: 3px;
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .btn-primary {
+            background: var(--primary);
+            color: var(--white);
+            border-color: var(--primary);
+        }
+        
+        .btn-primary:hover {
+            background: #1e40af;
+        }
+        
+        .btn-secondary {
+            background: var(--white);
+            color: var(--text-secondary);
+            border-color: var(--border);
+        }
+        
+        .btn-secondary:hover {
+            background: var(--bg-light);
+        }
+        
+        .input-hint {
+            font-size: 12px;
+            color: var(--text-secondary);
+            margin-left: 8px;
+        }
+        
+        /* ===== 可视化区域 ===== */
+        .visual-area {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+        }
+        
+        .result-section {
+            margin-bottom: 14px;
+        }
+        
+        .section-title {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+        }
+        
+        /* 结果网格（紧凑布局） */
+        .result-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+        }
+        
+        .result-item {
+            background: var(--white);
+            border: 1px solid var(--border);
+            border-radius: 3px;
+            padding: 8px 12px;
+        }
+        
+        .result-item.full-width {
+            grid-column: 1 / -1;
+        }
+        
+        .result-label {
+            font-size: 11px;
+            color: var(--text-secondary);
+            margin-bottom: 2px;
+        }
+        
+        .result-decimal {
+            font-family: "Consolas", "Monaco", monospace;
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text);
+        }
+        
+        .result-binary {
+            font-family: "Consolas", "Monaco", monospace;
+            font-size: 11px;
+            color: var(--text-secondary);
+            margin-top: 2px;
+        }
+        
+        /* 二进制展示区 */
+        .binary-display {
+            background: var(--bg-light);
+            border: 1px solid var(--border);
+            border-radius: 3px;
+            padding: 12px;
+        }
+        
+        .binary-row {
+            display: flex;
+            align-items: center;
+            margin-bottom: 6px;
+        }
+        
+        .binary-row:last-child {
+            margin-bottom: 0;
+        }
+        
+        .binary-label {
+            width: 100px;
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            flex-shrink: 0;
+        }
+        
+        .binary-value {
+            display: flex;
+            gap: 4px;
+            font-family: "Consolas", "Monaco", monospace;
+            font-size: 13px;
+        }
+        
+        .binary-octet {
+            display: flex;
+            gap: 1px;
+        }
+        
+        .binary-bit {
+            width: 16px;
+            height: 22px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--white);
+            border: 1px solid var(--border);
+            font-size: 12px;
+        }
+        
+        .binary-bit.network {
+            background: var(--primary-light);
+            border-color: var(--primary);
+            color: var(--primary);
+            font-weight: 600;
+        }
+        
+        .binary-bit.host {
+            background: var(--danger-light);
+            border-color: var(--danger);
+            color: var(--danger);
+        }
+        
+        .binary-bit.mask-1 {
+            background: var(--success-light);
+            border-color: var(--success);
+            color: var(--success);
+            font-weight: 600;
+        }
+        
+        .binary-bit.mask-0 {
+            background: var(--white);
+            color: var(--text-secondary);
+        }
+        
+        .binary-dot {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 12px;
+            color: var(--text-secondary);
+            font-weight: bold;
+        }
+        
+        .binary-decimal {
+            margin-left: 16px;
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text);
+            display: flex;
+            align-items: center;
+        }
+        
+        /* 运算符行 */
+        .operation-row {
+            display: flex;
+            align-items: center;
+            margin: 8px 0;
+            padding: 4px 0;
+        }
+        
+        .operation-symbol {
+            width: 100px;
+            font-size: 16px;
+            font-weight: bold;
+            color: var(--primary);
+            text-align: center;
+            flex-shrink: 0;
+        }
+        
+        .operation-line {
+            flex: 1;
+            height: 1px;
+            background: var(--primary);
+            margin-left: 4px;
+        }
+        
+        /* 统计信息（紧凑单行） */
+        .stats-row {
+            display: flex;
+            gap: 16px;
+            flex-wrap: wrap;
+            background: var(--bg-light);
+            border: 1px solid var(--border);
+            border-radius: 3px;
+            padding: 8px 12px;
+        }
+        
+        .stat-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        
+        .stat-label {
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+        
+        .stat-value {
+            font-family: "Consolas", "Monaco", monospace;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text);
+        }
+        
+        .stat-value.primary {
+            color: var(--primary);
+        }
+        
+        .stat-value.success {
+            color: var(--success);
+        }
+        
+        /* ===== 右侧说明面板 ===== */
+        .side-header {
+            padding: 10px 12px;
+            border-bottom: 1px solid var(--border);
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text);
+        }
+        
+        .side-content {
+            flex: 1;
+            overflow-y: auto;
+            padding: 12px;
+        }
+        
+        .info-block {
+            background: var(--white);
+            border: 1px solid var(--border);
+            border-radius: 3px;
+            padding: 12px;
+            margin-bottom: 12px;
+        }
+        
+        .info-title {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text);
+            margin-bottom: 8px;
+        }
+        
+        .info-content {
+            font-size: 12px;
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+        
+        .info-content code {
+            font-family: "Consolas", "Monaco", monospace;
+            background: var(--bg-light);
+            padding: 1px 4px;
+            border-radius: 2px;
+            color: var(--primary);
+        }
+        
+        .formula {
+            font-family: "Consolas", "Monaco", monospace;
+            font-size: 12px;
+            background: var(--bg-light);
+            padding: 8px 10px;
+            border-radius: 3px;
+            margin-top: 8px;
+        }
+        
+        .legend {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 8px;
+        }
+        
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 11px;
+        }
+        
+        .legend-color {
+            width: 14px;
+            height: 14px;
+            border-radius: 2px;
+            border: 1px solid;
+        }
+        
+        .legend-color.network {
+            background: var(--primary-light);
+            border-color: var(--primary);
+        }
+        
+        .legend-color.host {
+            background: var(--danger-light);
+            border-color: var(--danger);
+        }
+        
+        .legend-color.mask {
+            background: var(--success-light);
+            border-color: var(--success);
+        }
+        
+        /* 错误提示 */
+        .error-msg {
+            display: none;
+            color: var(--danger);
+            font-size: 12px;
+            margin-top: 8px;
+            padding: 8px 12px;
+            background: var(--danger-light);
+            border-radius: 3px;
+        }
+        
+        .error-msg.show {
+            display: block;
+        }
+        
+        /* 初始提示 */
+        .placeholder {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            color: var(--text-secondary);
+            text-align: center;
+        }
+        
+        .placeholder-icon {
+            font-size: 48px;
+            margin-bottom: 16px;
+            opacity: 0.3;
+        }
+        
+        .placeholder-text {
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <div class="page">
+        <!-- 顶部标题栏 -->
+        <header class="page-header">
+            <h1 class="page-title">CIDR地址计算器<code>IP/prefix</code></h1>
+            <span class="page-badge">计算机网络 · IP地址</span>
+        </header>
+        
+        <!-- 主体区域 -->
+        <div class="page-body">
+            <!-- 左侧主面板 -->
+            <div class="main-panel">
+                <!-- 输入控制区 -->
+                <div class="control-area">
+                    <div class="control-row">
+                        <div class="control-group">
+                            <span class="control-label">CIDR地址</span>
+                            <div class="control-input">
+                                <input type="text" id="inputCidr" placeholder="192.168.1.100/24">
+                            </div>
+                            <span class="input-hint">格式: IP/前缀长度</span>
+                        </div>
+                        <button class="btn btn-primary" id="btnCalculate">计算</button>
+                        <button class="btn btn-secondary" id="btnClear">清空</button>
+                        <button class="btn btn-secondary" id="btnExample">示例</button>
+                    </div>
+                    <div class="error-msg" id="errorMsg"></div>
+                </div>
+                
+                <!-- 可视化区域 -->
+                <div class="visual-area" id="visualArea">
+                    <div class="placeholder" id="placeholder">
+                        <div class="placeholder-icon">IP</div>
+                        <div class="placeholder-text">输入CIDR格式地址，点击"计算"查看结果</div>
+                    </div>
+                    
+                    <div id="resultContainer" style="display: none;">
+                        <!-- 二进制位运算展示 -->
+                        <div class="result-section">
+                            <div class="section-title">二进制位运算过程</div>
+                            <div class="binary-display" id="binaryDisplay">
+                                <!-- 动态生成 -->
+                            </div>
+                        </div>
+                        
+                        <!-- 计算结果（紧凑网格） -->
+                        <div class="result-section">
+                            <div class="section-title">计算结果</div>
+                            <div class="result-grid">
+                                <div class="result-item">
+                                    <div class="result-label">子网掩码</div>
+                                    <div class="result-decimal" id="maskDecimal">-</div>
+                                    <div class="result-binary" id="maskBinary">-</div>
+                                </div>
+                                <div class="result-item">
+                                    <div class="result-label">网络地址</div>
+                                    <div class="result-decimal" id="networkDecimal">-</div>
+                                    <div class="result-binary" id="networkBinary">-</div>
+                                </div>
+                                <div class="result-item">
+                                    <div class="result-label">广播地址</div>
+                                    <div class="result-decimal" id="broadcastDecimal">-</div>
+                                    <div class="result-binary" id="broadcastBinary">-</div>
+                                </div>
+                                <div class="result-item">
+                                    <div class="result-label">地址范围</div>
+                                    <div class="result-decimal" id="rangeValue">-</div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- 统计信息（紧凑单行） -->
+                        <div class="result-section">
+                            <div class="section-title">统计信息</div>
+                            <div class="stats-row">
+                                <div class="stat-item">
+                                    <span class="stat-label">前缀</span>
+                                    <span class="stat-value primary" id="prefixValue">-</span>
+                                </div>
+                                <div class="stat-item">
+                                    <span class="stat-label">主机位</span>
+                                    <span class="stat-value" id="hostBitsValue">-</span>
+                                </div>
+                                <div class="stat-item">
+                                    <span class="stat-label">总地址</span>
+                                    <span class="stat-value" id="totalAddresses">-</span>
+                                </div>
+                                <div class="stat-item">
+                                    <span class="stat-label">可用主机</span>
+                                    <span class="stat-value success" id="usableHosts">-</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 右侧说明面板 -->
+            <div class="side-panel">
+                <div class="side-header">说明</div>
+                <div class="side-content">
+                    <div class="info-block">
+                        <div class="info-title">CIDR表示法</div>
+                        <div class="info-content">
+                            CIDR（无类别域间路由）使用 <code>IP/n</code> 表示，n为网络前缀位数。
+                            <div class="formula">192.168.1.0/24</div>
+                        </div>
+                    </div>
+                    
+                    <div class="info-block">
+                        <div class="info-title">计算公式</div>
+                        <div class="info-content">
+                            网络地址 = IP AND 掩码<br>
+                            广播地址 = IP OR (~掩码)<br>
+                            可用主机 = 2^(32-n) - 2
+                        </div>
+                    </div>
+                    
+                    <div class="info-block">
+                        <div class="info-title">颜色图例</div>
+                        <div class="legend">
+                            <div class="legend-item">
+                                <div class="legend-color network"></div>
+                                <span>网络位</span>
+                            </div>
+                            <div class="legend-item">
+                                <div class="legend-color host"></div>
+                                <span>主机位</span>
+                            </div>
+                            <div class="legend-item">
+                                <div class="legend-color mask"></div>
+                                <span>掩码1</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="info-block">
+                        <div class="info-title">常用前缀</div>
+                        <div class="info-content">
+                            /8 → A类 (16M主机)<br>
+                            /16 → B类 (65K主机)<br>
+                            /24 → C类 (254主机)<br>
+                            /30 → 点对点 (2主机)<br>
+                            /32 → 单主机
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+    (function() {
+        // DOM引用
+        var inputCidr = document.getElementById('inputCidr');
+        var btnCalculate = document.getElementById('btnCalculate');
+        var btnClear = document.getElementById('btnClear');
+        var btnExample = document.getElementById('btnExample');
+        var errorMsg = document.getElementById('errorMsg');
+        var placeholder = document.getElementById('placeholder');
+        var resultContainer = document.getElementById('resultContainer');
+        var binaryDisplay = document.getElementById('binaryDisplay');
+        
+        // 示例地址列表
+        var examples = [
+            '192.168.1.100/24',
+            '10.0.0.1/8',
+            '172.16.0.50/16',
+            '192.168.10.25/28',
+            '10.10.10.10/30'
+        ];
+        var exampleIndex = 0;
+        
+        // 解析CIDR地址
+        function parseCidr(cidr) {
+            var parts = cidr.trim().split('/');
+            if (parts.length !== 2) {
+                return { error: '格式错误：请使用 IP/前缀 格式' };
+            }
+            
+            var ipStr = parts[0];
+            var prefix = parseInt(parts[1], 10);
+            
+            // 验证前缀
+            if (isNaN(prefix) || prefix < 0 || prefix > 32) {
+                return { error: '前缀长度必须在 0-32 之间' };
+            }
+            
+            // 解析IP
+            var octets = ipStr.split('.');
+            if (octets.length !== 4) {
+                return { error: 'IP地址格式错误：需要4个八位组' };
+            }
+            
+            var ipOctets = [];
+            for (var i = 0; i < 4; i++) {
+                var octet = parseInt(octets[i], 10);
+                if (isNaN(octet) || octet < 0 || octet > 255) {
+                    return { error: 'IP地址无效：每个八位组范围 0-255' };
+                }
+                ipOctets.push(octet);
+            }
+            
+            return {
+                ip: ipOctets,
+                prefix: prefix
+            };
+        }
+        
+        // 计算子网掩码
+        function calculateMask(prefix) {
+            var mask = [];
+            for (var i = 0; i < 4; i++) {
+                var bits = Math.min(8, Math.max(0, prefix - i * 8));
+                var octet = 0;
+                for (var j = 0; j < bits; j++) {
+                    octet |= (1 << (7 - j));
+                }
+                mask.push(octet);
+            }
+            return mask;
+        }
+        
+        // 计算网络地址
+        function calculateNetwork(ip, mask) {
+            var network = [];
+            for (var i = 0; i < 4; i++) {
+                network.push(ip[i] & mask[i]);
+            }
+            return network;
+        }
+        
+        // 计算广播地址
+        function calculateBroadcast(ip, mask) {
+            var broadcast = [];
+            for (var i = 0; i < 4; i++) {
+                broadcast.push(ip[i] | (~mask[i] & 0xFF));
+            }
+            return broadcast;
+        }
+        
+        // 转换为二进制字符串（8位）
+        function toBinary(num) {
+            var bin = num.toString(2);
+            while (bin.length < 8) {
+                bin = '0' + bin;
+            }
+            return bin;
+        }
+        
+        // 格式化IP为字符串
+        function formatIp(octets) {
+            return octets.join('.');
+        }
+        
+        // 格式化IP为二进制字符串
+        function formatIpBinary(octets) {
+            var bins = [];
+            for (var i = 0; i < 4; i++) {
+                bins.push(toBinary(octets[i]));
+            }
+            return bins.join('.');
+        }
+        
+        // 创建二进制位显示
+        function createBinaryBits(octets, prefix, type) {
+            var html = '<div class="binary-value">';
+            var bitIndex = 0;
+            
+            for (var i = 0; i < 4; i++) {
+                if (i > 0) {
+                    html += '<div class="binary-dot">.</div>';
+                }
+                html += '<div class="binary-octet">';
+                var bin = toBinary(octets[i]);
+                for (var j = 0; j < 8; j++) {
+                    var cls = 'binary-bit';
+                    if (type === 'mask') {
+                        cls += bitIndex < prefix ? ' mask-1' : ' mask-0';
+                    } else if (type === 'ip') {
+                        cls += bitIndex < prefix ? ' network' : ' host';
+                    } else {
+                        cls += bitIndex < prefix ? ' network' : ' host';
+                    }
+                    html += '<div class="' + cls + '">' + bin[j] + '</div>';
+                    bitIndex++;
+                }
+                html += '</div>';
+            }
+            
+            html += '<div class="binary-decimal">' + formatIp(octets) + '</div>';
+            html += '</div>';
+            return html;
+        }
+        
+        // 显示错误
+        function showError(msg) {
+            errorMsg.textContent = msg;
+            errorMsg.classList.add('show');
+            placeholder.style.display = 'flex';
+            resultContainer.style.display = 'none';
+        }
+        
+        // 隐藏错误
+        function hideError() {
+            errorMsg.classList.remove('show');
+        }
+        
+        // 执行计算
+        function calculate() {
+            hideError();
+            var cidr = inputCidr.value;
+            
+            if (!cidr) {
+                showError('请输入CIDR地址');
+                return;
+            }
+            
+            var parsed = parseCidr(cidr);
+            if (parsed.error) {
+                showError(parsed.error);
+                return;
+            }
+            
+            var ip = parsed.ip;
+            var prefix = parsed.prefix;
+            var hostBits = 32 - prefix;
+            
+            // 计算各项值
+            var mask = calculateMask(prefix);
+            var network = calculateNetwork(ip, mask);
+            var broadcast = calculateBroadcast(ip, mask);
+            
+            // 计算地址范围
+            var firstHost = network.slice();
+            var lastHost = broadcast.slice();
+            if (hostBits > 1) {
+                firstHost[3] = network[3] + 1;
+                lastHost[3] = broadcast[3] - 1;
+            }
+            
+            // 计算主机数
+            var totalAddresses = Math.pow(2, hostBits);
+            var usableHosts = hostBits >= 2 ? totalAddresses - 2 : (hostBits === 1 ? 0 : 1);
+            
+            // 显示结果
+            placeholder.style.display = 'none';
+            resultContainer.style.display = 'block';
+            
+            // 二进制运算展示
+            var binaryHtml = '';
+            binaryHtml += '<div class="binary-row"><div class="binary-label">IP地址</div>' + createBinaryBits(ip, prefix, 'ip') + '</div>';
+            binaryHtml += '<div class="binary-row"><div class="binary-label">子网掩码</div>' + createBinaryBits(mask, prefix, 'mask') + '</div>';
+            binaryHtml += '<div class="operation-row"><div class="operation-symbol">AND</div><div class="operation-line"></div></div>';
+            binaryHtml += '<div class="binary-row"><div class="binary-label">网络地址</div>' + createBinaryBits(network, prefix, 'result') + '</div>';
+            binaryHtml += '<div class="operation-row"><div class="operation-symbol">OR ~mask</div><div class="operation-line"></div></div>';
+            binaryHtml += '<div class="binary-row"><div class="binary-label">广播地址</div>' + createBinaryBits(broadcast, prefix, 'result') + '</div>';
+            binaryDisplay.innerHTML = binaryHtml;
+            
+            // 更新表格
+            document.getElementById('maskDecimal').textContent = formatIp(mask);
+            document.getElementById('maskBinary').textContent = formatIpBinary(mask);
+            
+            document.getElementById('networkDecimal').textContent = formatIp(network) + '/' + prefix;
+            document.getElementById('networkBinary').textContent = formatIpBinary(network);
+            
+            document.getElementById('broadcastDecimal').textContent = formatIp(broadcast);
+            document.getElementById('broadcastBinary').textContent = formatIpBinary(broadcast);
+            
+            if (hostBits >= 2) {
+                document.getElementById('rangeValue').textContent = formatIp(firstHost) + ' ~ ' + formatIp(lastHost);
+            } else if (hostBits === 1) {
+                document.getElementById('rangeValue').textContent = formatIp(network) + ' 和 ' + formatIp(broadcast) + ' (无可用主机)';
+            } else {
+                document.getElementById('rangeValue').textContent = formatIp(network) + ' (单主机)';
+            }
+            
+            // 更新统计信息
+            document.getElementById('prefixValue').textContent = '/' + prefix;
+            document.getElementById('hostBitsValue').textContent = hostBits + ' 位';
+            document.getElementById('totalAddresses').textContent = totalAddresses.toLocaleString();
+            document.getElementById('usableHosts').textContent = usableHosts.toLocaleString();
+        }
+        
+        // 清空
+        function clearInput() {
+            inputCidr.value = '';
+            hideError();
+            placeholder.style.display = 'flex';
+            resultContainer.style.display = 'none';
+        }
+        
+        // 加载示例
+        function loadExample() {
+            inputCidr.value = examples[exampleIndex];
+            exampleIndex = (exampleIndex + 1) % examples.length;
+            calculate();
+        }
+        
+        // 事件绑定
+        btnCalculate.onclick = calculate;
+        btnClear.onclick = clearInput;
+        btnExample.onclick = loadExample;
+        
+        // 回车触发计算
+        inputCidr.onkeypress = function(e) {
+            if (e.key === 'Enter') {
+                calculate();
+            }
+        };
+        
+        // 初始加载示例
+        loadExample();
+    })();
+    </script>
+</body>
+</html>

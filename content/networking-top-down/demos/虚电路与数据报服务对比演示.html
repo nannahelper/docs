@@ -1,0 +1,1338 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>虚电路与数据报对比演示</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        :root {
+            --primary: #1a56db;
+            --primary-light: #e1effe;
+            --success: #047857;
+            --success-light: #d1fae5;
+            --danger: #b91c1c;
+            --danger-light: #fee2e2;
+            --warning: #d97706;
+            --warning-light: #fef3c7;
+            --purple: #7c3aed;
+            --purple-light: #ede9fe;
+            --text: #1f2937;
+            --text-secondary: #6b7280;
+            --border: #d1d5db;
+            --bg-light: #f9fafb;
+            --white: #ffffff;
+        }
+        
+        body {
+            font-family: system-ui, -apple-system, "Segoe UI", "Microsoft YaHei", sans-serif;
+            background: var(--white);
+            color: var(--text);
+            font-size: 14px;
+            line-height: 1.5;
+        }
+        
+        .page {
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            max-width: 1400px;
+            margin: 0 auto;
+            border-left: 1px solid var(--border);
+            border-right: 1px solid var(--border);
+        }
+        
+        .page-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 8px 16px;
+            border-bottom: 1px solid var(--border);
+            background: var(--bg-light);
+        }
+        
+        .page-title {
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--text);
+        }
+        
+        .page-title code {
+            font-family: "Consolas", "Monaco", monospace;
+            background: var(--primary-light);
+            color: var(--primary);
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-size: 13px;
+            margin-left: 8px;
+        }
+        
+        .page-badge {
+            font-size: 12px;
+            color: var(--text-secondary);
+            background: var(--white);
+            padding: 4px 10px;
+            border: 1px solid var(--border);
+            border-radius: 3px;
+        }
+        
+        .page-body {
+            display: flex;
+            flex: 1;
+            overflow: hidden;
+        }
+        
+        .main-panel {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            border-right: 1px solid var(--border);
+        }
+        
+        .side-panel {
+            width: 280px;
+            display: flex;
+            flex-direction: column;
+            background: var(--bg-light);
+        }
+        
+        /* ===== 网络拓扑区域 ===== */
+        .visual-area {
+            flex: 1;
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .topology-box {
+            flex: 1;
+            background: var(--white);
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            position: relative;
+            min-height: 450px;
+            overflow: hidden;
+        }
+        
+        .topology-svg {
+            width: 100%;
+            height: 100%;
+        }
+        
+        /* 节点样式 */
+        .node-rect {
+            fill: var(--white);
+            stroke: #333;
+            stroke-width: 1.5;
+        }
+        
+        .node-rect.host {
+            fill: var(--bg-light);
+            stroke: var(--primary);
+            stroke-width: 2;
+        }
+        
+        .node-text {
+            font-family: "Microsoft YaHei", sans-serif;
+            font-size: 12px;
+            fill: #333;
+            text-anchor: middle;
+            dominant-baseline: middle;
+        }
+        
+        .node-text.host-text {
+            font-weight: 600;
+            fill: var(--primary);
+        }
+        
+        /* 链路样式 */
+        .link-line {
+            stroke: #999;
+            stroke-width: 2;
+            fill: none;
+        }
+        
+        .link-line.active {
+            stroke: var(--primary);
+            stroke-width: 3;
+        }
+        
+        .link-line.vc-path {
+            stroke: var(--success);
+            stroke-width: 3;
+            stroke-dasharray: none;
+        }
+        
+        /* 分组样式 */
+        .packet {
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+        
+        .packet.visible {
+            opacity: 1;
+        }
+        
+        .packet-rect {
+            stroke-width: 1.5;
+            rx: 3;
+            ry: 3;
+        }
+        
+        .packet-text {
+            font-family: "Consolas", "Monaco", monospace;
+            font-size: 11px;
+            font-weight: 600;
+            text-anchor: middle;
+            dominant-baseline: middle;
+        }
+        
+        /* 控制信号样式 */
+        .control-signal {
+            opacity: 0;
+        }
+        
+        .control-signal.visible {
+            opacity: 1;
+        }
+        
+        .signal-line {
+            stroke-width: 1.5;
+            stroke-dasharray: 4,3;
+            fill: none;
+        }
+        
+        .signal-text {
+            font-family: "Microsoft YaHei", sans-serif;
+            font-size: 10px;
+            fill: var(--text-secondary);
+        }
+        
+        /* 阶段标签 */
+        .phase-label {
+            position: absolute;
+            top: 12px;
+            left: 16px;
+            font-size: 13px;
+            font-weight: 600;
+            padding: 4px 12px;
+            border-radius: 3px;
+            background: var(--primary-light);
+            color: var(--primary);
+            border: 1px solid var(--primary);
+        }
+        
+        .phase-label.setup {
+            background: var(--warning-light);
+            color: var(--warning);
+            border-color: var(--warning);
+        }
+        
+        .phase-label.transfer {
+            background: var(--success-light);
+            color: var(--success);
+            border-color: var(--success);
+        }
+        
+        .phase-label.release {
+            background: var(--danger-light);
+            color: var(--danger);
+            border-color: var(--danger);
+        }
+        
+        /* 模式指示 */
+        .mode-indicator {
+            position: absolute;
+            top: 12px;
+            right: 16px;
+            font-size: 12px;
+            padding: 4px 10px;
+            border-radius: 3px;
+            background: var(--bg-light);
+            border: 1px solid var(--border);
+        }
+        
+        .mode-indicator.vc {
+            background: var(--success-light);
+            color: var(--success);
+            border-color: var(--success);
+        }
+        
+        .mode-indicator.dg {
+            background: var(--purple-light);
+            color: var(--purple);
+            border-color: var(--purple);
+        }
+        
+        /* ===== 控制面板 ===== */
+        .control-area {
+            border-top: 1px solid var(--border);
+            padding: 12px 20px;
+            background: var(--white);
+        }
+        
+        .control-row {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .control-left {
+            display: flex;
+            gap: 16px;
+            align-items: center;
+        }
+        
+        .control-right {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+        
+        .mode-label {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text);
+        }
+        
+        .btn {
+            padding: 6px 14px;
+            border: 1px solid transparent;
+            border-radius: 3px;
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        .btn-mode {
+            background: var(--white);
+            color: var(--text-secondary);
+            border-color: var(--border);
+        }
+        
+        .btn-mode:hover:not(:disabled) {
+            background: var(--bg-light);
+        }
+        
+        .btn-mode.active {
+            background: var(--primary);
+            color: var(--white);
+            border-color: var(--primary);
+        }
+        
+        .btn-mode.vc.active {
+            background: var(--success);
+            border-color: var(--success);
+        }
+        
+        .btn-mode.dg.active {
+            background: var(--purple);
+            border-color: var(--purple);
+        }
+        
+        .btn-primary {
+            background: var(--primary);
+            color: var(--white);
+            border-color: var(--primary);
+        }
+        
+        .btn-primary:hover:not(:disabled) {
+            background: #1e40af;
+        }
+        
+        .btn-success {
+            background: var(--success);
+            color: var(--white);
+            border-color: var(--success);
+        }
+        
+        .btn-success:hover:not(:disabled) {
+            background: #065f46;
+        }
+        
+        .btn-secondary {
+            background: var(--white);
+            color: var(--text-secondary);
+            border-color: var(--border);
+        }
+        
+        .btn-secondary:hover:not(:disabled) {
+            background: var(--bg-light);
+        }
+        
+        .action-hint {
+            font-size: 12px;
+            color: var(--danger);
+            font-weight: 600;
+            animation: hintBlink 1s ease-in-out infinite;
+        }
+        
+        @keyframes hintBlink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        
+        .speed-group {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        
+        .speed-group label {
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+        
+        .speed-group select {
+            padding: 4px 8px;
+            border: 1px solid var(--border);
+            border-radius: 3px;
+            font-size: 12px;
+        }
+        
+        /* ===== 右侧面板 ===== */
+        .side-header {
+            padding: 10px 12px;
+            border-bottom: 1px solid var(--border);
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text);
+        }
+        
+        .side-content {
+            flex: 1;
+            overflow-y: auto;
+            padding: 10px;
+        }
+        
+        .log-list {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+        
+        .log-item {
+            padding: 6px 8px;
+            background: var(--white);
+            border: 1px solid var(--border);
+            border-radius: 3px;
+            font-size: 11px;
+            line-height: 1.4;
+            color: var(--text-secondary);
+        }
+        
+        .log-item.setup { border-left: 3px solid var(--warning); }
+        .log-item.send { border-left: 3px solid var(--primary); }
+        .log-item.receive { border-left: 3px solid var(--success); }
+        .log-item.release { border-left: 3px solid var(--danger); }
+        .log-item.route { border-left: 3px solid var(--purple); }
+        
+        .log-item .log-time {
+            font-family: "Consolas", "Monaco", monospace;
+            color: var(--text-secondary);
+            margin-right: 6px;
+        }
+        
+        .log-item .log-text {
+            color: var(--text);
+        }
+        
+        /* 对比说明 */
+        .compare-section {
+            padding: 10px 12px;
+            border-top: 1px solid var(--border);
+            background: var(--white);
+        }
+        
+        .compare-title {
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--text);
+            margin-bottom: 8px;
+        }
+        
+        .compare-table {
+            width: 100%;
+            font-size: 10px;
+            border-collapse: collapse;
+        }
+        
+        .compare-table th,
+        .compare-table td {
+            padding: 4px 6px;
+            border: 1px solid var(--border);
+            text-align: left;
+        }
+        
+        .compare-table th {
+            background: var(--bg-light);
+            font-weight: 600;
+        }
+        
+        .compare-table .vc-col {
+            color: var(--success);
+        }
+        
+        .compare-table .dg-col {
+            color: var(--purple);
+        }
+        
+        /* 图例 */
+        .legend-section {
+            padding: 10px 12px;
+            border-top: 1px solid var(--border);
+            background: var(--white);
+        }
+        
+        .legend-title {
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--text);
+            margin-bottom: 6px;
+        }
+        
+        .legend-list {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+        
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 10px;
+            color: var(--text-secondary);
+        }
+        
+        .legend-box {
+            width: 24px;
+            height: 16px;
+            border: 2px solid;
+            border-radius: 3px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: "Consolas", "Monaco", monospace;
+            font-size: 9px;
+            font-weight: 600;
+        }
+        
+        .legend-box.p1 { border-color: var(--primary); background: var(--primary-light); color: var(--primary); }
+        .legend-box.p2 { border-color: var(--success); background: var(--success-light); color: var(--success); }
+        .legend-box.p3 { border-color: var(--warning); background: var(--warning-light); color: var(--warning); }
+        
+        .legend-line {
+            width: 24px;
+            height: 3px;
+        }
+        
+        .legend-line.vc-path {
+            background: var(--success);
+        }
+        
+        .legend-line.dg-path {
+            background: var(--purple);
+            background: repeating-linear-gradient(90deg, var(--purple) 0, var(--purple) 4px, transparent 4px, transparent 7px);
+        }
+        
+        /* 到达顺序显示 */
+        .arrival-display {
+            margin-top: 8px;
+            padding: 8px;
+            background: var(--bg-light);
+            border-radius: 3px;
+        }
+        
+        .arrival-title {
+            font-size: 10px;
+            color: var(--text-secondary);
+            margin-bottom: 4px;
+        }
+        
+        .arrival-packets {
+            display: flex;
+            gap: 4px;
+        }
+        
+        .arrival-packet {
+            width: 28px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid var(--border);
+            border-radius: 3px;
+            font-family: "Consolas", "Monaco", monospace;
+            font-size: 11px;
+            font-weight: 600;
+            background: var(--white);
+        }
+        
+        .arrival-packet.p1 { border-color: var(--primary); color: var(--primary); }
+        .arrival-packet.p2 { border-color: var(--success); color: var(--success); }
+        .arrival-packet.p3 { border-color: var(--warning); color: var(--warning); }
+    </style>
+</head>
+<body>
+    <div class="page">
+        <header class="page-header">
+            <h1 class="page-title">虚电路与数据报对比<code>Virtual Circuit vs Datagram</code></h1>
+            <span class="page-badge">计算机网络 · 网络层</span>
+        </header>
+        
+        <div class="page-body">
+            <div class="main-panel">
+                <div class="visual-area">
+                    <div class="topology-box">
+                        <!-- 阶段标签 -->
+                        <div class="phase-label" id="phaseLabel" style="display:none;">连接建立</div>
+                        <!-- 模式指示 -->
+                        <div class="mode-indicator" id="modeIndicator">选择模式</div>
+                        
+                        <svg class="topology-svg" id="topologySvg" viewBox="0 0 900 420">
+                            <defs>
+                                <marker id="arrowGray" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+                                    <polygon points="0 0, 8 3, 0 6" fill="#999"/>
+                                </marker>
+                                <marker id="arrowBlue" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+                                    <polygon points="0 0, 8 3, 0 6" fill="#1a56db"/>
+                                </marker>
+                                <marker id="arrowGreen" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+                                    <polygon points="0 0, 8 3, 0 6" fill="#047857"/>
+                                </marker>
+                                <marker id="arrowOrange" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+                                    <polygon points="0 0, 8 3, 0 6" fill="#d97706"/>
+                                </marker>
+                            </defs>
+                            
+                            <!-- 网络链路 -->
+                            <g id="linksGroup">
+                                <!-- 主机A - 节点A -->
+                                <line class="link-line" id="link-HA-A" x1="120" y1="210" x2="200" y2="210"/>
+                                <!-- 节点A - 节点E -->
+                                <line class="link-line" id="link-A-E" x1="240" y1="190" x2="310" y2="120"/>
+                                <!-- 节点A - 节点B -->
+                                <line class="link-line" id="link-A-B" x1="240" y1="230" x2="310" y2="300"/>
+                                <!-- 节点A - 节点C -->
+                                <line class="link-line" id="link-A-C" x1="260" y1="210" x2="400" y2="210"/>
+                                <!-- 节点E - 节点F -->
+                                <line class="link-line" id="link-E-F" x1="370" y1="100" x2="530" y2="100"/>
+                                <!-- 节点B - 节点G -->
+                                <line class="link-line" id="link-B-G" x1="370" y1="320" x2="530" y2="320"/>
+                                <!-- 节点B - 节点C -->
+                                <line class="link-line" id="link-B-C" x1="350" y1="280" x2="420" y2="230"/>
+                                <!-- 节点C - 节点F -->
+                                <line class="link-line" id="link-C-F" x1="460" y1="190" x2="530" y2="120"/>
+                                <!-- 节点C - 节点G -->
+                                <line class="link-line" id="link-C-G" x1="460" y1="230" x2="530" y2="300"/>
+                                <!-- 节点C - 节点D -->
+                                <line class="link-line" id="link-C-D" x1="480" y1="210" x2="620" y2="210"/>
+                                <!-- 节点F - 节点D -->
+                                <line class="link-line" id="link-F-D" x1="590" y1="120" x2="640" y2="190"/>
+                                <!-- 节点G - 节点D -->
+                                <line class="link-line" id="link-G-D" x1="590" y1="300" x2="640" y2="230"/>
+                                <!-- 节点D - 主机B -->
+                                <line class="link-line" id="link-D-HB" x1="700" y1="210" x2="780" y2="210"/>
+                            </g>
+                            
+                            <!-- 虚电路路径高亮（预定义，初始隐藏） -->
+                            <g id="vcPathGroup" style="display:none;">
+                                <line class="link-line vc-path" x1="120" y1="210" x2="200" y2="210"/>
+                                <line class="link-line vc-path" x1="260" y1="210" x2="400" y2="210"/>
+                                <line class="link-line vc-path" x1="480" y1="210" x2="620" y2="210"/>
+                                <line class="link-line vc-path" x1="700" y1="210" x2="780" y2="210"/>
+                            </g>
+                            
+                            <!-- 网络节点 -->
+                            <g id="nodesGroup">
+                                <!-- 主机A -->
+                                <g id="node-HA" transform="translate(70, 185)">
+                                    <rect class="node-rect host" width="50" height="50" rx="4"/>
+                                    <text class="node-text host-text" x="25" y="25">主机A</text>
+                                </g>
+                                <!-- 主机B -->
+                                <g id="node-HB" transform="translate(780, 185)">
+                                    <rect class="node-rect host" width="50" height="50" rx="4"/>
+                                    <text class="node-text host-text" x="25" y="25">主机B</text>
+                                </g>
+                                <!-- 节点A -->
+                                <g id="node-A" transform="translate(200, 185)">
+                                    <rect class="node-rect" width="60" height="50" rx="4"/>
+                                    <text class="node-text" x="30" y="25">节点A</text>
+                                </g>
+                                <!-- 节点B -->
+                                <g id="node-B" transform="translate(310, 295)">
+                                    <rect class="node-rect" width="60" height="50" rx="4"/>
+                                    <text class="node-text" x="30" y="25">节点B</text>
+                                </g>
+                                <!-- 节点C -->
+                                <g id="node-C" transform="translate(420, 185)">
+                                    <rect class="node-rect" width="60" height="50" rx="4"/>
+                                    <text class="node-text" x="30" y="25">节点C</text>
+                                </g>
+                                <!-- 节点D -->
+                                <g id="node-D" transform="translate(640, 185)">
+                                    <rect class="node-rect" width="60" height="50" rx="4"/>
+                                    <text class="node-text" x="30" y="25">节点D</text>
+                                </g>
+                                <!-- 节点E -->
+                                <g id="node-E" transform="translate(310, 75)">
+                                    <rect class="node-rect" width="60" height="50" rx="4"/>
+                                    <text class="node-text" x="30" y="25">节点E</text>
+                                </g>
+                                <!-- 节点F -->
+                                <g id="node-F" transform="translate(530, 75)">
+                                    <rect class="node-rect" width="60" height="50" rx="4"/>
+                                    <text class="node-text" x="30" y="25">节点F</text>
+                                </g>
+                                <!-- 节点G -->
+                                <g id="node-G" transform="translate(530, 295)">
+                                    <rect class="node-rect" width="60" height="50" rx="4"/>
+                                    <text class="node-text" x="30" y="25">节点G</text>
+                                </g>
+                            </g>
+                            
+                            <!-- 控制信号（虚电路专用） -->
+                            <g id="signalsGroup">
+                                <!-- 呼叫请求 -->
+                                <g class="control-signal" id="sig-callReq">
+                                    <path class="signal-line" stroke="#d97706" d="M120,200 Q450,140 780,200" marker-end="url(#arrowOrange)"/>
+                                    <text class="signal-text" x="450" y="130" text-anchor="middle" fill="#d97706">呼叫请求</text>
+                                </g>
+                                <!-- 呼叫应答 -->
+                                <g class="control-signal" id="sig-callResp">
+                                    <path class="signal-line" stroke="#047857" d="M780,220 Q450,280 120,220" marker-end="url(#arrowGreen)"/>
+                                    <text class="signal-text" x="450" y="295" text-anchor="middle" fill="#047857">呼叫应答</text>
+                                </g>
+                                <!-- 释放请求 -->
+                                <g class="control-signal" id="sig-relReq">
+                                    <path class="signal-line" stroke="#b91c1c" d="M120,200 Q450,140 780,200" marker-end="url(#arrowGray)"/>
+                                    <text class="signal-text" x="450" y="130" text-anchor="middle" fill="#b91c1c">释放请求</text>
+                                </g>
+                                <!-- 释放应答 -->
+                                <g class="control-signal" id="sig-relResp">
+                                    <path class="signal-line" stroke="#b91c1c" d="M780,220 Q450,280 120,220" marker-end="url(#arrowGray)"/>
+                                    <text class="signal-text" x="450" y="295" text-anchor="middle" fill="#b91c1c">释放应答</text>
+                                </g>
+                            </g>
+                            
+                            <!-- 分组（动态移动） -->
+                            <g id="packetsGroup">
+                                <!-- P1 -->
+                                <g class="packet" id="packet-p1">
+                                    <rect class="packet-rect" x="-15" y="-12" width="30" height="24" fill="#e1effe" stroke="#1a56db"/>
+                                    <text class="packet-text" x="0" y="0" fill="#1a56db">P1</text>
+                                </g>
+                                <!-- P2 -->
+                                <g class="packet" id="packet-p2">
+                                    <rect class="packet-rect" x="-15" y="-12" width="30" height="24" fill="#d1fae5" stroke="#047857"/>
+                                    <text class="packet-text" x="0" y="0" fill="#047857">P2</text>
+                                </g>
+                                <!-- P3 -->
+                                <g class="packet" id="packet-p3">
+                                    <rect class="packet-rect" x="-15" y="-12" width="30" height="24" fill="#fef3c7" stroke="#d97706"/>
+                                    <text class="packet-text" x="0" y="0" fill="#d97706">P3</text>
+                                </g>
+                            </g>
+                            
+                            <!-- 到达指示 -->
+                            <g id="arrivalGroup" transform="translate(780, 260)">
+                                <text class="node-text" x="25" y="0" font-size="10" fill="#6b7280">到达顺序:</text>
+                                <g id="arrivalSlots" transform="translate(0, 10)">
+                                    <!-- 动态填充 -->
+                                </g>
+                            </g>
+                        </svg>
+                    </div>
+                </div>
+                
+                <!-- 控制面板 -->
+                <div class="control-area">
+                    <div class="control-row">
+                        <div class="control-left">
+                            <span class="mode-label">选择模式:</span>
+                            <button class="btn btn-mode vc" id="btnVC">虚电路</button>
+                            <button class="btn btn-mode dg" id="btnDG">数据报</button>
+                            <div class="speed-group">
+                                <label>速度:</label>
+                                <select id="speedSelect">
+                                    <option value="1000">慢速</option>
+                                    <option value="600" selected>正常</option>
+                                    <option value="300">快速</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="control-right">
+                            <span class="action-hint" id="hintStart">请选择 ▶</span>
+                            <button class="btn btn-primary" id="btnStart" disabled>发送分组</button>
+                            <button class="btn btn-success" id="btnStep" disabled>单步执行</button>
+                            <button class="btn btn-success" id="btnAuto" disabled>自动演示</button>
+                            <button class="btn btn-secondary" id="btnReset">重置</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 右侧面板 -->
+            <div class="side-panel">
+                <div class="side-header">执行日志</div>
+                <div class="side-content">
+                    <div class="log-list" id="logList"></div>
+                    
+                    <!-- 到达顺序显示 -->
+                    <div class="arrival-display" id="arrivalDisplay" style="display:none;">
+                        <div class="arrival-title">主机B接收顺序:</div>
+                        <div class="arrival-packets" id="arrivalPackets"></div>
+                    </div>
+                </div>
+                
+                <div class="legend-section">
+                    <div class="legend-title">图例说明</div>
+                    <div class="legend-list">
+                        <div class="legend-item">
+                            <div class="legend-box p1">P1</div>
+                            <span>分组1</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-box p2">P2</div>
+                            <span>分组2</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-box p3">P3</div>
+                            <span>分组3</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-line vc-path"></div>
+                            <span>虚电路路径</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="compare-section">
+                    <div class="compare-title">对比总结</div>
+                    <table class="compare-table">
+                        <tr>
+                            <th>特性</th>
+                            <th class="vc-col">虚电路</th>
+                            <th class="dg-col">数据报</th>
+                        </tr>
+                        <tr>
+                            <td>连接</td>
+                            <td>需建立</td>
+                            <td>无连接</td>
+                        </tr>
+                        <tr>
+                            <td>路径</td>
+                            <td>固定</td>
+                            <td>独立选路</td>
+                        </tr>
+                        <tr>
+                            <td>顺序</td>
+                            <td>有序</td>
+                            <td>可能乱序</td>
+                        </tr>
+                        <tr>
+                            <td>开销</td>
+                            <td>建立/释放</td>
+                            <td>每包路由</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+<script>
+(function() {
+    // ===== 节点位置配置 =====
+    var NODES = {
+        'HA': { x: 95, y: 210 },
+        'A': { x: 230, y: 210 },
+        'B': { x: 340, y: 320 },
+        'C': { x: 450, y: 210 },
+        'D': { x: 670, y: 210 },
+        'E': { x: 340, y: 100 },
+        'F': { x: 560, y: 100 },
+        'G': { x: 560, y: 320 },
+        'HB': { x: 805, y: 210 }
+    };
+    
+    // ===== 虚电路路径 =====
+    var VC_PATH = ['HA', 'A', 'C', 'D', 'HB'];
+    
+    // ===== 数据报多条路径 =====
+    var DG_PATHS = {
+        'P1': ['HA', 'A', 'C', 'D', 'HB'],           // 走中路
+        'P2': ['HA', 'A', 'E', 'F', 'D', 'HB'],      // 走上路
+        'P3': ['HA', 'A', 'B', 'G', 'D', 'HB']       // 走下路
+    };
+    
+    // 数据报到达顺序（模拟乱序）
+    var DG_ARRIVAL_ORDER = ['P2', 'P1', 'P3'];
+    
+    // ===== 场景配置 =====
+    var SCENARIOS = {
+        vc: {
+            name: '虚电路模式',
+            phases: [
+                {
+                    name: '连接建立',
+                    type: 'setup',
+                    steps: [
+                        { action: 'log', text: '主机A发起呼叫请求', type: 'setup' },
+                        { action: 'showSignal', id: 'sig-callReq' },
+                        { action: 'log', text: '沿路径 A→C→D 建立虚电路', type: 'setup' },
+                        { action: 'showVCPath' },
+                        { action: 'log', text: '主机B返回呼叫应答', type: 'setup' },
+                        { action: 'showSignal', id: 'sig-callResp' },
+                        { action: 'log', text: '虚电路建立完成，分配VCI', type: 'setup' }
+                    ]
+                },
+                {
+                    name: '数据传输',
+                    type: 'transfer',
+                    steps: [
+                        { action: 'log', text: '开始传输数据分组', type: 'send' },
+                        { action: 'sendPacket', packet: 'P1', path: VC_PATH },
+                        { action: 'log', text: 'P1 沿虚电路到达主机B', type: 'receive' },
+                        { action: 'arrive', packet: 'P1' },
+                        { action: 'sendPacket', packet: 'P2', path: VC_PATH },
+                        { action: 'log', text: 'P2 沿虚电路到达主机B', type: 'receive' },
+                        { action: 'arrive', packet: 'P2' },
+                        { action: 'sendPacket', packet: 'P3', path: VC_PATH },
+                        { action: 'log', text: 'P3 沿虚电路到达主机B', type: 'receive' },
+                        { action: 'arrive', packet: 'P3' },
+                        { action: 'log', text: '所有分组按序到达！', type: 'receive' }
+                    ]
+                },
+                {
+                    name: '连接释放',
+                    type: 'release',
+                    steps: [
+                        { action: 'hideSignals' },
+                        { action: 'log', text: '主机A发送释放请求', type: 'release' },
+                        { action: 'showSignal', id: 'sig-relReq' },
+                        { action: 'log', text: '主机B返回释放应答', type: 'release' },
+                        { action: 'showSignal', id: 'sig-relResp' },
+                        { action: 'hideVCPath' },
+                        { action: 'log', text: '虚电路释放完成', type: 'release' }
+                    ]
+                }
+            ]
+        },
+        dg: {
+            name: '数据报模式',
+            phases: [
+                {
+                    name: '独立传输',
+                    type: 'transfer',
+                    steps: [
+                        { action: 'log', text: '数据报模式：无需建立连接', type: 'route' },
+                        { action: 'log', text: '每个分组独立选择路由', type: 'route' },
+                        { action: 'log', text: '发送 P1：走中路 A→C→D', type: 'send' },
+                        { action: 'log', text: '发送 P2：走上路 A→E→F→D', type: 'send' },
+                        { action: 'log', text: '发送 P3：走下路 A→B→G→D', type: 'send' },
+                        { action: 'sendAllPackets' },
+                        { action: 'log', text: 'P2 先到达（路径较短）', type: 'receive' },
+                        { action: 'arrive', packet: 'P2' },
+                        { action: 'log', text: 'P1 到达', type: 'receive' },
+                        { action: 'arrive', packet: 'P1' },
+                        { action: 'log', text: 'P3 到达', type: 'receive' },
+                        { action: 'arrive', packet: 'P3' },
+                        { action: 'log', text: '分组乱序到达：P2→P1→P3', type: 'route' }
+                    ]
+                }
+            ]
+        }
+    };
+    
+    // ===== 状态 =====
+    var state = {
+        mode: null,           // 'vc' 或 'dg'
+        phase: 'idle',        // idle | running | complete
+        phaseIndex: 0,
+        stepIndex: 0,
+        speed: 600,
+        autoMode: false,
+        logCount: 0,
+        arrivedPackets: [],
+        animatingPackets: []
+    };
+    
+    // ===== DOM引用 =====
+    var logList = document.getElementById('logList');
+    var phaseLabel = document.getElementById('phaseLabel');
+    var modeIndicator = document.getElementById('modeIndicator');
+    var vcPathGroup = document.getElementById('vcPathGroup');
+    var arrivalDisplay = document.getElementById('arrivalDisplay');
+    var arrivalPackets = document.getElementById('arrivalPackets');
+    var btnVC = document.getElementById('btnVC');
+    var btnDG = document.getElementById('btnDG');
+    var btnStart = document.getElementById('btnStart');
+    var btnStep = document.getElementById('btnStep');
+    var btnAuto = document.getElementById('btnAuto');
+    var btnReset = document.getElementById('btnReset');
+    var hintStart = document.getElementById('hintStart');
+    var speedSelect = document.getElementById('speedSelect');
+    
+    // ===== 工具函数 =====
+    function showElement(id) {
+        var el = document.getElementById(id);
+        if (el) el.classList.add('visible');
+    }
+    
+    function hideElement(id) {
+        var el = document.getElementById(id);
+        if (el) el.classList.remove('visible');
+    }
+    
+    function setPacketPosition(packetId, x, y) {
+        var el = document.getElementById('packet-' + packetId.toLowerCase());
+        if (el) {
+            el.setAttribute('transform', 'translate(' + x + ',' + y + ')');
+        }
+    }
+    
+    function showPacket(packetId) {
+        var el = document.getElementById('packet-' + packetId.toLowerCase());
+        if (el) el.classList.add('visible');
+    }
+    
+    function hidePacket(packetId) {
+        var el = document.getElementById('packet-' + packetId.toLowerCase());
+        if (el) el.classList.remove('visible');
+    }
+    
+    function addLog(text, type) {
+        state.logCount++;
+        var item = document.createElement('div');
+        item.className = 'log-item ' + (type || '');
+        
+        var timeSpan = document.createElement('span');
+        timeSpan.className = 'log-time';
+        timeSpan.textContent = '[' + state.logCount + ']';
+        
+        var textSpan = document.createElement('span');
+        textSpan.className = 'log-text';
+        textSpan.textContent = text;
+        
+        item.appendChild(timeSpan);
+        item.appendChild(textSpan);
+        logList.insertBefore(item, logList.firstChild);
+    }
+    
+    function addArrival(packetId) {
+        state.arrivedPackets.push(packetId);
+        var pkt = document.createElement('div');
+        pkt.className = 'arrival-packet ' + packetId.toLowerCase();
+        pkt.textContent = packetId;
+        arrivalPackets.appendChild(pkt);
+    }
+    
+    function updatePhaseLabel(text, type) {
+        if (text) {
+            phaseLabel.textContent = text;
+            phaseLabel.className = 'phase-label ' + (type || '');
+            phaseLabel.style.display = 'block';
+        } else {
+            phaseLabel.style.display = 'none';
+        }
+    }
+    
+    function sleep(ms) {
+        return new Promise(function(resolve) {
+            setTimeout(resolve, ms);
+        });
+    }
+    
+    // 动画：分组沿路径移动
+    function animatePacket(packetId, path) {
+        return new Promise(function(resolve) {
+            var positions = path.map(function(nodeId) {
+                return NODES[nodeId];
+            });
+            
+            var currentIndex = 0;
+            setPacketPosition(packetId, positions[0].x, positions[0].y);
+            showPacket(packetId);
+            
+            function moveNext() {
+                currentIndex++;
+                if (currentIndex >= positions.length) {
+                    hidePacket(packetId);
+                    resolve();
+                    return;
+                }
+                
+                var target = positions[currentIndex];
+                var current = positions[currentIndex - 1];
+                var steps = 20;
+                var step = 0;
+                var dx = (target.x - current.x) / steps;
+                var dy = (target.y - current.y) / steps;
+                
+                function animate() {
+                    step++;
+                    var x = current.x + dx * step;
+                    var y = current.y + dy * step;
+                    setPacketPosition(packetId, x, y);
+                    
+                    if (step < steps) {
+                        setTimeout(animate, state.speed / steps);
+                    } else {
+                        setTimeout(moveNext, 100);
+                    }
+                }
+                
+                animate();
+            }
+            
+            setTimeout(moveNext, 200);
+        });
+    }
+    
+    // 异步发送分组（数据报模式用）
+    function sendPacketAsync(packetId, path, delay) {
+        return new Promise(function(resolve) {
+            setTimeout(function() {
+                animatePacket(packetId, path).then(resolve);
+            }, delay);
+        });
+    }
+    
+    // ===== 执行步骤 =====
+    function executeStep() {
+        var scenario = SCENARIOS[state.mode];
+        if (!scenario) return Promise.resolve();
+        
+        var phases = scenario.phases;
+        if (state.phaseIndex >= phases.length) {
+            state.phase = 'complete';
+            updateUI();
+            return Promise.resolve();
+        }
+        
+        var currentPhase = phases[state.phaseIndex];
+        updatePhaseLabel(currentPhase.name, currentPhase.type);
+        
+        if (state.stepIndex >= currentPhase.steps.length) {
+            state.phaseIndex++;
+            state.stepIndex = 0;
+            if (state.phaseIndex >= phases.length) {
+                state.phase = 'complete';
+                updateUI();
+            }
+            return Promise.resolve();
+        }
+        
+        var step = currentPhase.steps[state.stepIndex];
+        state.stepIndex++;
+        
+        switch (step.action) {
+            case 'log':
+                addLog(step.text, step.type);
+                return Promise.resolve();
+                
+            case 'showSignal':
+                showElement(step.id);
+                return sleep(300);
+                
+            case 'hideSignals':
+                hideElement('sig-callReq');
+                hideElement('sig-callResp');
+                return Promise.resolve();
+                
+            case 'showVCPath':
+                vcPathGroup.style.display = 'block';
+                return sleep(300);
+                
+            case 'hideVCPath':
+                vcPathGroup.style.display = 'none';
+                return Promise.resolve();
+                
+            case 'sendPacket':
+                return animatePacket(step.packet, step.path);
+                
+            case 'sendPacketAsync':
+                var p = sendPacketAsync(step.packet, step.path, step.delay);
+                state.animatingPackets.push(p);
+                return sleep(100);
+                
+            case 'waitAll':
+                return Promise.all(state.animatingPackets).then(function() {
+                    state.animatingPackets = [];
+                });
+                
+            case 'sendAllPackets':
+                // 数据报模式：三个分组同时发送，走不同路径
+                var p1 = animatePacket('P1', DG_PATHS['P1']);
+                var p2 = animatePacket('P2', DG_PATHS['P2']);
+                var p3 = animatePacket('P3', DG_PATHS['P3']);
+                return Promise.all([p1, p2, p3]);
+                
+            case 'arrive':
+                addArrival(step.packet);
+                arrivalDisplay.style.display = 'block';
+                return Promise.resolve();
+                
+            default:
+                return Promise.resolve();
+        }
+    }
+    
+    // ===== UI更新 =====
+    function updateUI() {
+        var modeSelected = state.mode !== null;
+        
+        btnVC.classList.toggle('active', state.mode === 'vc');
+        btnDG.classList.toggle('active', state.mode === 'dg');
+        
+        btnVC.disabled = state.phase !== 'idle';
+        btnDG.disabled = state.phase !== 'idle';
+        
+        btnStart.disabled = !modeSelected || state.phase !== 'idle';
+        btnStep.disabled = state.phase !== 'running' || state.autoMode;
+        btnAuto.disabled = state.phase !== 'running' || state.autoMode;
+        
+        if (!modeSelected) {
+            modeIndicator.textContent = '选择模式';
+            modeIndicator.className = 'mode-indicator';
+            hintStart.textContent = '请选择 ▶';
+            hintStart.style.display = 'inline';
+        } else if (state.phase === 'idle') {
+            modeIndicator.textContent = state.mode === 'vc' ? '虚电路模式' : '数据报模式';
+            modeIndicator.className = 'mode-indicator ' + state.mode;
+            hintStart.textContent = '请选择 ▶';
+            hintStart.style.display = 'inline';
+        } else {
+            hintStart.style.display = 'none';
+        }
+    }
+    
+    // ===== 控制函数 =====
+    function selectMode(mode) {
+        if (state.phase !== 'idle') return;
+        state.mode = mode;
+        updateUI();
+    }
+    
+    function startDemo() {
+        if (!state.mode || state.phase !== 'idle') return;
+        
+        state.phase = 'running';
+        state.phaseIndex = 0;
+        state.stepIndex = 0;
+        state.logCount = 0;
+        state.arrivedPackets = [];
+        state.animatingPackets = [];
+        
+        logList.innerHTML = '';
+        arrivalPackets.innerHTML = '';
+        arrivalDisplay.style.display = 'none';
+        
+        // 隐藏所有信号和分组
+        hideElement('sig-callReq');
+        hideElement('sig-callResp');
+        hideElement('sig-relReq');
+        hideElement('sig-relResp');
+        vcPathGroup.style.display = 'none';
+        hidePacket('P1');
+        hidePacket('P2');
+        hidePacket('P3');
+        
+        var scenario = SCENARIOS[state.mode];
+        addLog(scenario.name + '演示开始', 'send');
+        updateUI();
+    }
+    
+    function stepExecute() {
+        if (state.phase !== 'running') return;
+        
+        executeStep().then(function() {
+            updateUI();
+        });
+    }
+    
+    function autoExecute() {
+        if (state.phase !== 'running') return;
+        
+        state.autoMode = true;
+        state.speed = parseInt(speedSelect.value) || 600;
+        updateUI();
+        
+        function runNext() {
+            if (state.phase !== 'running' || !state.autoMode) {
+                state.autoMode = false;
+                updateUI();
+                return;
+            }
+            
+            executeStep().then(function() {
+                updateUI();
+                if (state.phase === 'running') {
+                    setTimeout(runNext, state.speed);
+                } else {
+                    state.autoMode = false;
+                    updateUI();
+                }
+            });
+        }
+        
+        runNext();
+    }
+    
+    function resetDemo() {
+        state.mode = null;
+        state.phase = 'idle';
+        state.phaseIndex = 0;
+        state.stepIndex = 0;
+        state.autoMode = false;
+        state.logCount = 0;
+        state.arrivedPackets = [];
+        state.animatingPackets = [];
+        
+        logList.innerHTML = '';
+        arrivalPackets.innerHTML = '';
+        arrivalDisplay.style.display = 'none';
+        updatePhaseLabel(null);
+        
+        // 隐藏所有元素
+        hideElement('sig-callReq');
+        hideElement('sig-callResp');
+        hideElement('sig-relReq');
+        hideElement('sig-relResp');
+        vcPathGroup.style.display = 'none';
+        hidePacket('P1');
+        hidePacket('P2');
+        hidePacket('P3');
+        
+        updateUI();
+    }
+    
+    // ===== 事件绑定 =====
+    btnVC.onclick = function() { selectMode('vc'); };
+    btnDG.onclick = function() { selectMode('dg'); };
+    btnStart.onclick = startDemo;
+    btnStep.onclick = stepExecute;
+    btnAuto.onclick = autoExecute;
+    btnReset.onclick = resetDemo;
+    
+    // ===== 初始化 =====
+    updateUI();
+})();
+</script>
+</body>
+</html>

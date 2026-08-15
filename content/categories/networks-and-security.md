@@ -6,5 +6,6 @@
 
 <div class="course-grid">
 <a class="course-card" href="../../cert3-network/"><span class="course-tag">网络基础</span><h3>网络技术教程</h3><p>从网络体系结构到传输层、应用层和局域网。</p><span class="course-meta">8 章 · 约 4–5 小时</span></a>
+<a class="course-card" href="../../networking-top-down/"><span class="course-tag">备考教材</span><h3>计算机网络：自顶向下（第 9 版）</h3><p>以 Kurose & Ross 为主线，覆盖应用层、传输层、网络层、链路层、无线移动与网络安全。</p><span class="course-meta">8 章 · 23 个交互演示 · 约 16–20 学时</span></a>
 <a class="course-card" href="../../cert3-security/"><span class="course-tag">安全基础</span><h3>信息安全教程</h3><p>学习密码学、认证、网络安全和系统安全。</p><span class="course-meta">8 章 · 约 4–5 小时</span></a>
 </div>

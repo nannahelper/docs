@@ -1,0 +1,1269 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>字节填充过程演示</title>
+    <style>
+        /* ===== 408教学风格基础样式 ===== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        :root {
+            /* 主色调：学术蓝 */
+            --primary: #1a56db;
+            --primary-light: #e1effe;
+            /* 功能色 */
+            --success: #047857;
+            --success-light: #d1fae5;
+            --danger: #b91c1c;
+            --danger-light: #fee2e2;
+            --warning: #d97706;
+            --warning-light: #fef3c7;
+            --info: #0891b2;
+            --info-light: #cffafe;
+            --purple: #7c3aed;
+            --purple-light: #ede9fe;
+            /* 中性色 */
+            --text: #1f2937;
+            --text-secondary: #6b7280;
+            --border: #d1d5db;
+            --bg-light: #f9fafb;
+            --white: #ffffff;
+        }
+        
+        body {
+            font-family: system-ui, -apple-system, "Segoe UI", "Microsoft YaHei", sans-serif;
+            background: var(--white);
+            color: var(--text);
+            font-size: 14px;
+            line-height: 1.5;
+        }
+        
+        /* ===== 页面布局 ===== */
+        .page {
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            max-width: 1400px;
+            margin: 0 auto;
+            border-left: 1px solid var(--border);
+            border-right: 1px solid var(--border);
+        }
+        
+        /* 顶部标题栏 */
+        .page-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 8px 16px;
+            border-bottom: 1px solid var(--border);
+            background: var(--bg-light);
+        }
+        
+        .page-title {
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--text);
+        }
+        
+        .page-title code {
+            font-family: "Consolas", "Monaco", monospace;
+            background: var(--primary-light);
+            color: var(--primary);
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-size: 13px;
+            margin-left: 8px;
+        }
+        
+        .page-badge {
+            font-size: 12px;
+            color: var(--text-secondary);
+            background: var(--white);
+            padding: 4px 10px;
+            border: 1px solid var(--border);
+            border-radius: 3px;
+        }
+        
+        /* 主体区域：左右布局 */
+        .page-body {
+            display: flex;
+            flex: 1;
+            overflow: hidden;
+        }
+        
+        /* 左侧主区域 80% */
+        .main-panel {
+            flex: 0 0 80%;
+            display: flex;
+            flex-direction: column;
+            border-right: 1px solid var(--border);
+        }
+        
+        /* 右侧消息区域 20% */
+        .side-panel {
+            flex: 0 0 20%;
+            display: flex;
+            flex-direction: column;
+            background: var(--bg-light);
+        }
+        
+        /* ===== 可视化区域 ===== */
+        .visual-area {
+            flex: 1;
+            padding: 16px 20px;
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+            gap: 12px;
+        }
+        
+        .section-title {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text);
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .section-title .tag {
+            font-size: 11px;
+            font-weight: 500;
+            padding: 2px 6px;
+            border-radius: 2px;
+            background: var(--primary-light);
+            color: var(--primary);
+        }
+        
+        .section-title .tag.send {
+            background: var(--success-light);
+            color: var(--success);
+        }
+        
+        .section-title .tag.recv {
+            background: var(--purple-light);
+            color: var(--purple);
+        }
+        
+        /* 字节序列容器 */
+        .byte-container {
+            background: var(--bg-light);
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            padding: 12px 16px;
+        }
+        
+        .byte-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 6px;
+        }
+        
+        .byte-row:last-child {
+            margin-bottom: 0;
+        }
+        
+        .byte-label {
+            font-family: "Consolas", "Monaco", monospace;
+            font-size: 11px;
+            color: var(--text-secondary);
+            width: 90px;
+            flex-shrink: 0;
+        }
+        
+        .byte-sequence {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 3px;
+            align-items: center;
+        }
+        
+        .byte-cell {
+            min-width: 36px;
+            height: 32px;
+            padding: 0 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1.5px solid var(--border);
+            background: var(--white);
+            font-family: "Consolas", "Monaco", monospace;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text);
+            border-radius: 2px;
+            transition: all 0.3s ease;
+        }
+        
+        .byte-cell.special {
+            border-color: var(--warning);
+            background: var(--warning-light);
+            color: var(--warning);
+        }
+        
+        .byte-cell.esc-inserted {
+            border-color: var(--success);
+            background: var(--success-light);
+            color: var(--success);
+            animation: insertPulse 0.5s ease;
+        }
+        
+        .byte-cell.highlight-current {
+            border-color: var(--primary);
+            background: var(--primary-light);
+            color: var(--primary);
+        }
+        
+        .byte-cell.highlight-delete {
+            border-color: var(--danger);
+            background: var(--danger-light);
+            color: var(--danger);
+        }
+        
+        .byte-cell.frame-marker {
+            border-color: var(--info);
+            background: var(--info-light);
+            color: var(--info);
+        }
+        
+        .byte-cell.restored {
+            border-color: var(--purple);
+            background: var(--purple-light);
+            color: var(--purple);
+        }
+        
+        @keyframes insertPulse {
+            0% { transform: scale(0); opacity: 0; }
+            50% { transform: scale(1.2); }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        
+        @keyframes deletePulse {
+            0% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(0.8); opacity: 0.5; }
+            100% { transform: scale(0); opacity: 0; }
+        }
+        
+        /* 分隔符 */
+        .byte-separator {
+            width: 1px;
+            height: 24px;
+            background: var(--border);
+            margin: 0 4px;
+        }
+        
+        /* 阶段标识 */
+        .phase-indicator {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 10px 16px;
+            background: var(--white);
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            margin-bottom: 12px;
+        }
+        
+        .phase-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+        
+        .phase-item.active {
+            color: var(--primary);
+            font-weight: 600;
+        }
+        
+        .phase-item.done {
+            color: var(--success);
+        }
+        
+        .phase-num {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: var(--border);
+            color: var(--white);
+            font-size: 11px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .phase-item.active .phase-num {
+            background: var(--primary);
+        }
+        
+        .phase-item.done .phase-num {
+            background: var(--success);
+        }
+        
+        .phase-arrow {
+            color: var(--border);
+            font-size: 14px;
+        }
+        
+        /* ===== 控制区域 ===== */
+        .control-area {
+            border-top: 1px solid var(--border);
+            padding: 12px 20px;
+            background: var(--white);
+        }
+        
+        .control-row {
+            display: flex;
+            gap: 20px;
+            align-items: flex-start;
+        }
+        
+        .control-left {
+            flex: 1;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px 16px;
+            align-items: center;
+        }
+        
+        .control-right {
+            flex-shrink: 0;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            align-items: center;
+            justify-content: flex-end;
+        }
+        
+        .control-group {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-shrink: 0;
+        }
+        
+        .control-label {
+            font-size: 12px;
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+        
+        .control-input input {
+            font-family: "Consolas", "Monaco", monospace;
+            font-size: 13px;
+            padding: 6px 10px;
+            border: 1px solid var(--border);
+            border-radius: 3px;
+            outline: none;
+            transition: border-color 0.2s;
+            text-transform: uppercase;
+        }
+        
+        .control-input input:focus {
+            border-color: var(--primary);
+        }
+        
+        .control-input input.wide {
+            width: 200px;
+        }
+        
+        .btn {
+            padding: 6px 16px;
+            border: 1px solid transparent;
+            border-radius: 3px;
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        .btn-primary {
+            background: var(--primary);
+            color: var(--white);
+        }
+        
+        .btn-primary:hover:not(:disabled) {
+            background: #1e40af;
+        }
+        
+        .btn-success {
+            background: var(--success);
+            color: var(--white);
+        }
+        
+        .btn-success:hover:not(:disabled) {
+            background: #065f46;
+        }
+        
+        .btn-secondary {
+            background: var(--white);
+            color: var(--text-secondary);
+            border-color: var(--border);
+        }
+        
+        .btn-secondary:hover:not(:disabled) {
+            background: var(--bg-light);
+        }
+        
+        .action-hint {
+            font-size: 12px;
+            color: var(--danger);
+            font-weight: 600;
+            animation: hintBlink 1s ease-in-out infinite;
+            margin-right: 4px;
+        }
+        
+        @keyframes hintBlink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        
+        /* 快速示例按钮 */
+        .quick-examples {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+        }
+        
+        .example-btn {
+            font-family: "Consolas", "Monaco", monospace;
+            font-size: 11px;
+            padding: 2px 8px;
+            border: 1px solid var(--border);
+            border-radius: 2px;
+            background: var(--white);
+            cursor: pointer;
+            color: var(--text-secondary);
+        }
+        
+        .example-btn:hover {
+            background: var(--bg-light);
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+        
+        /* ===== 右侧面板 ===== */
+        .side-header {
+            padding: 10px 12px;
+            border-bottom: 1px solid var(--border);
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text);
+        }
+        
+        .step-list {
+            flex: 1;
+            overflow-y: auto;
+            padding: 10px;
+        }
+        
+        .step-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 8px;
+            padding: 8px 10px;
+            background: var(--white);
+            border: 1px solid var(--border);
+            border-radius: 3px;
+            font-size: 11px;
+            color: var(--text-secondary);
+            margin-bottom: 6px;
+        }
+        
+        .step-item.active {
+            border-color: var(--primary);
+            background: var(--primary-light);
+            color: var(--primary);
+        }
+        
+        .step-item.done {
+            border-color: var(--success);
+            color: var(--success);
+        }
+        
+        .step-num {
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: var(--border);
+            color: var(--white);
+            font-size: 10px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+        
+        .step-item.active .step-num { background: var(--primary); }
+        .step-item.done .step-num { background: var(--success); }
+        
+        .step-content {
+            flex: 1;
+        }
+        
+        /* 图例 */
+        .legend {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            padding: 10px 12px;
+            border-top: 1px solid var(--border);
+            background: var(--white);
+        }
+        
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 10px;
+            color: var(--text-secondary);
+        }
+        
+        .legend-box {
+            width: 14px;
+            height: 14px;
+            border-radius: 2px;
+            border: 1.5px solid;
+        }
+        
+        .legend-box.special {
+            border-color: var(--warning);
+            background: var(--warning-light);
+        }
+        
+        .legend-box.esc-inserted {
+            border-color: var(--success);
+            background: var(--success-light);
+        }
+        
+        .legend-box.frame {
+            border-color: var(--info);
+            background: var(--info-light);
+        }
+        
+        .legend-box.delete {
+            border-color: var(--danger);
+            background: var(--danger-light);
+        }
+        
+        .legend-box.restored {
+            border-color: var(--purple);
+            background: var(--purple-light);
+        }
+        
+        /* 说明区域 */
+        .info-section {
+            padding: 10px 12px;
+            border-top: 1px solid var(--border);
+            background: var(--white);
+        }
+        
+        .info-title {
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            margin-bottom: 6px;
+        }
+        
+        .info-content {
+            font-size: 11px;
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+        
+        .info-content strong {
+            color: var(--text);
+        }
+        
+        .info-content code {
+            font-family: "Consolas", "Monaco", monospace;
+            background: var(--bg-light);
+            padding: 1px 4px;
+            border-radius: 2px;
+            color: var(--warning);
+        }
+    </style>
+</head>
+<body>
+    <div class="page">
+        <!-- 顶部标题栏 -->
+        <header class="page-header">
+            <h1 class="page-title">字节填充过程演示<code>Byte Stuffing</code></h1>
+            <span class="page-badge">计算机网络 · 数据链路层</span>
+        </header>
+        
+        <!-- 主体区域 -->
+        <div class="page-body">
+            <!-- 左侧主面板 -->
+            <div class="main-panel">
+                <!-- 可视化区域 -->
+                <div class="visual-area">
+                    <!-- 阶段指示器 -->
+                    <div class="phase-indicator" id="phaseIndicator">
+                        <div class="phase-item" id="phase1">
+                            <span class="phase-num">1</span>
+                            <span>原始数据</span>
+                        </div>
+                        <span class="phase-arrow">▶</span>
+                        <div class="phase-item" id="phase2">
+                            <span class="phase-num">2</span>
+                            <span>字节填充</span>
+                        </div>
+                        <span class="phase-arrow">▶</span>
+                        <div class="phase-item" id="phase3">
+                            <span class="phase-num">3</span>
+                            <span>添加帧标志</span>
+                        </div>
+                        <span class="phase-arrow">▶</span>
+                        <div class="phase-item" id="phase4">
+                            <span class="phase-num">4</span>
+                            <span>接收方恢复</span>
+                        </div>
+                    </div>
+                    
+                    <!-- 发送方：原始数据 -->
+                    <div class="section-title">
+                        网络层发出的数据
+                        <span class="tag send">发送方</span>
+                    </div>
+                    <div class="byte-container" id="originalContainer">
+                        <div class="byte-row">
+                            <span class="byte-label">原始数据:</span>
+                            <div class="byte-sequence" id="originalBytes"></div>
+                        </div>
+                    </div>
+                    
+                    <!-- 发送方：填充过程 -->
+                    <div class="section-title">
+                        数据链路层填充过程
+                        <span class="tag send">发送方</span>
+                    </div>
+                    <div class="byte-container" id="stuffingContainer">
+                        <div class="byte-row">
+                            <span class="byte-label">填充处理:</span>
+                            <div class="byte-sequence" id="stuffingBytes"></div>
+                        </div>
+                    </div>
+                    
+                    <!-- 完整帧 -->
+                    <div class="section-title">
+                        完整数据帧（含帧标志）
+                    </div>
+                    <div class="byte-container" id="frameContainer">
+                        <div class="byte-row">
+                            <span class="byte-label">数据帧:</span>
+                            <div class="byte-sequence" id="frameBytes"></div>
+                        </div>
+                    </div>
+                    
+                    <!-- 接收方：恢复过程 -->
+                    <div class="section-title">
+                        接收方恢复数据
+                        <span class="tag recv">接收方</span>
+                    </div>
+                    <div class="byte-container" id="recoverContainer">
+                        <div class="byte-row">
+                            <span class="byte-label">恢复处理:</span>
+                            <div class="byte-sequence" id="recoverBytes"></div>
+                        </div>
+                        <div class="byte-row" style="margin-top: 8px;">
+                            <span class="byte-label">最终数据:</span>
+                            <div class="byte-sequence" id="restoredBytes"></div>
+                        </div>
+                    </div>
+                    
+                </div>
+                
+                <!-- 控制区域 -->
+                <div class="control-area">
+                    <div class="control-row">
+                        <div class="control-left">
+                            <div class="control-group">
+                                <span class="control-label">数据内容</span>
+                                <div class="control-input">
+                                    <input type="text" id="inputData" class="wide" value="A,EOT,ESC,B" placeholder="用逗号分隔，如 A,EOT,ESC,B">
+                                </div>
+                            </div>
+                            <div class="control-group">
+                                <span class="control-label">快速示例</span>
+                                <div class="quick-examples">
+                                    <button class="example-btn" data-value="A,B,C,D">普通数据</button>
+                                    <button class="example-btn" data-value="A,EOT,ESC,B">含特殊字符</button>
+                                    <button class="example-btn" data-value="SOH,A,EOT">含SOH/EOT</button>
+                                    <button class="example-btn" data-value="A,ESC,ESC,B">连续ESC</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="control-right">
+                            <span class="action-hint" id="hintStart">请选择 ▶</span>
+                            <button class="btn btn-primary" id="btnStart">开始演示</button>
+                            <span class="action-hint" id="hintStep" style="display:none;">请选择 ▶</span>
+                            <button class="btn btn-success" id="btnStep" disabled>单步执行</button>
+                            <button class="btn btn-success" id="btnAuto" disabled>自动演示</button>
+                            <button class="btn btn-secondary" id="btnReset">重置</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 右侧面板 -->
+            <div class="side-panel">
+                <div class="side-header">操作步骤</div>
+                <div class="step-list" id="stepList"></div>
+                
+                <div class="legend">
+                    <div class="legend-item">
+                        <div class="legend-box special"></div>
+                        <span>特殊字符</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-box esc-inserted"></div>
+                        <span>插入的ESC</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-box frame"></div>
+                        <span>帧标志</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-box delete"></div>
+                        <span>待删除</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-box restored"></div>
+                        <span>已恢复</span>
+                    </div>
+                </div>
+                
+                <div class="info-section">
+                    <div class="info-title">字节填充原理</div>
+                    <div class="info-content">
+                        使用<code>SOH</code>作为帧首，<code>EOT</code>作为帧尾。<br><br>
+                        <strong>发送方</strong>：数据中的<code>SOH</code>、<code>EOT</code>、<code>ESC</code>前插入<code>ESC</code><br><br>
+                        <strong>接收方</strong>：删除特殊字符前的<code>ESC</code>恢复原始数据
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+    (function() {
+        // 特殊字符定义
+        var SPECIAL_CHARS = ['SOH', 'EOT', 'ESC'];
+        
+        // 状态变量
+        var originalData = [];      // 原始数据数组
+        var stuffedData = [];       // 填充后数据
+        var restoredData = [];      // 恢复后数据
+        var currentPhase = 0;       // 当前阶段: 0=idle, 1=stuffing, 2=framing, 3=recovering
+        var currentIndex = 0;       // 当前处理位置
+        var isAnimating = false;
+        var autoTimer = null;
+        var stuffPositions = [];    // 插入ESC的位置
+        var deletePositions = [];   // 删除ESC的位置
+        var steps = [];
+        
+        // DOM 引用
+        var inputData = document.getElementById('inputData');
+        var btnStart = document.getElementById('btnStart');
+        var btnStep = document.getElementById('btnStep');
+        var btnAuto = document.getElementById('btnAuto');
+        var btnReset = document.getElementById('btnReset');
+        var hintStart = document.getElementById('hintStart');
+        var hintStep = document.getElementById('hintStep');
+        var originalBytes = document.getElementById('originalBytes');
+        var stuffingBytes = document.getElementById('stuffingBytes');
+        var frameBytes = document.getElementById('frameBytes');
+        var recoverBytes = document.getElementById('recoverBytes');
+        var restoredBytes = document.getElementById('restoredBytes');
+        var stepList = document.getElementById('stepList');
+        
+        // 阶段指示器
+        var phase1 = document.getElementById('phase1');
+        var phase2 = document.getElementById('phase2');
+        var phase3 = document.getElementById('phase3');
+        var phase4 = document.getElementById('phase4');
+        
+        // 快速示例按钮
+        var exampleBtns = document.querySelectorAll('.example-btn');
+        for (var i = 0; i < exampleBtns.length; i++) {
+            exampleBtns[i].onclick = function() {
+                inputData.value = this.getAttribute('data-value');
+            };
+        }
+        
+        // 判断是否为特殊字符
+        function isSpecialChar(ch) {
+            return SPECIAL_CHARS.indexOf(ch) !== -1;
+        }
+        
+        // 解析输入数据
+        function parseInput(input) {
+            var parts = input.split(',');
+            var result = [];
+            for (var i = 0; i < parts.length; i++) {
+                var part = parts[i].trim().toUpperCase();
+                if (part) {
+                    result.push(part);
+                }
+            }
+            return result;
+        }
+        
+        // 验证输入
+        function validateInput(data) {
+            if (!data || data.length === 0) {
+                alert('请输入数据');
+                return false;
+            }
+            if (data.length > 20) {
+                alert('数据长度不能超过20个字符');
+                return false;
+            }
+            return true;
+        }
+        
+        // 创建字节单元
+        function createByteCell(text, classes) {
+            var cell = document.createElement('div');
+            cell.className = 'byte-cell';
+            if (classes) {
+                var classList = classes.split(' ');
+                for (var i = 0; i < classList.length; i++) {
+                    if (classList[i]) {
+                        cell.classList.add(classList[i]);
+                    }
+                }
+            }
+            cell.textContent = text;
+            return cell;
+        }
+        
+        // 渲染原始数据
+        function renderOriginal() {
+            originalBytes.innerHTML = '';
+            for (var i = 0; i < originalData.length; i++) {
+                var ch = originalData[i];
+                var cls = isSpecialChar(ch) ? 'special' : '';
+                var cell = createByteCell(ch, cls);
+                cell.id = 'orig-' + i;
+                originalBytes.appendChild(cell);
+            }
+        }
+        
+        // 渲染填充过程
+        function renderStuffing() {
+            stuffingBytes.innerHTML = '';
+            for (var i = 0; i < stuffedData.length; i++) {
+                var ch = stuffedData[i];
+                var cls = '';
+                if (stuffPositions.indexOf(i) !== -1) {
+                    cls = 'esc-inserted';
+                } else if (isSpecialChar(ch)) {
+                    cls = 'special';
+                }
+                var cell = createByteCell(ch, cls);
+                cell.id = 'stuff-' + i;
+                stuffingBytes.appendChild(cell);
+            }
+        }
+        
+        // 渲染完整帧
+        function renderFrame() {
+            frameBytes.innerHTML = '';
+            
+            // 添加SOH
+            var sohCell = createByteCell('SOH', 'frame-marker');
+            frameBytes.appendChild(sohCell);
+            
+            // 分隔符
+            var sep1 = document.createElement('div');
+            sep1.className = 'byte-separator';
+            frameBytes.appendChild(sep1);
+            
+            // 数据部分
+            for (var i = 0; i < stuffedData.length; i++) {
+                var ch = stuffedData[i];
+                var cls = '';
+                if (stuffPositions.indexOf(i) !== -1) {
+                    cls = 'esc-inserted';
+                } else if (isSpecialChar(ch)) {
+                    cls = 'special';
+                }
+                var cell = createByteCell(ch, cls);
+                frameBytes.appendChild(cell);
+            }
+            
+            // 分隔符
+            var sep2 = document.createElement('div');
+            sep2.className = 'byte-separator';
+            frameBytes.appendChild(sep2);
+            
+            // 添加EOT
+            var eotCell = createByteCell('EOT', 'frame-marker');
+            frameBytes.appendChild(eotCell);
+        }
+        
+        // 渲染恢复过程
+        function renderRecover(highlightIndex, deleteIndex) {
+            recoverBytes.innerHTML = '';
+            for (var i = 0; i < stuffedData.length; i++) {
+                var ch = stuffedData[i];
+                var cls = '';
+                if (deletePositions.indexOf(i) !== -1) {
+                    cls = 'highlight-delete';
+                } else if (i === highlightIndex) {
+                    cls = 'highlight-current';
+                } else if (stuffPositions.indexOf(i) !== -1) {
+                    cls = 'esc-inserted';
+                } else if (isSpecialChar(ch)) {
+                    cls = 'special';
+                }
+                var cell = createByteCell(ch, cls);
+                cell.id = 'recover-' + i;
+                recoverBytes.appendChild(cell);
+            }
+        }
+        
+        // 渲染恢复后的数据
+        function renderRestored() {
+            restoredBytes.innerHTML = '';
+            for (var i = 0; i < restoredData.length; i++) {
+                var ch = restoredData[i];
+                var cls = isSpecialChar(ch) ? 'restored' : '';
+                var cell = createByteCell(ch, cls);
+                restoredBytes.appendChild(cell);
+            }
+        }
+        
+        // 更新阶段指示器
+        function updatePhaseIndicator() {
+            phase1.classList.remove('active', 'done');
+            phase2.classList.remove('active', 'done');
+            phase3.classList.remove('active', 'done');
+            phase4.classList.remove('active', 'done');
+            
+            if (currentPhase >= 1) phase1.classList.add('done');
+            if (currentPhase >= 2) phase2.classList.add('done');
+            if (currentPhase >= 3) phase3.classList.add('done');
+            if (currentPhase >= 4) phase4.classList.add('done');
+            
+            if (currentPhase === 1) phase1.classList.add('active');
+            if (currentPhase === 2) phase2.classList.add('active');
+            if (currentPhase === 3) phase3.classList.add('active');
+            if (currentPhase === 4) phase4.classList.add('active');
+        }
+        
+        // 添加步骤
+        function addStep(text) {
+            steps.push(text);
+            renderSteps();
+        }
+        
+        // 渲染步骤列表
+        function renderSteps() {
+            stepList.innerHTML = '';
+            for (var i = 0; i < steps.length; i++) {
+                var item = document.createElement('div');
+                item.className = 'step-item';
+                if (i === steps.length - 1) {
+                    item.classList.add('active');
+                } else {
+                    item.classList.add('done');
+                }
+                
+                var num = document.createElement('div');
+                num.className = 'step-num';
+                num.textContent = i + 1;
+                
+                var content = document.createElement('div');
+                content.className = 'step-content';
+                content.textContent = steps[i];
+                
+                item.appendChild(num);
+                item.appendChild(content);
+                stepList.appendChild(item);
+            }
+            
+            stepList.scrollTop = stepList.scrollHeight;
+        }
+        
+        // 更新提示
+        function updateHints(phase) {
+            hintStart.style.display = 'none';
+            hintStep.style.display = 'none';
+            
+            if (phase === 'idle') {
+                hintStart.style.display = 'inline';
+            } else if (phase === 'running') {
+                hintStep.style.display = 'inline';
+            }
+        }
+        
+        // 高亮原始数据中的位置
+        function highlightOriginal(index) {
+            var cells = originalBytes.querySelectorAll('.byte-cell');
+            for (var i = 0; i < cells.length; i++) {
+                cells[i].classList.remove('highlight-current');
+            }
+            if (index >= 0 && index < originalData.length) {
+                var cell = document.getElementById('orig-' + index);
+                if (cell) {
+                    cell.classList.add('highlight-current');
+                }
+            }
+        }
+        
+        // 单步执行
+        function stepForward() {
+            if (currentPhase === 0) {
+                // 开始阶段1：显示原始数据
+                currentPhase = 1;
+                currentIndex = 0;
+                stuffedData = [];
+                stuffPositions = [];
+                updatePhaseIndicator();
+                addStep('阶段1: 显示原始数据，开始扫描');
+                return true;
+            }
+            
+            if (currentPhase === 1) {
+                // 阶段1：字节填充
+                if (currentIndex < originalData.length) {
+                    var ch = originalData[currentIndex];
+                    highlightOriginal(currentIndex);
+                    
+                    if (isSpecialChar(ch)) {
+                        // 特殊字符，需要插入ESC
+                        var insertPos = stuffedData.length;
+                        stuffedData.push('ESC');
+                        stuffPositions.push(insertPos);
+                        stuffedData.push(ch);
+                        addStep('位置' + currentIndex + ': ' + ch + ' 是特殊字符，前面插入ESC');
+                    } else {
+                        stuffedData.push(ch);
+                        addStep('位置' + currentIndex + ': ' + ch + ' 是普通字符，直接复制');
+                    }
+                    
+                    currentIndex++;
+                    renderStuffing();
+                    return true;
+                } else {
+                    // 阶段1完成，进入阶段2
+                    currentPhase = 2;
+                    highlightOriginal(-1);
+                    updatePhaseIndicator();
+                    addStep('阶段2: 字节填充完成，共插入 ' + stuffPositions.length + ' 个ESC');
+                    return true;
+                }
+            }
+            
+            if (currentPhase === 2) {
+                // 阶段2：添加帧标志
+                currentPhase = 3;
+                currentIndex = 0;
+                deletePositions = [];
+                restoredData = [];
+                renderFrame();
+                updatePhaseIndicator();
+                addStep('阶段3: 添加帧首SOH和帧尾EOT，形成完整帧');
+                return true;
+            }
+            
+            if (currentPhase === 3) {
+                // 阶段3完成，进入阶段4：接收方恢复
+                currentPhase = 4;
+                currentIndex = 0;
+                updatePhaseIndicator();
+                addStep('阶段4: 接收方开始恢复数据');
+                renderRecover(-1, -1);
+                return true;
+            }
+            
+            if (currentPhase === 4) {
+                // 阶段4：恢复过程
+                if (currentIndex < stuffedData.length) {
+                    var ch = stuffedData[currentIndex];
+                    
+                    if (ch === 'ESC' && currentIndex + 1 < stuffedData.length) {
+                        var nextCh = stuffedData[currentIndex + 1];
+                        if (isSpecialChar(nextCh)) {
+                            // 这是一个填充的ESC，需要删除
+                            deletePositions.push(currentIndex);
+                            addStep('位置' + currentIndex + ': ESC后跟' + nextCh + '，删除此ESC');
+                            renderRecover(currentIndex, currentIndex);
+                            currentIndex++;
+                            return true;
+                        }
+                    }
+                    
+                    // 不是填充的ESC或普通字符
+                    if (deletePositions.indexOf(currentIndex) === -1) {
+                        restoredData.push(ch);
+                        addStep('位置' + currentIndex + ': ' + ch + ' 保留到恢复数据');
+                    }
+                    
+                    currentIndex++;
+                    renderRecover(currentIndex - 1, -1);
+                    renderRestored();
+                    return true;
+                } else {
+                    // 恢复完成
+                    addStep('恢复完成! 共删除 ' + deletePositions.length + ' 个ESC');
+                    renderRestored();
+                    finishAnimation();
+                    return false;
+                }
+            }
+            
+            return false;
+        }
+        
+        // 完成动画
+        function finishAnimation() {
+            isAnimating = false;
+            if (autoTimer) {
+                clearInterval(autoTimer);
+                autoTimer = null;
+            }
+            btnStep.disabled = true;
+            btnAuto.disabled = true;
+            btnAuto.textContent = '自动演示';
+            updateHints('done');
+            
+            // 验证恢复结果
+            var originalStr = originalData.join(',');
+            var restoredStr = restoredData.join(',');
+            if (originalStr === restoredStr) {
+                addStep('验证成功: 恢复数据与原始数据一致!');
+            }
+        }
+        
+        // 开始演示
+        function startDemo() {
+            var input = inputData.value.trim();
+            var data = parseInput(input);
+            if (!validateInput(data)) return;
+            
+            // 初始化状态
+            originalData = data;
+            stuffedData = [];
+            restoredData = [];
+            currentPhase = 0;
+            currentIndex = 0;
+            stuffPositions = [];
+            deletePositions = [];
+            steps = [];
+            isAnimating = true;
+            
+            // 渲染
+            renderOriginal();
+            stuffingBytes.innerHTML = '<span style="color: var(--text-secondary); font-size: 12px;">等待处理...</span>';
+            frameBytes.innerHTML = '<span style="color: var(--text-secondary); font-size: 12px;">填充完成后显示</span>';
+            recoverBytes.innerHTML = '<span style="color: var(--text-secondary); font-size: 12px;">接收后处理</span>';
+            restoredBytes.innerHTML = '';
+            
+            updatePhaseIndicator();
+            addStep('准备开始字节填充演示');
+            
+            // 启用按钮
+            btnStart.disabled = true;
+            btnStep.disabled = false;
+            btnAuto.disabled = false;
+            inputData.disabled = true;
+            
+            updateHints('running');
+        }
+        
+        // 自动演示
+        function toggleAuto() {
+            if (autoTimer) {
+                clearInterval(autoTimer);
+                autoTimer = null;
+                btnAuto.textContent = '自动演示';
+            } else {
+                btnAuto.textContent = '暂停';
+                autoTimer = setInterval(function() {
+                    var continueRunning = stepForward();
+                    if (!continueRunning) {
+                        if (autoTimer) {
+                            clearInterval(autoTimer);
+                            autoTimer = null;
+                        }
+                    }
+                }, 700);
+            }
+        }
+        
+        // 重置
+        function reset() {
+            if (autoTimer) {
+                clearInterval(autoTimer);
+                autoTimer = null;
+            }
+            
+            originalData = [];
+            stuffedData = [];
+            restoredData = [];
+            currentPhase = 0;
+            currentIndex = 0;
+            stuffPositions = [];
+            deletePositions = [];
+            steps = [];
+            isAnimating = false;
+            
+            originalBytes.innerHTML = '';
+            stuffingBytes.innerHTML = '';
+            frameBytes.innerHTML = '';
+            recoverBytes.innerHTML = '';
+            restoredBytes.innerHTML = '';
+            stepList.innerHTML = '';
+            
+            phase1.classList.remove('active', 'done');
+            phase2.classList.remove('active', 'done');
+            phase3.classList.remove('active', 'done');
+            phase4.classList.remove('active', 'done');
+            
+            btnStart.disabled = false;
+            btnStep.disabled = true;
+            btnAuto.disabled = true;
+            btnAuto.textContent = '自动演示';
+            inputData.disabled = false;
+            
+            updateHints('idle');
+        }
+        
+        // 事件绑定
+        btnStart.onclick = startDemo;
+        btnStep.onclick = stepForward;
+        btnAuto.onclick = toggleAuto;
+        btnReset.onclick = reset;
+        
+        // 回车键触发开始
+        inputData.onkeypress = function(e) {
+            if (e.key === 'Enter' && !btnStart.disabled) {
+                startDemo();
+            }
+        };
+        
+        // 初始化
+        updateHints('idle');
+    })();
+    </script>
+</body>
+</html>

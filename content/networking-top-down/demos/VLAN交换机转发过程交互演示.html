@@ -1,0 +1,1294 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VLAN帧转发演示</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        :root {
+            --primary: #1a56db;
+            --primary-light: #e1effe;
+            --success: #047857;
+            --success-light: #d1fae5;
+            --danger: #b91c1c;
+            --danger-light: #fee2e2;
+            --warning: #d97706;
+            --warning-light: #fef3c7;
+            --vlan10: #7c3aed;
+            --vlan10-light: #ede9fe;
+            --vlan20: #0891b2;
+            --vlan20-light: #cffafe;
+            --text: #1f2937;
+            --text-secondary: #6b7280;
+            --border: #d1d5db;
+            --bg-light: #f9fafb;
+            --white: #ffffff;
+        }
+        
+        body {
+            font-family: system-ui, -apple-system, "Segoe UI", "Microsoft YaHei", sans-serif;
+            background: var(--white);
+            color: var(--text);
+            font-size: 14px;
+            line-height: 1.5;
+        }
+        
+        .page {
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            max-width: 1400px;
+            margin: 0 auto;
+            border-left: 1px solid var(--border);
+            border-right: 1px solid var(--border);
+        }
+        
+        .page-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 8px 16px;
+            border-bottom: 1px solid var(--border);
+            background: var(--bg-light);
+        }
+        
+        .page-title {
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--text);
+        }
+        
+        .page-title code {
+            font-family: "Consolas", "Monaco", monospace;
+            background: var(--primary-light);
+            color: var(--primary);
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-size: 13px;
+            margin-left: 8px;
+        }
+        
+        .page-badge {
+            font-size: 12px;
+            color: var(--text-secondary);
+            background: var(--white);
+            padding: 4px 10px;
+            border: 1px solid var(--border);
+            border-radius: 3px;
+        }
+        
+        .page-body {
+            display: flex;
+            flex: 1;
+            overflow: hidden;
+        }
+        
+        .main-panel {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            border-right: 1px solid var(--border);
+        }
+        
+        .side-panel {
+            width: 280px;
+            display: flex;
+            flex-direction: column;
+            background: var(--bg-light);
+        }
+        
+        /* ===== 可视化区域 ===== */
+        .visual-area {
+            flex: 1;
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .topology-box {
+            flex: 1;
+            background: var(--white);
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            position: relative;
+            min-height: 380px;
+        }
+        
+        .topology-svg {
+            width: 100%;
+            height: 100%;
+        }
+        
+        /* 设备样式 */
+        .device-rect {
+            fill: var(--white);
+            stroke: var(--border);
+            stroke-width: 2;
+        }
+        
+        .device-rect.switch {
+            stroke: var(--primary);
+        }
+        
+        .device-text {
+            font-family: system-ui, -apple-system, "Microsoft YaHei", sans-serif;
+            font-size: 12px;
+            fill: var(--text);
+            text-anchor: middle;
+        }
+        
+        .device-label {
+            font-size: 11px;
+            fill: var(--text-secondary);
+            text-anchor: middle;
+        }
+        
+        .port-label {
+            font-family: "Consolas", "Monaco", monospace;
+            font-size: 9px;
+            fill: var(--text-secondary);
+        }
+        
+        /* VLAN颜色标记 */
+        .vlan10-color { fill: var(--vlan10); }
+        .vlan20-color { fill: var(--vlan20); }
+        .vlan10-bg { fill: var(--vlan10-light); }
+        .vlan20-bg { fill: var(--vlan20-light); }
+        .vlan10-stroke { stroke: var(--vlan10); }
+        .vlan20-stroke { stroke: var(--vlan20); }
+        
+        /* 链路样式 */
+        .link-line {
+            stroke: var(--border);
+            stroke-width: 2;
+            fill: none;
+        }
+        
+        .link-line.trunk {
+            stroke: var(--primary);
+            stroke-width: 3;
+        }
+        
+        .link-line.access {
+            stroke: var(--text-secondary);
+            stroke-width: 2;
+        }
+        
+        .link-label {
+            font-size: 10px;
+            fill: var(--text-secondary);
+        }
+        
+        .link-label.trunk-label {
+            fill: var(--primary);
+            font-weight: 600;
+        }
+        
+        /* 帧动画 */
+        .frame-packet {
+            display: none;
+        }
+        
+        .frame-packet.visible {
+            display: block;
+        }
+        
+        .frame-body {
+            fill: var(--primary-light);
+            stroke: var(--primary);
+            stroke-width: 2;
+        }
+        
+        .frame-body.with-tag {
+            fill: var(--warning-light);
+            stroke: var(--warning);
+        }
+        
+        .frame-body.vlan10 {
+            fill: var(--vlan10-light);
+            stroke: var(--vlan10);
+        }
+        
+        .frame-body.vlan20 {
+            fill: var(--vlan20-light);
+            stroke: var(--vlan20);
+        }
+        
+        .frame-body.blocked {
+            fill: var(--danger-light);
+            stroke: var(--danger);
+        }
+        
+        .frame-text {
+            font-family: "Consolas", "Monaco", monospace;
+            font-size: 10px;
+            fill: var(--text);
+            text-anchor: middle;
+        }
+        
+        .tag-indicator {
+            fill: var(--warning);
+        }
+        
+        /* 帧格式展示区 */
+        .frame-format-area {
+            margin-top: 12px;
+            padding: 12px 16px;
+            background: var(--bg-light);
+            border: 1px solid var(--border);
+            border-radius: 4px;
+        }
+        
+        .frame-format-title {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text);
+            margin-bottom: 8px;
+        }
+        
+        .frame-format-row {
+            display: flex;
+            align-items: stretch;
+            gap: 0;
+        }
+        
+        .frame-field {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid var(--border);
+            background: var(--white);
+            padding: 4px 8px;
+            min-height: 44px;
+        }
+        
+        .frame-field.highlight {
+            border-color: var(--warning);
+            background: var(--warning-light);
+        }
+        
+        .frame-field.tag-field {
+            border-color: var(--warning);
+            background: var(--warning-light);
+            display: none;
+        }
+        
+        .frame-field.tag-field.visible {
+            display: flex;
+        }
+        
+        .frame-field-name {
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--text);
+        }
+        
+        .frame-field-size {
+            font-size: 9px;
+            color: var(--text-secondary);
+            font-family: "Consolas", "Monaco", monospace;
+        }
+        
+        .frame-field-value {
+            font-size: 9px;
+            color: var(--primary);
+            font-family: "Consolas", "Monaco", monospace;
+        }
+        
+        /* ===== 控制面板 ===== */
+        .control-area {
+            border-top: 1px solid var(--border);
+            padding: 12px 16px;
+            background: var(--white);
+        }
+        
+        .control-row {
+            display: flex;
+            gap: 16px;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .control-left {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        
+        .control-right {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+        
+        .control-group {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        
+        .control-label {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text);
+        }
+        
+        select {
+            padding: 5px 10px;
+            border: 1px solid var(--border);
+            border-radius: 3px;
+            font-size: 13px;
+            background: var(--white);
+        }
+        
+        select:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+        
+        .btn {
+            padding: 6px 14px;
+            border: 1px solid transparent;
+            border-radius: 3px;
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        .btn-primary {
+            background: var(--primary);
+            color: var(--white);
+            border-color: var(--primary);
+        }
+        
+        .btn-primary:hover:not(:disabled) {
+            background: #1e40af;
+        }
+        
+        .btn-success {
+            background: var(--success);
+            color: var(--white);
+            border-color: var(--success);
+        }
+        
+        .btn-success:hover:not(:disabled) {
+            background: #065f46;
+        }
+        
+        .btn-secondary {
+            background: var(--white);
+            color: var(--text-secondary);
+            border-color: var(--border);
+        }
+        
+        .btn-secondary:hover:not(:disabled) {
+            background: var(--bg-light);
+        }
+        
+        .action-hint {
+            font-size: 12px;
+            color: var(--danger);
+            font-weight: 600;
+            animation: hintBlink 1s ease-in-out infinite;
+        }
+        
+        @keyframes hintBlink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        
+        .speed-group select {
+            width: 70px;
+        }
+        
+        /* ===== 右侧面板 ===== */
+        .side-header {
+            padding: 10px 12px;
+            border-bottom: 1px solid var(--border);
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text);
+        }
+        
+        .side-content {
+            flex: 1;
+            overflow-y: auto;
+            padding: 10px;
+        }
+        
+        .log-list {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+        
+        .log-item {
+            padding: 6px 8px;
+            background: var(--white);
+            border: 1px solid var(--border);
+            border-radius: 3px;
+            font-size: 11px;
+            line-height: 1.4;
+            color: var(--text-secondary);
+        }
+        
+        .log-item.send { border-left: 3px solid var(--primary); }
+        .log-item.receive { border-left: 3px solid var(--success); }
+        .log-item.tag { border-left: 3px solid var(--warning); }
+        .log-item.error { border-left: 3px solid var(--danger); }
+        .log-item.info { border-left: 3px solid var(--text-secondary); }
+        
+        .log-text {
+            color: var(--text);
+        }
+        
+        /* 图例 */
+        .legend-section {
+            padding: 10px 12px;
+            border-top: 1px solid var(--border);
+            background: var(--white);
+        }
+        
+        .legend-title {
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--text);
+            margin-bottom: 6px;
+        }
+        
+        .legend-list {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+        
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 10px;
+            color: var(--text-secondary);
+        }
+        
+        .legend-box {
+            width: 20px;
+            height: 12px;
+            border: 1.5px solid;
+            border-radius: 2px;
+        }
+        
+        .legend-box.vlan10 { border-color: var(--vlan10); background: var(--vlan10-light); }
+        .legend-box.vlan20 { border-color: var(--vlan20); background: var(--vlan20-light); }
+        .legend-box.trunk { border-color: var(--primary); background: var(--primary-light); }
+        .legend-box.tagged { border-color: var(--warning); background: var(--warning-light); }
+        
+        .legend-line {
+            width: 20px;
+            height: 3px;
+        }
+        
+        .legend-line.trunk-line { background: var(--primary); }
+        .legend-line.access-line { background: var(--text-secondary); height: 2px; }
+        
+        .info-section {
+            padding: 10px 12px;
+            border-top: 1px solid var(--border);
+            background: var(--white);
+            font-size: 11px;
+            color: var(--text-secondary);
+            line-height: 1.5;
+        }
+        
+        .info-section strong {
+            color: var(--text);
+        }
+        
+        /* VLAN配置表 */
+        .vlan-config {
+            padding: 10px 12px;
+            border-top: 1px solid var(--border);
+            background: var(--white);
+        }
+        
+        .vlan-config-title {
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--text);
+            margin-bottom: 6px;
+        }
+        
+        .vlan-table {
+            width: 100%;
+            font-size: 10px;
+            border-collapse: collapse;
+        }
+        
+        .vlan-table th, .vlan-table td {
+            padding: 4px 6px;
+            border: 1px solid var(--border);
+            text-align: center;
+        }
+        
+        .vlan-table th {
+            background: var(--bg-light);
+            font-weight: 600;
+            color: var(--text);
+        }
+        
+        .vlan-table td.vlan10 { color: var(--vlan10); font-weight: 600; }
+        .vlan-table td.vlan20 { color: var(--vlan20); font-weight: 600; }
+        .vlan-table td.trunk { color: var(--primary); font-weight: 600; }
+        
+        /* 高亮动画 */
+        @keyframes pulseHighlight {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.6; }
+        }
+        
+        .highlight-pulse {
+            animation: pulseHighlight 0.5s ease-in-out;
+        }
+    </style>
+</head>
+<body>
+    <div class="page">
+        <header class="page-header">
+            <h1 class="page-title">VLAN帧转发演示<code>802.1Q</code></h1>
+            <span class="page-badge">计算机网络 · 数据链路层</span>
+        </header>
+        
+        <div class="page-body">
+            <div class="main-panel">
+                <div class="visual-area">
+                    <div class="topology-box">
+                        <svg class="topology-svg" viewBox="0 0 800 360">
+                            <defs>
+                                <marker id="arrowGray" markerWidth="6" markerHeight="4" refX="5" refY="2" orient="auto">
+                                    <polygon points="0 0, 6 2, 0 4" fill="#6b7280"/>
+                                </marker>
+                                <marker id="arrowBlue" markerWidth="6" markerHeight="4" refX="5" refY="2" orient="auto">
+                                    <polygon points="0 0, 6 2, 0 4" fill="#1a56db"/>
+                                </marker>
+                            </defs>
+                            
+                            <!-- ===== 交换机1 ===== -->
+                            <g id="switch1">
+                                <rect class="device-rect switch" x="160" y="140" width="100" height="50" rx="3"/>
+                                <text class="device-text" x="210" y="162">交换机 SW1</text>
+                                <text class="device-label" x="210" y="180">F0/1-4</text>
+                            </g>
+                            
+                            <!-- ===== 交换机2 ===== -->
+                            <g id="switch2">
+                                <rect class="device-rect switch" x="540" y="140" width="100" height="50" rx="3"/>
+                                <text class="device-text" x="590" y="162">交换机 SW2</text>
+                                <text class="device-label" x="590" y="180">F0/1-4</text>
+                            </g>
+                            
+                            <!-- ===== 干线链路（Trunk） ===== -->
+                            <line class="link-line trunk" x1="260" y1="165" x2="540" y2="165"/>
+                            <text class="link-label trunk-label" x="400" y="155">Trunk (F0/4)</text>
+                            <text class="link-label" x="400" y="178" style="font-size:9px;">802.1Q 标记</text>
+                            
+                            <!-- ===== 主机（左侧） ===== -->
+                            <!-- PC1 - VLAN 10 -->
+                            <g id="pc1">
+                                <rect class="device-rect" x="50" y="40" width="70" height="40" rx="2" style="stroke:var(--vlan10);"/>
+                                <text class="device-text" x="85" y="58">PC1</text>
+                                <text class="device-label vlan10-color" x="85" y="72">VLAN 10</text>
+                            </g>
+                            <line class="link-line access vlan10-stroke" x1="120" y1="60" x2="180" y2="140"/>
+                            <text class="port-label" x="155" y="95">F0/1</text>
+                            
+                            <!-- PC2 - VLAN 10 -->
+                            <g id="pc2">
+                                <rect class="device-rect" x="50" y="250" width="70" height="40" rx="2" style="stroke:var(--vlan10);"/>
+                                <text class="device-text" x="85" y="268">PC2</text>
+                                <text class="device-label vlan10-color" x="85" y="282">VLAN 10</text>
+                            </g>
+                            <line class="link-line access vlan10-stroke" x1="120" y1="270" x2="180" y2="190"/>
+                            <text class="port-label" x="155" y="235">F0/2</text>
+                            
+                            <!-- PC3 - VLAN 20 -->
+                            <g id="pc3">
+                                <rect class="device-rect" x="260" y="280" width="70" height="40" rx="2" style="stroke:var(--vlan20);"/>
+                                <text class="device-text" x="295" y="298">PC3</text>
+                                <text class="device-label vlan20-color" x="295" y="312">VLAN 20</text>
+                            </g>
+                            <line class="link-line access vlan20-stroke" x1="295" y1="280" x2="240" y2="190"/>
+                            <text class="port-label" x="263" y="240">F0/3</text>
+                            
+                            <!-- ===== 主机（右侧） ===== -->
+                            <!-- PC4 - VLAN 10 -->
+                            <g id="pc4">
+                                <rect class="device-rect" x="680" y="40" width="70" height="40" rx="2" style="stroke:var(--vlan10);"/>
+                                <text class="device-text" x="715" y="58">PC4</text>
+                                <text class="device-label vlan10-color" x="715" y="72">VLAN 10</text>
+                            </g>
+                            <line class="link-line access vlan10-stroke" x1="680" y1="60" x2="620" y2="140"/>
+                            <text class="port-label" x="645" y="95">F0/1</text>
+                            
+                            <!-- PC5 - VLAN 20 -->
+                            <g id="pc5">
+                                <rect class="device-rect" x="680" y="250" width="70" height="40" rx="2" style="stroke:var(--vlan20);"/>
+                                <text class="device-text" x="715" y="268">PC5</text>
+                                <text class="device-label vlan20-color" x="715" y="282">VLAN 20</text>
+                            </g>
+                            <line class="link-line access vlan20-stroke" x1="680" y1="270" x2="620" y2="190"/>
+                            <text class="port-label" x="645" y="235">F0/2</text>
+                            
+                            <!-- PC6 - VLAN 20 -->
+                            <g id="pc6">
+                                <rect class="device-rect" x="470" y="280" width="70" height="40" rx="2" style="stroke:var(--vlan20);"/>
+                                <text class="device-text" x="505" y="298">PC6</text>
+                                <text class="device-label vlan20-color" x="505" y="312">VLAN 20</text>
+                            </g>
+                            <line class="link-line access vlan20-stroke" x1="505" y1="280" x2="560" y2="190"/>
+                            <text class="port-label" x="537" y="240">F0/3</text>
+                            
+                            <!-- ===== 帧动画元素 ===== -->
+                            <g class="frame-packet" id="frame1">
+                                <rect class="frame-body" id="frame1-body" x="0" y="0" width="50" height="24" rx="3"/>
+                                <text class="frame-text" id="frame1-text" x="25" y="16">Frame</text>
+                            </g>
+                            
+                            <!-- VLAN标签指示器 -->
+                            <g class="frame-packet" id="tagIndicator">
+                                <rect class="tag-indicator" x="0" y="0" width="20" height="8" rx="2"/>
+                                <text style="font-size:6px;fill:white;text-anchor:middle;" x="10" y="6">TAG</text>
+                            </g>
+                        </svg>
+                    </div>
+                    
+                    <!-- 帧格式展示 -->
+                    <div class="frame-format-area">
+                        <div class="frame-format-title" id="frameFormatTitle">当前帧格式：标准以太网帧</div>
+                        <div class="frame-format-row">
+                            <div class="frame-field" style="min-width:70px;">
+                                <span class="frame-field-name">目的MAC</span>
+                                <span class="frame-field-size">6B</span>
+                                <span class="frame-field-value" id="fieldDstMac">--</span>
+                            </div>
+                            <div class="frame-field" style="min-width:70px;">
+                                <span class="frame-field-name">源MAC</span>
+                                <span class="frame-field-size">6B</span>
+                                <span class="frame-field-value" id="fieldSrcMac">--</span>
+                            </div>
+                            <div class="frame-field tag-field" id="tagField" style="min-width:100px;">
+                                <span class="frame-field-name">802.1Q Tag</span>
+                                <span class="frame-field-size">4B</span>
+                                <span class="frame-field-value" id="fieldVlanTag">VLAN --</span>
+                            </div>
+                            <div class="frame-field" style="min-width:60px;">
+                                <span class="frame-field-name">类型</span>
+                                <span class="frame-field-size">2B</span>
+                                <span class="frame-field-value">0x0800</span>
+                            </div>
+                            <div class="frame-field" style="flex:1;min-width:80px;">
+                                <span class="frame-field-name">数据</span>
+                                <span class="frame-field-size">46-1500B</span>
+                            </div>
+                            <div class="frame-field" style="min-width:50px;">
+                                <span class="frame-field-name">FCS</span>
+                                <span class="frame-field-size">4B</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 控制面板 -->
+                <div class="control-area">
+                    <div class="control-row">
+                        <div class="control-left">
+                            <div class="control-group">
+                                <span class="control-label">源主机</span>
+                                <select id="selectSrc">
+                                    <option value="pc1">PC1 (VLAN 10)</option>
+                                    <option value="pc2">PC2 (VLAN 10)</option>
+                                    <option value="pc3">PC3 (VLAN 20)</option>
+                                    <option value="pc4">PC4 (VLAN 10)</option>
+                                    <option value="pc5">PC5 (VLAN 20)</option>
+                                    <option value="pc6">PC6 (VLAN 20)</option>
+                                </select>
+                            </div>
+                            <div class="control-group">
+                                <span class="control-label">目的主机</span>
+                                <select id="selectDst">
+                                    <option value="pc2">PC2 (VLAN 10)</option>
+                                    <option value="pc1">PC1 (VLAN 10)</option>
+                                    <option value="pc3">PC3 (VLAN 20)</option>
+                                    <option value="pc4">PC4 (VLAN 10)</option>
+                                    <option value="pc5">PC5 (VLAN 20)</option>
+                                    <option value="pc6">PC6 (VLAN 20)</option>
+                                </select>
+                            </div>
+                            <div class="control-group speed-group">
+                                <span class="control-label">速度</span>
+                                <select id="speedSelect">
+                                    <option value="1200">慢</option>
+                                    <option value="700" selected>中</option>
+                                    <option value="400">快</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="control-right">
+                            <span class="action-hint" id="hintStart">请选择 ▶</span>
+                            <button class="btn btn-primary" id="btnStart">开始转发</button>
+                            <button class="btn btn-success" id="btnStep" disabled>单步执行</button>
+                            <button class="btn btn-success" id="btnAuto" disabled>自动演示</button>
+                            <button class="btn btn-secondary" id="btnReset">重置</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 右侧面板 -->
+            <div class="side-panel">
+                <div class="side-header">转发日志</div>
+                <div class="side-content">
+                    <div class="log-list" id="logList"></div>
+                </div>
+                
+                <div class="vlan-config">
+                    <div class="vlan-config-title">端口VLAN配置</div>
+                    <table class="vlan-table">
+                        <tr>
+                            <th>端口</th>
+                            <th>SW1</th>
+                            <th>SW2</th>
+                        </tr>
+                        <tr>
+                            <td>F0/1</td>
+                            <td class="vlan10">VLAN 10</td>
+                            <td class="vlan10">VLAN 10</td>
+                        </tr>
+                        <tr>
+                            <td>F0/2</td>
+                            <td class="vlan10">VLAN 10</td>
+                            <td class="vlan20">VLAN 20</td>
+                        </tr>
+                        <tr>
+                            <td>F0/3</td>
+                            <td class="vlan20">VLAN 20</td>
+                            <td class="vlan20">VLAN 20</td>
+                        </tr>
+                        <tr>
+                            <td>F0/4</td>
+                            <td class="trunk">Trunk</td>
+                            <td class="trunk">Trunk</td>
+                        </tr>
+                    </table>
+                </div>
+                
+                <div class="legend-section">
+                    <div class="legend-title">图例</div>
+                    <div class="legend-list">
+                        <div class="legend-item">
+                            <div class="legend-box vlan10"></div>
+                            <span>VLAN 10 主机/端口</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-box vlan20"></div>
+                            <span>VLAN 20 主机/端口</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-line trunk-line"></div>
+                            <span>干线链路 (Trunk)</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-line access-line"></div>
+                            <span>接入链路 (Access)</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-box tagged"></div>
+                            <span>带VLAN标签的帧</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="info-section">
+                    <strong>VLAN转发规则：</strong><br>
+                    1. Access端口：收到帧打上VLAN标签，发出帧去掉标签<br>
+                    2. Trunk端口：透传带标签的帧，用于交换机互连<br>
+                    3. 同VLAN可通信，跨VLAN需三层路由
+                </div>
+            </div>
+        </div>
+    </div>
+
+<script>
+(function() {
+    // ===== 主机配置 =====
+    var HOSTS = {
+        pc1: { name: 'PC1', mac: 'AA:01', vlan: 10, sw: 'sw1', port: 'F0/1', pos: {x: 85, y: 60} },
+        pc2: { name: 'PC2', mac: 'AA:02', vlan: 10, sw: 'sw1', port: 'F0/2', pos: {x: 85, y: 270} },
+        pc3: { name: 'PC3', mac: 'AA:03', vlan: 20, sw: 'sw1', port: 'F0/3', pos: {x: 295, y: 300} },
+        pc4: { name: 'PC4', mac: 'AA:04', vlan: 10, sw: 'sw2', port: 'F0/1', pos: {x: 715, y: 60} },
+        pc5: { name: 'PC5', mac: 'AA:05', vlan: 20, sw: 'sw2', port: 'F0/2', pos: {x: 715, y: 270} },
+        pc6: { name: 'PC6', mac: 'AA:06', vlan: 20, sw: 'sw2', port: 'F0/3', pos: {x: 505, y: 300} }
+    };
+    
+    // 交换机位置
+    var SWITCHES = {
+        sw1: { x: 210, y: 165 },
+        sw2: { x: 590, y: 165 }
+    };
+    
+    // ===== 状态 =====
+    var state = {
+        phase: 'idle',
+        stepIndex: 0,
+        steps: [],
+        speed: 700,
+        autoMode: false,
+        srcHost: 'pc1',
+        dstHost: 'pc2',
+        currentVlan: null,
+        hasTag: false
+    };
+    
+    // ===== DOM引用 =====
+    var logList = document.getElementById('logList');
+    var selectSrc = document.getElementById('selectSrc');
+    var selectDst = document.getElementById('selectDst');
+    var speedSelect = document.getElementById('speedSelect');
+    var btnStart = document.getElementById('btnStart');
+    var btnStep = document.getElementById('btnStep');
+    var btnAuto = document.getElementById('btnAuto');
+    var btnReset = document.getElementById('btnReset');
+    var hintStart = document.getElementById('hintStart');
+    var frame1 = document.getElementById('frame1');
+    var frame1Body = document.getElementById('frame1-body');
+    var frame1Text = document.getElementById('frame1-text');
+    var tagField = document.getElementById('tagField');
+    var fieldDstMac = document.getElementById('fieldDstMac');
+    var fieldSrcMac = document.getElementById('fieldSrcMac');
+    var fieldVlanTag = document.getElementById('fieldVlanTag');
+    var frameFormatTitle = document.getElementById('frameFormatTitle');
+    
+    // ===== 工具函数 =====
+    function addLog(text, type) {
+        var item = document.createElement('div');
+        item.className = 'log-item ' + (type || 'info');
+        
+        var textSpan = document.createElement('span');
+        textSpan.className = 'log-text';
+        textSpan.textContent = text;
+        
+        item.appendChild(textSpan);
+        logList.insertBefore(item, logList.firstChild);
+    }
+    
+    function clearLogs() {
+        logList.innerHTML = '';
+    }
+    
+    function setFramePosition(x, y) {
+        frame1.setAttribute('transform', 'translate(' + (x - 25) + ',' + (y - 12) + ')');
+    }
+    
+    function showFrame(hasTag, vlan) {
+        frame1.classList.add('visible');
+        
+        // 更新帧样式
+        frame1Body.classList.remove('with-tag', 'vlan10', 'vlan20', 'blocked');
+        
+        if (hasTag) {
+            frame1Body.classList.add('with-tag');
+            if (vlan === 10) {
+                frame1Body.classList.add('vlan10');
+            } else if (vlan === 20) {
+                frame1Body.classList.add('vlan20');
+            }
+            frame1Text.textContent = 'Tag:' + vlan;
+        } else {
+            frame1Text.textContent = 'Frame';
+        }
+        
+        // 更新帧格式展示
+        if (hasTag) {
+            tagField.classList.add('visible');
+            fieldVlanTag.textContent = 'VLAN ' + vlan;
+            frameFormatTitle.textContent = '当前帧格式：802.1Q 标记帧（带VLAN标签）';
+        } else {
+            tagField.classList.remove('visible');
+            frameFormatTitle.textContent = '当前帧格式：标准以太网帧';
+        }
+        
+        state.hasTag = hasTag;
+        state.currentVlan = vlan;
+    }
+    
+    function hideFrame() {
+        frame1.classList.remove('visible');
+    }
+    
+    function showBlockedFrame() {
+        frame1Body.classList.add('blocked');
+        frame1Text.textContent = 'X';
+    }
+    
+    function updateFrameInfo(src, dst) {
+        fieldSrcMac.textContent = HOSTS[src].mac;
+        fieldDstMac.textContent = HOSTS[dst].mac;
+    }
+    
+    // 生成步骤序列
+    function generateSteps(srcId, dstId) {
+        var src = HOSTS[srcId];
+        var dst = HOSTS[dstId];
+        var steps = [];
+        
+        // 检查是否同VLAN
+        if (src.vlan !== dst.vlan) {
+            // 跨VLAN - 无法通信
+            steps.push({
+                action: 'init',
+                pos: src.pos,
+                hasTag: false,
+                log: src.name + ' 发送帧到 ' + dst.name,
+                logType: 'send'
+            });
+            steps.push({
+                action: 'move',
+                from: src.pos,
+                to: SWITCHES[src.sw],
+                hasTag: false,
+                log: '帧到达 ' + src.sw.toUpperCase() + ' 的 ' + src.port + ' 端口（Access端口）',
+                logType: 'info'
+            });
+            steps.push({
+                action: 'addTag',
+                pos: SWITCHES[src.sw],
+                vlan: src.vlan,
+                log: '交换机为帧添加 VLAN ' + src.vlan + ' 标签',
+                logType: 'tag'
+            });
+            steps.push({
+                action: 'blocked',
+                pos: SWITCHES[src.sw],
+                log: '目的主机 ' + dst.name + ' 在 VLAN ' + dst.vlan + '，无法转发！',
+                logType: 'error'
+            });
+            steps.push({
+                action: 'drop',
+                log: '跨VLAN通信需要三层路由设备（如路由器）',
+                logType: 'error'
+            });
+            return steps;
+        }
+        
+        // 同VLAN通信
+        if (src.sw === dst.sw) {
+            // 同一交换机
+            steps.push({
+                action: 'init',
+                pos: src.pos,
+                hasTag: false,
+                log: src.name + ' 发送帧到 ' + dst.name,
+                logType: 'send'
+            });
+            steps.push({
+                action: 'move',
+                from: src.pos,
+                to: SWITCHES[src.sw],
+                hasTag: false,
+                log: '帧到达 ' + src.sw.toUpperCase() + ' 的 ' + src.port + ' 端口（Access端口）',
+                logType: 'info'
+            });
+            steps.push({
+                action: 'addTag',
+                pos: SWITCHES[src.sw],
+                vlan: src.vlan,
+                log: '交换机内部为帧添加 VLAN ' + src.vlan + ' 标签',
+                logType: 'tag'
+            });
+            steps.push({
+                action: 'lookup',
+                pos: SWITCHES[src.sw],
+                log: '查MAC表，' + dst.name + ' 在 ' + dst.port + '（同VLAN，可转发）',
+                logType: 'info'
+            });
+            steps.push({
+                action: 'removeTag',
+                pos: SWITCHES[src.sw],
+                log: '从Access端口 ' + dst.port + ' 发出，去除VLAN标签',
+                logType: 'tag'
+            });
+            steps.push({
+                action: 'move',
+                from: SWITCHES[src.sw],
+                to: dst.pos,
+                hasTag: false,
+                log: '帧转发到 ' + dst.name,
+                logType: 'receive'
+            });
+            steps.push({
+                action: 'done',
+                log: dst.name + ' 成功收到帧！（同交换机同VLAN）',
+                logType: 'receive'
+            });
+        } else {
+            // 跨交换机
+            var otherSw = (src.sw === 'sw1') ? 'sw2' : 'sw1';
+            
+            steps.push({
+                action: 'init',
+                pos: src.pos,
+                hasTag: false,
+                log: src.name + ' 发送帧到 ' + dst.name,
+                logType: 'send'
+            });
+            steps.push({
+                action: 'move',
+                from: src.pos,
+                to: SWITCHES[src.sw],
+                hasTag: false,
+                log: '帧到达 ' + src.sw.toUpperCase() + ' 的 ' + src.port + ' 端口',
+                logType: 'info'
+            });
+            steps.push({
+                action: 'addTag',
+                pos: SWITCHES[src.sw],
+                vlan: src.vlan,
+                log: '交换机为帧添加 VLAN ' + src.vlan + ' 标签',
+                logType: 'tag'
+            });
+            steps.push({
+                action: 'lookup',
+                pos: SWITCHES[src.sw],
+                log: '查MAC表，' + dst.name + ' 不在本地，需通过Trunk转发',
+                logType: 'info'
+            });
+            steps.push({
+                action: 'move',
+                from: SWITCHES[src.sw],
+                to: SWITCHES[otherSw],
+                hasTag: true,
+                vlan: src.vlan,
+                log: '帧从Trunk端口F0/4发出（保留VLAN标签）',
+                logType: 'tag'
+            });
+            steps.push({
+                action: 'trunkReceive',
+                pos: SWITCHES[otherSw],
+                vlan: src.vlan,
+                log: otherSw.toUpperCase() + ' 从Trunk收到带标签帧（VLAN ' + src.vlan + '）',
+                logType: 'info'
+            });
+            steps.push({
+                action: 'lookup',
+                pos: SWITCHES[otherSw],
+                log: '查MAC表，' + dst.name + ' 在 ' + dst.port + '（同VLAN，可转发）',
+                logType: 'info'
+            });
+            steps.push({
+                action: 'removeTag',
+                pos: SWITCHES[otherSw],
+                log: '从Access端口 ' + dst.port + ' 发出，去除VLAN标签',
+                logType: 'tag'
+            });
+            steps.push({
+                action: 'move',
+                from: SWITCHES[otherSw],
+                to: dst.pos,
+                hasTag: false,
+                log: '帧转发到 ' + dst.name,
+                logType: 'receive'
+            });
+            steps.push({
+                action: 'done',
+                log: dst.name + ' 成功收到帧！（跨交换机同VLAN）',
+                logType: 'receive'
+            });
+        }
+        
+        return steps;
+    }
+    
+    // 执行步骤
+    function executeStep() {
+        if (state.stepIndex >= state.steps.length) {
+            state.phase = 'complete';
+            updateUI();
+            return;
+        }
+        
+        var step = state.steps[state.stepIndex];
+        
+        switch (step.action) {
+            case 'init':
+                showFrame(false, null);
+                setFramePosition(step.pos.x, step.pos.y);
+                break;
+                
+            case 'move':
+                animateMove(step.from, step.to, step.hasTag, step.vlan);
+                break;
+                
+            case 'addTag':
+                showFrame(true, step.vlan);
+                setFramePosition(step.pos.x, step.pos.y);
+                break;
+                
+            case 'removeTag':
+                showFrame(false, null);
+                break;
+                
+            case 'lookup':
+            case 'trunkReceive':
+                // 只记录日志
+                break;
+                
+            case 'blocked':
+                showBlockedFrame();
+                break;
+                
+            case 'drop':
+                hideFrame();
+                break;
+                
+            case 'done':
+                hideFrame();
+                break;
+        }
+        
+        addLog(step.log, step.logType);
+        state.stepIndex++;
+        updateUI();
+    }
+    
+    // 动画移动
+    function animateMove(from, to, hasTag, vlan) {
+        showFrame(hasTag, vlan);
+        
+        var duration = state.speed;
+        var startTime = null;
+        
+        function animate(timestamp) {
+            if (!startTime) startTime = timestamp;
+            var progress = Math.min((timestamp - startTime) / duration, 1);
+            
+            // 线性插值
+            var x = from.x + (to.x - from.x) * progress;
+            var y = from.y + (to.y - from.y) * progress;
+            
+            setFramePosition(x, y);
+            
+            if (progress < 1) {
+                requestAnimationFrame(animate);
+            }
+        }
+        
+        requestAnimationFrame(animate);
+    }
+    
+    // UI更新
+    function updateUI() {
+        btnStart.disabled = state.phase !== 'idle';
+        btnStep.disabled = state.phase !== 'running';
+        btnAuto.disabled = state.phase !== 'running' || state.autoMode;
+        selectSrc.disabled = state.phase !== 'idle';
+        selectDst.disabled = state.phase !== 'idle';
+        
+        hintStart.style.display = state.phase === 'idle' ? 'inline' : 'none';
+    }
+    
+    // ===== 控制函数 =====
+    function startDemo() {
+        state.srcHost = selectSrc.value;
+        state.dstHost = selectDst.value;
+        
+        if (state.srcHost === state.dstHost) {
+            alert('源主机和目的主机不能相同');
+            return;
+        }
+        
+        state.phase = 'running';
+        state.stepIndex = 0;
+        state.steps = generateSteps(state.srcHost, state.dstHost);
+        state.speed = parseInt(speedSelect.value) || 700;
+        
+        clearLogs();
+        hideFrame();
+        
+        // 更新帧信息
+        updateFrameInfo(state.srcHost, state.dstHost);
+        tagField.classList.remove('visible');
+        frameFormatTitle.textContent = '当前帧格式：标准以太网帧';
+        
+        addLog('开始转发演示：' + HOSTS[state.srcHost].name + ' → ' + HOSTS[state.dstHost].name, 'info');
+        updateUI();
+    }
+    
+    function stepExecute() {
+        if (state.phase !== 'running') return;
+        executeStep();
+    }
+    
+    function autoExecute() {
+        if (state.phase !== 'running') return;
+        
+        state.autoMode = true;
+        updateUI();
+        
+        function runNext() {
+            if (state.stepIndex >= state.steps.length || !state.autoMode) {
+                state.autoMode = false;
+                if (state.stepIndex >= state.steps.length) {
+                    state.phase = 'complete';
+                }
+                updateUI();
+                return;
+            }
+            
+            executeStep();
+            setTimeout(runNext, state.speed + 200);
+        }
+        
+        runNext();
+    }
+    
+    function resetDemo() {
+        state.phase = 'idle';
+        state.stepIndex = 0;
+        state.steps = [];
+        state.autoMode = false;
+        
+        clearLogs();
+        hideFrame();
+        tagField.classList.remove('visible');
+        frameFormatTitle.textContent = '当前帧格式：标准以太网帧';
+        fieldSrcMac.textContent = '--';
+        fieldDstMac.textContent = '--';
+        fieldVlanTag.textContent = 'VLAN --';
+        
+        updateUI();
+    }
+    
+    // ===== 事件绑定 =====
+    btnStart.onclick = startDemo;
+    btnStep.onclick = stepExecute;
+    btnAuto.onclick = autoExecute;
+    btnReset.onclick = resetDemo;
+    
+    // 初始化
+    updateUI();
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,1010 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GBN协议工作原理演示</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        :root {
+            --primary: #1a56db;
+            --primary-light: #e1effe;
+            --success: #047857;
+            --success-light: #d1fae5;
+            --danger: #b91c1c;
+            --danger-light: #fee2e2;
+            --warning: #d97706;
+            --warning-light: #fef3c7;
+            --text: #1f2937;
+            --text-secondary: #6b7280;
+            --border: #d1d5db;
+            --bg-light: #f9fafb;
+            --white: #ffffff;
+        }
+        
+        body {
+            font-family: system-ui, -apple-system, "Segoe UI", "Microsoft YaHei", sans-serif;
+            background: var(--white);
+            color: var(--text);
+            font-size: 14px;
+            line-height: 1.5;
+        }
+        
+        .page {
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            max-width: 1300px;
+            margin: 0 auto;
+            border-left: 1px solid var(--border);
+            border-right: 1px solid var(--border);
+        }
+        
+        .page-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 8px 16px;
+            border-bottom: 1px solid var(--border);
+            background: var(--bg-light);
+        }
+        
+        .page-title {
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--text);
+        }
+        
+        .page-title code {
+            font-family: "Consolas", "Monaco", monospace;
+            background: var(--primary-light);
+            color: var(--primary);
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-size: 13px;
+            margin-left: 8px;
+        }
+        
+        .page-badge {
+            font-size: 12px;
+            color: var(--text-secondary);
+            background: var(--white);
+            padding: 4px 10px;
+            border: 1px solid var(--border);
+            border-radius: 3px;
+        }
+        
+        .page-body {
+            display: flex;
+            flex: 1;
+            overflow: hidden;
+        }
+        
+        .main-panel {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            border-right: 1px solid var(--border);
+        }
+        
+        .side-panel {
+            width: 260px;
+            display: flex;
+            flex-direction: column;
+            background: var(--bg-light);
+        }
+        
+        /* ===== 时序图区域 ===== */
+        .visual-area {
+            flex: 1;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .timing-box {
+            flex: 1;
+            background: var(--white);
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            position: relative;
+            min-height: 420px;
+        }
+        
+        /* 时间标注 */
+        .time-arrow {
+            position: absolute;
+            top: 12px;
+            right: 20px;
+            font-size: 11px;
+            color: var(--text-secondary);
+        }
+        
+        /* 超时标记 */
+        .timeout-mark {
+            position: absolute;
+            top: 25px;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .timeout-bar {
+            height: 2px;
+            background: var(--warning);
+        }
+        
+        .timeout-bar::before,
+        .timeout-bar::after {
+            content: '';
+            position: absolute;
+            width: 2px;
+            height: 8px;
+            background: var(--warning);
+        }
+        
+        .timeout-bar::before {
+            left: 0;
+            top: -3px;
+        }
+        
+        .timeout-bar::after {
+            right: 0;
+            top: -3px;
+        }
+        
+        .timeout-text {
+            font-size: 11px;
+            color: var(--warning);
+            margin-top: 4px;
+        }
+        
+        /* 发送方/接收方标签 */
+        .party-label {
+            position: absolute;
+            left: 20px;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text);
+        }
+        
+        .sender-label {
+            top: 60px;
+        }
+        
+        .receiver-label {
+            top: 340px;
+        }
+        
+        /* 帧容器 */
+        .frames-row {
+            position: absolute;
+            left: 80px;
+            display: flex;
+            gap: 3px;
+        }
+        
+        .sender-frames {
+            top: 50px;
+        }
+        
+        .receiver-frames {
+            top: 330px;
+        }
+        
+        /* 帧格子 */
+        .frame {
+            width: 46px;
+            height: 38px;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid var(--border);
+            background: var(--white);
+            font-family: "Consolas", "Monaco", monospace;
+            font-size: 16px;
+            font-weight: 600;
+        }
+        
+        .frame.visible {
+            display: flex;
+        }
+        
+        .frame.sent {
+            border-color: var(--primary);
+            background: var(--primary-light);
+            color: var(--primary);
+        }
+        
+        .frame.acked {
+            border-color: var(--success);
+            background: var(--success-light);
+            color: var(--success);
+        }
+        
+        .frame.error {
+            border-color: var(--danger);
+            background: var(--danger-light);
+            color: var(--danger);
+        }
+        
+        .frame.discarded {
+            border-color: var(--text-secondary);
+            background: #f3f4f6;
+            color: var(--text-secondary);
+        }
+        
+        .frame.retransmit {
+            border-color: var(--warning);
+            background: var(--warning-light);
+            color: var(--warning);
+        }
+        
+        .frame.received {
+            border-color: var(--success);
+            background: var(--success-light);
+            color: var(--success);
+        }
+        
+        /* SVG箭头层 */
+        .arrows-svg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+        
+        .arrow-line {
+            display: none;
+            stroke-width: 1.5;
+            fill: none;
+        }
+        
+        .arrow-line.visible {
+            display: block;
+        }
+        
+        .arrow-line.data {
+            stroke: var(--primary);
+        }
+        
+        .arrow-line.data-error {
+            stroke: var(--danger);
+        }
+        
+        .arrow-line.ack {
+            stroke: var(--success);
+            stroke-dasharray: 5, 3;
+        }
+        
+        .ack-label {
+            display: none;
+            font-family: "Consolas", "Monaco", monospace;
+            font-size: 10px;
+            fill: var(--success);
+        }
+        
+        .ack-label.visible {
+            display: block;
+        }
+        
+        /* ===== 控制面板 ===== */
+        .control-area {
+            border-top: 1px solid var(--border);
+            padding: 12px 20px;
+            background: var(--white);
+        }
+        
+        .control-row {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .control-left {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+        
+        .control-right {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+        
+        .scenario-label {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text);
+        }
+        
+        .btn {
+            padding: 6px 14px;
+            border: 1px solid transparent;
+            border-radius: 3px;
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        .btn-scenario {
+            background: var(--white);
+            color: var(--text-secondary);
+            border-color: var(--border);
+        }
+        
+        .btn-scenario:hover:not(:disabled) {
+            background: var(--bg-light);
+        }
+        
+        .btn-scenario.active {
+            background: var(--primary);
+            color: var(--white);
+            border-color: var(--primary);
+        }
+        
+        .btn-primary {
+            background: var(--primary);
+            color: var(--white);
+            border-color: var(--primary);
+        }
+        
+        .btn-primary:hover:not(:disabled) {
+            background: #1e40af;
+        }
+        
+        .btn-success {
+            background: var(--success);
+            color: var(--white);
+            border-color: var(--success);
+        }
+        
+        .btn-success:hover:not(:disabled) {
+            background: #065f46;
+        }
+        
+        .btn-secondary {
+            background: var(--white);
+            color: var(--text-secondary);
+            border-color: var(--border);
+        }
+        
+        .btn-secondary:hover:not(:disabled) {
+            background: var(--bg-light);
+        }
+        
+        .action-hint {
+            font-size: 12px;
+            color: var(--danger);
+            font-weight: 600;
+            animation: hintBlink 1s ease-in-out infinite;
+        }
+        
+        @keyframes hintBlink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        
+        .speed-group {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        
+        .speed-group label {
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+        
+        .speed-group select {
+            padding: 4px 8px;
+            border: 1px solid var(--border);
+            border-radius: 3px;
+            font-size: 12px;
+        }
+        
+        /* ===== 右侧面板 ===== */
+        .side-header {
+            padding: 10px 12px;
+            border-bottom: 1px solid var(--border);
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text);
+        }
+        
+        .side-content {
+            flex: 1;
+            overflow-y: auto;
+            padding: 10px;
+        }
+        
+        .log-list {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+        
+        .log-item {
+            padding: 6px 8px;
+            background: var(--white);
+            border: 1px solid var(--border);
+            border-radius: 3px;
+            font-size: 11px;
+            line-height: 1.4;
+            color: var(--text-secondary);
+        }
+        
+        .log-item.send { border-left: 3px solid var(--primary); }
+        .log-item.ack { border-left: 3px solid var(--success); }
+        .log-item.error { border-left: 3px solid var(--danger); }
+        .log-item.timeout { border-left: 3px solid var(--warning); }
+        
+        .log-item .log-time {
+            font-family: "Consolas", "Monaco", monospace;
+            color: var(--text-secondary);
+            margin-right: 6px;
+        }
+        
+        .log-item .log-text {
+            color: var(--text);
+        }
+        
+        /* 图例 */
+        .legend-section {
+            padding: 10px 12px;
+            border-top: 1px solid var(--border);
+            background: var(--white);
+        }
+        
+        .legend-title {
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--text);
+            margin-bottom: 6px;
+        }
+        
+        .legend-list {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+        
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 10px;
+            color: var(--text-secondary);
+        }
+        
+        .legend-box {
+            width: 20px;
+            height: 14px;
+            border: 1.5px solid;
+            border-radius: 2px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: "Consolas", "Monaco", monospace;
+            font-size: 9px;
+            font-weight: 600;
+        }
+        
+        .legend-box.sent { border-color: var(--primary); background: var(--primary-light); color: var(--primary); }
+        .legend-box.acked { border-color: var(--success); background: var(--success-light); color: var(--success); }
+        .legend-box.error { border-color: var(--danger); background: var(--danger-light); color: var(--danger); }
+        .legend-box.discarded { border-color: var(--text-secondary); background: #f3f4f6; color: var(--text-secondary); }
+        .legend-box.retransmit { border-color: var(--warning); background: var(--warning-light); color: var(--warning); }
+        
+        .info-section {
+            padding: 10px 12px;
+            border-top: 1px solid var(--border);
+            background: var(--white);
+            font-size: 11px;
+            color: var(--text-secondary);
+        }
+        
+        .info-section code {
+            font-family: "Consolas", "Monaco", monospace;
+            color: var(--primary);
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+    <div class="page">
+        <header class="page-header">
+            <h1 class="page-title">GBN协议工作原理<code>Go-Back-N</code></h1>
+            <span class="page-badge">计算机网络 · 数据链路层</span>
+        </header>
+        
+        <div class="page-body">
+            <div class="main-panel">
+                <div class="visual-area">
+                    <div class="timing-box">
+                        <div class="time-arrow">时间 →</div>
+                        
+                        <!-- 超时标记 -->
+                        <div class="timeout-mark" id="timeoutMark">
+                            <div class="timeout-bar" id="timeoutBar"></div>
+                            <span class="timeout-text">超时间隔</span>
+                        </div>
+                        
+                        <!-- 发送方 -->
+                        <div class="party-label sender-label">发送方</div>
+                        <div class="frames-row sender-frames">
+                            <!-- 场景1: 帧2出错 - 发送方帧 -->
+                            <div class="frame" id="s1-sf0">0</div>
+                            <div class="frame" id="s1-sf1">1</div>
+                            <div class="frame" id="s1-sf2">2</div>
+                            <div class="frame" id="s1-sf3">3</div>
+                            <div class="frame" id="s1-sf4">2</div>
+                            <div class="frame" id="s1-sf5">3</div>
+                        </div>
+                        
+                        <!-- 接收方 -->
+                        <div class="party-label receiver-label">接收方</div>
+                        <div class="frames-row receiver-frames">
+                            <!-- 场景1: 帧2出错 - 接收方帧 -->
+                            <div class="frame" id="s1-rf0">0</div>
+                            <div class="frame" id="s1-rf1">1</div>
+                            <div class="frame" id="s1-rf2">E</div>
+                            <div class="frame" id="s1-rf3">D</div>
+                            <div class="frame" id="s1-rf4">2</div>
+                            <div class="frame" id="s1-rf5">3</div>
+                        </div>
+                        
+                        <!-- SVG箭头层 -->
+                        <svg class="arrows-svg">
+                            <defs>
+                                <marker id="arrowBlue" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+                                    <polygon points="0 0, 8 3, 0 6" fill="#1a56db"/>
+                                </marker>
+                                <marker id="arrowGreen" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+                                    <polygon points="0 0, 8 3, 0 6" fill="#047857"/>
+                                </marker>
+                                <marker id="arrowRed" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+                                    <polygon points="0 0, 8 3, 0 6" fill="#b91c1c"/>
+                                </marker>
+                            </defs>
+                            
+                            <!-- 场景1: 数据帧箭头 (发送方→接收方) -->
+                            <line class="arrow-line data" id="s1-d0" x1="103" y1="92" x2="103" y2="326" marker-end="url(#arrowBlue)"/>
+                            <line class="arrow-line data" id="s1-d1" x1="152" y1="92" x2="152" y2="326" marker-end="url(#arrowBlue)"/>
+                            <line class="arrow-line data-error" id="s1-d2" x1="201" y1="92" x2="201" y2="326" marker-end="url(#arrowRed)"/>
+                            <!-- scene2专用：帧2正常传输的蓝色箭头 -->
+                            <line class="arrow-line data" id="s1-d2b" x1="201" y1="92" x2="201" y2="326" marker-end="url(#arrowBlue)"/>
+                            <line class="arrow-line data" id="s1-d3" x1="250" y1="92" x2="250" y2="326" marker-end="url(#arrowBlue)"/>
+                            <line class="arrow-line data" id="s1-d4" x1="299" y1="92" x2="299" y2="326" marker-end="url(#arrowBlue)"/>
+                            <line class="arrow-line data" id="s1-d5" x1="348" y1="92" x2="348" y2="326" marker-end="url(#arrowBlue)"/>
+                            
+                            <!-- 场景1: ACK箭头 (接收方→发送方，斜向上) -->
+                            <line class="arrow-line ack" id="s1-a0" x1="115" y1="326" x2="140" y2="92" marker-end="url(#arrowGreen)"/>
+                            <text class="ack-label" id="s1-a0-label" x="135" y="200">ACK0</text>
+                            
+                            <line class="arrow-line ack" id="s1-a1" x1="164" y1="326" x2="189" y2="92" marker-end="url(#arrowGreen)"/>
+                            <text class="ack-label" id="s1-a1-label" x="184" y="200">ACK1</text>
+                            
+                            <!-- scene2专用：从帧2正常接收位置发出的ACK2 -->
+                            <line class="arrow-line ack" id="s1-a2" x1="213" y1="326" x2="238" y2="92" marker-end="url(#arrowGreen)"/>
+                            <text class="ack-label" id="s1-a2-label" x="233" y="200">ACK2</text>
+                            
+                            <line class="arrow-line ack" id="s1-a4" x1="311" y1="326" x2="336" y2="92" marker-end="url(#arrowGreen)"/>
+                            <text class="ack-label" id="s1-a4-label" x="331" y="200">ACK2</text>
+                            
+                            <line class="arrow-line ack" id="s1-a5" x1="360" y1="326" x2="385" y2="92" marker-end="url(#arrowGreen)"/>
+                            <text class="ack-label" id="s1-a5-label" x="380" y="200">ACK3</text>
+                        </svg>
+                    </div>
+                </div>
+                
+                <!-- 控制面板 -->
+                <div class="control-area">
+                    <div class="control-row">
+                        <div class="control-left">
+                            <span class="scenario-label">选择场景:</span>
+                            <button class="btn btn-scenario active" id="btnScene1">帧2出错</button>
+                            <button class="btn btn-scenario" id="btnScene2">帧3出错</button>
+                            <div class="speed-group">
+                                <label>速度:</label>
+                                <select id="speedSelect">
+                                    <option value="1200">慢速</option>
+                                    <option value="700" selected>正常</option>
+                                    <option value="350">快速</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="control-right">
+                            <span class="action-hint" id="hintStart">请选择 ▶</span>
+                            <button class="btn btn-primary" id="btnStart">开始演示</button>
+                            <button class="btn btn-success" id="btnStep" disabled>单步执行</button>
+                            <button class="btn btn-success" id="btnAuto" disabled>自动演示</button>
+                            <button class="btn btn-secondary" id="btnReset">重置</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 右侧面板 -->
+            <div class="side-panel">
+                <div class="side-header">执行日志</div>
+                <div class="side-content">
+                    <div class="log-list" id="logList"></div>
+                </div>
+                
+                <div class="legend-section">
+                    <div class="legend-title">图例说明</div>
+                    <div class="legend-list">
+                        <div class="legend-item">
+                            <div class="legend-box sent">0</div>
+                            <span>已发送待确认</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-box acked">0</div>
+                            <span>已确认</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-box error">E</div>
+                            <span>出错帧</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-box discarded">D</div>
+                            <span>被丢弃帧</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-box retransmit">0</div>
+                            <span>重传帧</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="info-section">
+                    <strong>GBN核心特点：</strong><br>
+                    1. 发送窗口 W<sub>S</sub> ≤ 2<sup>n</sup>-1<br>
+                    2. 接收窗口 W<sub>R</sub> = 1<br>
+                    3. 累积确认：ACK<sub>n</sub> 确认 n 及之前所有帧<br>
+                    4. 超时后回退重传 <code>send_base</code> 开始的所有帧
+                </div>
+            </div>
+        </div>
+    </div>
+
+<script>
+(function() {
+    // ===== 场景配置 =====
+    var SCENARIOS = {
+        scene1: {
+            name: '帧2出错',
+            errorFrame: 2,
+            timeout: { left: 201, width: 98 },
+            steps: [
+                { action: 'send', frame: 's1-sf0', cls: 'sent', log: '发送帧0', logType: 'send' },
+                { action: 'send', frame: 's1-sf1', cls: 'sent', log: '发送帧1', logType: 'send' },
+                { action: 'send', frame: 's1-sf2', cls: 'error', log: '发送帧2（将出错）', logType: 'error' },
+                { action: 'send', frame: 's1-sf3', cls: 'sent', log: '发送帧3', logType: 'send' },
+                { action: 'receive', frame: 's1-rf0', cls: 'received', arrow: 's1-d0', log: '接收方收到帧0', logType: 'ack' },
+                { action: 'ack', arrow: 's1-a0', label: 's1-a0-label', ackFrames: ['s1-sf0'], log: '返回ACK0，确认帧0', logType: 'ack' },
+                { action: 'receive', frame: 's1-rf1', cls: 'received', arrow: 's1-d1', log: '接收方收到帧1', logType: 'ack' },
+                { action: 'ack', arrow: 's1-a1', label: 's1-a1-label', ackFrames: ['s1-sf1'], log: '返回ACK1，累积确认帧0~1', logType: 'ack' },
+                { action: 'error', frame: 's1-rf2', cls: 'error', arrow: 's1-d2', log: '帧2出错！接收方丢弃', logType: 'error' },
+                { action: 'discard', frame: 's1-rf3', cls: 'discarded', arrow: 's1-d3', log: '帧3到达，但期望帧2，丢弃', logType: 'error' },
+                { action: 'timeout', log: '超时！GBN回退，从帧2开始重传', logType: 'timeout' },
+                { action: 'retransmit', frame: 's1-sf4', cls: 'retransmit', log: '重传帧2', logType: 'timeout' },
+                { action: 'retransmit', frame: 's1-sf5', cls: 'retransmit', log: '重传帧3', logType: 'timeout' },
+                { action: 'receive', frame: 's1-rf4', cls: 'received', arrow: 's1-d4', log: '接收方收到重传帧2', logType: 'ack' },
+                { action: 'ack', arrow: 's1-a4', label: 's1-a4-label', ackFrames: ['s1-sf4'], log: '返回ACK2', logType: 'ack' },
+                { action: 'receive', frame: 's1-rf5', cls: 'received', arrow: 's1-d5', log: '接收方收到重传帧3', logType: 'ack' },
+                { action: 'ack', arrow: 's1-a5', label: 's1-a5-label', ackFrames: ['s1-sf5'], log: '返回ACK3，传输完成！', logType: 'ack' }
+            ]
+        },
+        scene2: {
+            name: '帧3出错',
+            errorFrame: 3,
+            timeout: { left: 250, width: 49 },
+            steps: [
+                { action: 'send', frame: 's1-sf0', cls: 'sent', log: '发送帧0', logType: 'send' },
+                { action: 'send', frame: 's1-sf1', cls: 'sent', log: '发送帧1', logType: 'send' },
+                { action: 'send', frame: 's1-sf2', cls: 'sent', log: '发送帧2', logType: 'send' },
+                { action: 'send', frame: 's1-sf3', cls: 'error', log: '发送帧3（将出错）', logType: 'error' },
+                { action: 'receive', frame: 's1-rf0', cls: 'received', arrow: 's1-d0', log: '接收方收到帧0', logType: 'ack' },
+                { action: 'ack', arrow: 's1-a0', label: 's1-a0-label', ackFrames: ['s1-sf0'], log: '返回ACK0', logType: 'ack' },
+                { action: 'receive', frame: 's1-rf1', cls: 'received', arrow: 's1-d1', log: '接收方收到帧1', logType: 'ack' },
+                { action: 'ack', arrow: 's1-a1', label: 's1-a1-label', ackFrames: ['s1-sf1'], log: '返回ACK1', logType: 'ack' },
+                { action: 'receive', frame: 's1-rf2', cls: 'received', arrow: 's1-d2b', frameText: '2', log: '接收方收到帧2', logType: 'ack' },
+                { action: 'ack', arrow: 's1-a2', label: 's1-a2-label', ackFrames: ['s1-sf2'], log: '返回ACK2，累积确认帧0~2', logType: 'ack' },
+                { action: 'error', frame: 's1-rf3', cls: 'error', arrow: 's1-d3', frameText: 'E', log: '帧3出错！接收方丢弃', logType: 'error' },
+                { action: 'timeout', log: '超时！GBN回退，重传帧3', logType: 'timeout' },
+                { action: 'retransmit', frame: 's1-sf4', cls: 'retransmit', frameText: '3', log: '重传帧3', logType: 'timeout' },
+                { action: 'receive', frame: 's1-rf4', cls: 'received', arrow: 's1-d4', frameText: '3', log: '接收方收到重传帧3', logType: 'ack' },
+                { action: 'ack', arrow: 's1-a4', label: 's1-a4-label', ackFrames: ['s1-sf4'], log: '返回ACK3，传输完成！', logType: 'ack' }
+            ]
+        }
+    };
+    
+    // ===== 状态 =====
+    var state = {
+        currentScene: 'scene1',
+        phase: 'idle',
+        stepIndex: 0,
+        speed: 700,
+        autoMode: false,
+        logCount: 0
+    };
+    
+    // ===== DOM引用 =====
+    var logList = document.getElementById('logList');
+    var timeoutMark = document.getElementById('timeoutMark');
+    var timeoutBar = document.getElementById('timeoutBar');
+    var btnScene1 = document.getElementById('btnScene1');
+    var btnScene2 = document.getElementById('btnScene2');
+    var btnStart = document.getElementById('btnStart');
+    var btnStep = document.getElementById('btnStep');
+    var btnAuto = document.getElementById('btnAuto');
+    var btnReset = document.getElementById('btnReset');
+    var hintStart = document.getElementById('hintStart');
+    var speedSelect = document.getElementById('speedSelect');
+    
+    // ===== 工具函数 =====
+    function showElement(id, className) {
+        var el = document.getElementById(id);
+        if (el) {
+            el.classList.add('visible');
+            if (className) {
+                el.className = el.className.replace(/sent|acked|error|discarded|retransmit|received/g, '').trim();
+                el.classList.add(className);
+            }
+        }
+    }
+    
+    function hideElement(id) {
+        var el = document.getElementById(id);
+        if (el) {
+            el.classList.remove('visible');
+        }
+    }
+    
+    function setFrameText(id, text) {
+        var el = document.getElementById(id);
+        if (el && text !== undefined) {
+            el.textContent = text;
+        }
+    }
+    
+    function setAckLabel(id, text) {
+        var el = document.getElementById(id);
+        if (el && text) {
+            el.textContent = text;
+        }
+    }
+    
+    function addLog(text, type) {
+        state.logCount++;
+        var item = document.createElement('div');
+        item.className = 'log-item ' + (type || '');
+        
+        var timeSpan = document.createElement('span');
+        timeSpan.className = 'log-time';
+        timeSpan.textContent = '[' + state.logCount + ']';
+        
+        var textSpan = document.createElement('span');
+        textSpan.className = 'log-text';
+        textSpan.textContent = text;
+        
+        item.appendChild(timeSpan);
+        item.appendChild(textSpan);
+        logList.insertBefore(item, logList.firstChild);
+    }
+    
+    function showTimeout() {
+        var scene = SCENARIOS[state.currentScene];
+        timeoutMark.style.left = scene.timeout.left + 'px';
+        timeoutBar.style.width = scene.timeout.width + 'px';
+        timeoutMark.style.display = 'flex';
+    }
+    
+    function hideAll() {
+        // 隐藏所有帧
+        var frames = document.querySelectorAll('.frame');
+        for (var i = 0; i < frames.length; i++) {
+            frames[i].classList.remove('visible', 'sent', 'acked', 'error', 'discarded', 'retransmit', 'received');
+        }
+        
+        // 隐藏所有箭头
+        var arrows = document.querySelectorAll('.arrow-line, .ack-label');
+        for (var i = 0; i < arrows.length; i++) {
+            arrows[i].classList.remove('visible');
+        }
+        
+        // 隐藏超时标记
+        timeoutMark.style.display = 'none';
+        
+        // 根据场景设置帧文本
+        if (state.currentScene === 'scene1') {
+            // 帧2出错场景
+            setFrameText('s1-sf2', '2');
+            setFrameText('s1-sf3', '3');
+            setFrameText('s1-sf4', '2');
+            setFrameText('s1-sf5', '3');
+            setFrameText('s1-rf2', 'E');
+            setFrameText('s1-rf3', 'D');
+            setFrameText('s1-rf4', '2');
+            setFrameText('s1-rf5', '3');
+            setAckLabel('s1-a4-label', 'ACK2');
+            setAckLabel('s1-a5-label', 'ACK3');
+        } else {
+            // 帧3出错场景
+            setFrameText('s1-sf2', '2');
+            setFrameText('s1-sf3', '3');
+            setFrameText('s1-sf4', '3');
+            setFrameText('s1-sf5', '');
+            setFrameText('s1-rf2', '2');
+            setFrameText('s1-rf3', 'E');
+            setFrameText('s1-rf4', '3');
+            setFrameText('s1-rf5', '');
+            setAckLabel('s1-a2-label', 'ACK2');
+            setAckLabel('s1-a4-label', 'ACK3');
+        }
+    }
+    
+    // ===== 执行步骤 =====
+    function executeStep() {
+        var scene = SCENARIOS[state.currentScene];
+        if (state.stepIndex >= scene.steps.length) {
+            state.phase = 'complete';
+            updateUI();
+            return;
+        }
+        
+        var step = scene.steps[state.stepIndex];
+        
+        // #region agent log
+        fetch('http://127.0.0.1:7242/ingest/671c5346-4f26-4052-91e9-b2359393c26d',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'GBN.html:executeStep',message:'执行步骤',data:{scene:state.currentScene,stepIndex:state.stepIndex,action:step.action,arrow:step.arrow,label:step.label,frame:step.frame,log:step.log},timestamp:Date.now(),sessionId:'debug-session',hypothesisId:'A'})}).catch(function(){});
+        // #endregion
+        
+        // 处理帧文本修改
+        if (step.frameText) {
+            setFrameText(step.frame, step.frameText);
+        }
+        
+        // 处理ACK标签修改
+        if (step.labelText) {
+            setAckLabel(step.label, step.labelText);
+        }
+        
+        switch (step.action) {
+            case 'send':
+            case 'retransmit':
+                showElement(step.frame, step.cls);
+                break;
+                
+            case 'receive':
+            case 'error':
+            case 'discard':
+                showElement(step.frame, step.cls);
+                if (step.arrow) {
+                    showElement(step.arrow);
+                }
+                break;
+                
+            case 'ack':
+                showElement(step.arrow);
+                showElement(step.label);
+                if (step.ackFrames) {
+                    for (var i = 0; i < step.ackFrames.length; i++) {
+                        var el = document.getElementById(step.ackFrames[i]);
+                        if (el) {
+                            el.classList.remove('sent', 'retransmit');
+                            el.classList.add('acked');
+                        }
+                    }
+                }
+                break;
+                
+            case 'timeout':
+                showTimeout();
+                break;
+        }
+        
+        addLog(step.log, step.logType);
+        state.stepIndex++;
+        updateUI();
+    }
+    
+    // ===== UI更新 =====
+    function updateUI() {
+        btnStart.disabled = state.phase !== 'idle';
+        btnStep.disabled = state.phase !== 'running';
+        btnAuto.disabled = state.phase !== 'running' || state.autoMode;
+        btnScene1.disabled = state.phase !== 'idle';
+        btnScene2.disabled = state.phase !== 'idle';
+        
+        hintStart.style.display = state.phase === 'idle' ? 'inline' : 'none';
+    }
+    
+    // ===== 控制函数 =====
+    function selectScene(sceneId) {
+        state.currentScene = sceneId;
+        btnScene1.classList.toggle('active', sceneId === 'scene1');
+        btnScene2.classList.toggle('active', sceneId === 'scene2');
+        resetDemo();
+    }
+    
+    function startDemo() {
+        state.phase = 'running';
+        state.stepIndex = 0;
+        state.logCount = 0;
+        logList.innerHTML = '';
+        hideAll();
+        
+        var scene = SCENARIOS[state.currentScene];
+        addLog('GBN演示开始：' + scene.name + '场景', 'send');
+        updateUI();
+    }
+    
+    function stepExecute() {
+        if (state.phase !== 'running') return;
+        executeStep();
+    }
+    
+    function autoExecute() {
+        if (state.phase !== 'running') return;
+        
+        state.autoMode = true;
+        state.speed = parseInt(speedSelect.value) || 700;
+        updateUI();
+        
+        function runNext() {
+            var scene = SCENARIOS[state.currentScene];
+            if (state.stepIndex >= scene.steps.length || !state.autoMode) {
+                state.autoMode = false;
+                updateUI();
+                return;
+            }
+            
+            executeStep();
+            setTimeout(runNext, state.speed);
+        }
+        
+        runNext();
+    }
+    
+    function resetDemo() {
+        state.phase = 'idle';
+        state.stepIndex = 0;
+        state.autoMode = false;
+        state.logCount = 0;
+        
+        logList.innerHTML = '';
+        hideAll();
+        updateUI();
+    }
+    
+    // ===== 事件绑定 =====
+    btnScene1.onclick = function() { selectScene('scene1'); };
+    btnScene2.onclick = function() { selectScene('scene2'); };
+    btnStart.onclick = startDemo;
+    btnStep.onclick = stepExecute;
+    btnAuto.onclick = autoExecute;
+    btnReset.onclick = resetDemo;
+    
+    // ===== 初始化 =====
+    updateUI();
+})();
+</script>
+</body>
+</html>

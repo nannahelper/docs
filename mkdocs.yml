@@ -248,6 +248,24 @@ nav:
               - 第 6 章：应用层: cert3-network/06-application-layer.md
               - 第 7 章：局域网与无线网络: cert3-network/07-lan-and-wireless.md
               - 第 8 章：网络安全与模拟测试: cert3-network/08-security-and-mock.md
+          - 计算机网络：自顶向下（第 9 版）:
+              - 课程首页: networking-top-down/index.md
+              - 交互式演示: networking-top-down/demos/index.md
+              - 第 1 章：计算机网络与因特网: networking-top-down/01-network-and-internet.md
+              - 第 2 章：应用层: networking-top-down/02-application-layer.md
+              - 第 3 章：传输层: networking-top-down/03-transport-layer.md
+              - 第 4 章：网络层·数据平面: networking-top-down/04-network-layer-data-plane.md
+              - 第 5 章：网络层·控制平面: networking-top-down/05-network-layer-control-plane.md
+              - 第 6 章：链路层与局域网: networking-top-down/06-link-layer-and-lans.md
+              - 第 7 章：无线与移动网络: networking-top-down/07-wireless-and-mobile.md
+              - 第 8 章：网络安全: networking-top-down/08-security.md
+              - 配套测验:
+                  - 单元测验 1（第 1–2 章）: networking-top-down/quiz-1-ch1-2.md
+                  - 单元测验 2（第 3–4 章）: networking-top-down/quiz-2-ch3-4.md
+                  - 单元测验 3（第 5–6 章）: networking-top-down/quiz-3-ch5-6.md
+              - 综合模拟:
+                  - 408 风格模拟卷: networking-top-down/mock-exam-408.md
+                  - 期末综合模拟卷: networking-top-down/mock-exam-final.md
           - 信息安全教程:
               - 课程首页: cert3-security/index.md
               - 第 1 章：信息安全概述: cert3-security/01-security-overview.md

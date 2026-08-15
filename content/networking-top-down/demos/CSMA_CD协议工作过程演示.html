@@ -1,0 +1,1603 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CSMA/CD协议工作原理演示</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        :root {
+            --primary: #1a56db;
+            --primary-light: #e1effe;
+            --success: #047857;
+            --success-light: #d1fae5;
+            --danger: #b91c1c;
+            --danger-light: #fee2e2;
+            --warning: #d97706;
+            --warning-light: #fef3c7;
+            --purple: #7c3aed;
+            --purple-light: #ede9fe;
+            --text: #1f2937;
+            --text-secondary: #6b7280;
+            --border: #d1d5db;
+            --bg-light: #f9fafb;
+            --white: #ffffff;
+        }
+        
+        body {
+            font-family: system-ui, -apple-system, "Segoe UI", "Microsoft YaHei", sans-serif;
+            background: var(--white);
+            color: var(--text);
+            font-size: 14px;
+            line-height: 1.5;
+        }
+        
+        .page {
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            max-width: 1400px;
+            margin: 0 auto;
+            border-left: 1px solid var(--border);
+            border-right: 1px solid var(--border);
+        }
+        
+        .page-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 8px 16px;
+            border-bottom: 1px solid var(--border);
+            background: var(--bg-light);
+        }
+        
+        .page-title {
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--text);
+        }
+        
+        .page-title code {
+            font-family: "Consolas", "Monaco", monospace;
+            background: var(--primary-light);
+            color: var(--primary);
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-size: 13px;
+            margin-left: 8px;
+        }
+        
+        .page-badge {
+            font-size: 12px;
+            color: var(--text-secondary);
+            background: var(--white);
+            padding: 4px 10px;
+            border: 1px solid var(--border);
+            border-radius: 3px;
+        }
+        
+        .page-body {
+            display: flex;
+            flex: 1;
+            overflow: hidden;
+        }
+        
+        .main-panel {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            border-right: 1px solid var(--border);
+        }
+        
+        .side-panel {
+            width: 280px;
+            display: flex;
+            flex-direction: column;
+            background: var(--bg-light);
+        }
+        
+        /* ===== 可视化区域 ===== */
+        .visual-area {
+            flex: 1;
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .visual-header {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 12px;
+        }
+        
+        .visual-label {
+            font-family: "Consolas", "Monaco", monospace;
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text);
+        }
+        
+        .protocol-rule {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+        
+        .rule-item {
+            font-size: 11px;
+            padding: 3px 8px;
+            background: var(--white);
+            border: 1px solid var(--border);
+            border-radius: 3px;
+            color: var(--text-secondary);
+        }
+        
+        .rule-item.active {
+            border-color: var(--primary);
+            background: var(--primary-light);
+            color: var(--primary);
+            font-weight: 600;
+        }
+        
+        .time-display {
+            margin-left: auto;
+            padding: 4px 12px;
+            background: var(--white);
+            border: 1px solid var(--border);
+            border-radius: 3px;
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+        
+        .time-display strong {
+            color: var(--primary);
+            font-family: "Consolas", "Monaco", monospace;
+        }
+        
+        .time-label-header {
+            white-space: nowrap;
+        }
+        
+        .topology-container {
+            flex: 1;
+            background: var(--white);
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            position: relative;
+            min-height: 380px;
+        }
+        
+        .topology-svg {
+            width: 100%;
+            height: 100%;
+        }
+        
+        /* ===== 控制区域 ===== */
+        .control-area {
+            border-top: 1px solid var(--border);
+            padding: 12px 16px;
+            background: var(--white);
+        }
+        
+        .control-row {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .control-left {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px 16px;
+            align-items: center;
+        }
+        
+        .control-right {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            align-items: center;
+        }
+        
+        .control-group {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .control-label {
+            font-size: 12px;
+            color: var(--text-secondary);
+            white-space: nowrap;
+        }
+        
+        /* 站点选择器 */
+        .station-selector {
+            display: flex;
+            gap: 4px;
+        }
+        
+        .station-btn {
+            padding: 4px 10px;
+            border: 1px solid var(--border);
+            border-radius: 3px;
+            background: var(--white);
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .station-btn:hover {
+            border-color: var(--primary);
+        }
+        
+        .station-btn.selected {
+            background: var(--primary-light);
+            border-color: var(--primary);
+            color: var(--primary);
+            font-weight: 600;
+        }
+        
+        .station-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        .btn {
+            padding: 6px 14px;
+            border: 1px solid transparent;
+            border-radius: 3px;
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        .btn-primary {
+            background: var(--primary);
+            color: var(--white);
+        }
+        
+        .btn-primary:hover:not(:disabled) {
+            background: #1e40af;
+        }
+        
+        .btn-success {
+            background: var(--success);
+            color: var(--white);
+        }
+        
+        .btn-success:hover:not(:disabled) {
+            background: #065f46;
+        }
+        
+        .btn-danger {
+            background: var(--danger);
+            color: var(--white);
+        }
+        
+        .btn-danger:hover:not(:disabled) {
+            background: #991b1b;
+        }
+        
+        .btn-secondary {
+            background: var(--white);
+            color: var(--text-secondary);
+            border-color: var(--border);
+        }
+        
+        .btn-secondary:hover:not(:disabled) {
+            background: var(--bg-light);
+        }
+        
+        .action-hint {
+            font-size: 12px;
+            color: var(--danger);
+            font-weight: 600;
+            animation: hintBlink 1s ease-in-out infinite;
+        }
+        
+        @keyframes hintBlink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        
+        .speed-group {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        
+        .speed-group label {
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+        
+        .speed-group select {
+            padding: 4px 8px;
+            border: 1px solid var(--border);
+            border-radius: 3px;
+            font-size: 12px;
+        }
+        
+        .scenario-select {
+            padding: 4px 8px;
+            border: 1px solid var(--border);
+            border-radius: 3px;
+            font-size: 12px;
+            min-width: 140px;
+        }
+        
+        .scenario-select:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+        
+        /* ===== 右侧面板 ===== */
+        .side-header {
+            padding: 10px 12px;
+            border-bottom: 1px solid var(--border);
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text);
+            background: var(--white);
+        }
+        
+        .side-content {
+            flex: 1;
+            overflow-y: auto;
+            padding: 10px;
+        }
+        
+        .info-section {
+            margin-bottom: 12px;
+        }
+        
+        .info-title {
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            margin-bottom: 6px;
+            text-transform: uppercase;
+        }
+        
+        .info-box {
+            background: var(--white);
+            border: 1px solid var(--border);
+            border-radius: 3px;
+            padding: 8px 10px;
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+        
+        .info-box .highlight {
+            color: var(--primary);
+            font-weight: 600;
+        }
+        
+        .info-box .danger {
+            color: var(--danger);
+            font-weight: 600;
+        }
+        
+        .info-box .success {
+            color: var(--success);
+            font-weight: 600;
+        }
+        
+        .info-box .warning {
+            color: var(--warning);
+            font-weight: 600;
+        }
+        
+        /* 日志列表 */
+        .log-list {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+        
+        .log-item {
+            padding: 5px 8px;
+            background: var(--white);
+            border: 1px solid var(--border);
+            border-radius: 3px;
+            font-size: 11px;
+            color: var(--text-secondary);
+        }
+        
+        .log-item.listen { border-left: 3px solid var(--primary); }
+        .log-item.send { border-left: 3px solid var(--success); }
+        .log-item.collision { border-left: 3px solid var(--danger); }
+        .log-item.backoff { border-left: 3px solid var(--warning); }
+        .log-item.success { border-left: 3px solid var(--purple); }
+        
+        .log-time {
+            font-family: "Consolas", "Monaco", monospace;
+            color: var(--text-secondary);
+            margin-right: 4px;
+        }
+        
+        /* 图例 */
+        .legend-section {
+            padding: 10px 12px;
+            border-top: 1px solid var(--border);
+            background: var(--white);
+        }
+        
+        .legend-title {
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--text);
+            margin-bottom: 6px;
+        }
+        
+        .legend-list {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+        
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 10px;
+            color: var(--text-secondary);
+        }
+        
+        .legend-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+        
+        .legend-dot.idle { background: #9ca3af; }
+        .legend-dot.listening { background: var(--primary); }
+        .legend-dot.sending { background: var(--success); }
+        .legend-dot.collision { background: var(--danger); }
+        .legend-dot.backoff { background: var(--warning); }
+        
+        .legend-line {
+            width: 20px;
+            height: 3px;
+        }
+        
+        .legend-line.signal { background: var(--success); }
+        .legend-line.collision { background: var(--danger); }
+        
+        /* ===== SVG样式 ===== */
+        .bus-line {
+            stroke: #374151;
+            stroke-width: 4;
+            stroke-linecap: round;
+        }
+        
+        .bus-terminator {
+            fill: #374151;
+        }
+        
+        .station-body {
+            fill: var(--white);
+            stroke: #9ca3af;
+            stroke-width: 2;
+        }
+        
+        .station-body.idle {
+            fill: var(--white);
+            stroke: #9ca3af;
+        }
+        
+        .station-body.listening {
+            fill: var(--primary-light);
+            stroke: var(--primary);
+            stroke-width: 2.5;
+        }
+        
+        .station-body.sending {
+            fill: var(--success-light);
+            stroke: var(--success);
+            stroke-width: 2.5;
+        }
+        
+        .station-body.collision {
+            fill: var(--danger-light);
+            stroke: var(--danger);
+            stroke-width: 2.5;
+        }
+        
+        .station-body.backoff {
+            fill: var(--warning-light);
+            stroke: var(--warning);
+            stroke-width: 2.5;
+        }
+        
+        .station-label {
+            font-family: "Consolas", "Monaco", monospace;
+            font-size: 12px;
+            font-weight: 600;
+            fill: var(--text);
+            text-anchor: middle;
+        }
+        
+        .station-status {
+            font-size: 10px;
+            fill: var(--text-secondary);
+            text-anchor: middle;
+        }
+        
+        .station-status.listening { fill: var(--primary); }
+        .station-status.sending { fill: var(--success); }
+        .station-status.collision { fill: var(--danger); }
+        .station-status.backoff { fill: var(--warning); }
+        
+        .connect-line {
+            stroke: #9ca3af;
+            stroke-width: 2;
+        }
+        
+        .connect-line.active {
+            stroke: var(--success);
+            stroke-width: 3;
+        }
+        
+        .connect-line.collision {
+            stroke: var(--danger);
+            stroke-width: 3;
+        }
+        
+        /* 信号波动画 */
+        .signal-wave {
+            fill: var(--success);
+            opacity: 0.8;
+        }
+        
+        .signal-wave.collision {
+            fill: var(--danger);
+        }
+        
+        /* 冲突标记 */
+        .collision-mark {
+            fill: none;
+            stroke: var(--danger);
+            stroke-width: 3;
+        }
+        
+        .collision-text {
+            font-size: 14px;
+            font-weight: 600;
+            fill: var(--danger);
+            text-anchor: middle;
+        }
+        
+        /* 退避计时器 */
+        .backoff-timer {
+            font-family: "Consolas", "Monaco", monospace;
+            font-size: 11px;
+            fill: var(--warning);
+            text-anchor: middle;
+            font-weight: 600;
+        }
+        
+        /* 时间轴标注 */
+        .time-label {
+            font-size: 10px;
+            fill: var(--text-secondary);
+        }
+        
+        /* 状态面板 */
+        .station-panel {
+            background: var(--white);
+            border: 1px solid var(--border);
+            border-radius: 3px;
+            padding: 8px 10px;
+            margin-bottom: 8px;
+        }
+        
+        .station-panel-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 4px;
+        }
+        
+        .station-panel-name {
+            font-weight: 600;
+            font-size: 12px;
+        }
+        
+        .station-panel-state {
+            font-size: 11px;
+            padding: 2px 6px;
+            border-radius: 2px;
+        }
+        
+        .station-panel-state.idle {
+            background: #f3f4f6;
+            color: var(--text-secondary);
+        }
+        
+        .station-panel-state.listening {
+            background: var(--primary-light);
+            color: var(--primary);
+        }
+        
+        .station-panel-state.sending {
+            background: var(--success-light);
+            color: var(--success);
+        }
+        
+        .station-panel-state.collision {
+            background: var(--danger-light);
+            color: var(--danger);
+        }
+        
+        .station-panel-state.backoff {
+            background: var(--warning-light);
+            color: var(--warning);
+        }
+        
+        .station-panel-info {
+            font-size: 10px;
+            color: var(--text-secondary);
+        }
+    </style>
+</head>
+<body>
+    <div class="page">
+        <header class="page-header">
+            <h1 class="page-title">CSMA/CD协议工作原理<code>Carrier Sense Multiple Access with Collision Detection</code></h1>
+            <span class="page-badge">计算机网络 · 数据链路层</span>
+        </header>
+        
+        <div class="page-body">
+            <div class="main-panel">
+                <div class="visual-area">
+                    <div class="visual-header">
+                        <span class="visual-label">总线型网络</span>
+                        <div class="protocol-rule">
+                            <span class="rule-item" id="rule1">1.先听后发</span>
+                            <span class="rule-item" id="rule2">2.边听边发</span>
+                            <span class="rule-item" id="rule3">3.冲突停发</span>
+                            <span class="rule-item" id="rule4">4.随机重发</span>
+                        </div>
+                        <div class="time-display">
+                            <span class="time-label-header">传播时延: <strong id="propDelay">0</strong> τ</span>
+                        </div>
+                    </div>
+                    
+                    <div class="topology-container">
+                        <svg class="topology-svg" id="topologySvg" viewBox="0 0 900 380">
+                            <defs>
+                                <marker id="arrowGreen" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+                                    <polygon points="0 0, 8 3, 0 6" fill="#047857"/>
+                                </marker>
+                            </defs>
+                            
+                            <!-- 总线 -->
+                            <line class="bus-line" x1="50" y1="200" x2="850" y2="200"/>
+                            <rect class="bus-terminator" x="40" y="192" width="15" height="16" rx="2"/>
+                            <rect class="bus-terminator" x="845" y="192" width="15" height="16" rx="2"/>
+                            <text class="time-label" x="50" y="230">终结器</text>
+                            <text class="time-label" x="820" y="230">终结器</text>
+                            
+                            <!-- 站点组 -->
+                            <g id="stationsGroup"></g>
+                            
+                            <!-- 信号组 -->
+                            <g id="signalsGroup"></g>
+                            
+                            <!-- 冲突标记组 -->
+                            <g id="collisionGroup"></g>
+                        </svg>
+                    </div>
+                </div>
+                
+                <div class="control-area">
+                    <div class="control-row">
+                        <div class="control-left">
+                            <div class="control-group">
+                                <span class="control-label">预设场景:</span>
+                                <select id="scenarioSelect" class="scenario-select">
+                                    <option value="custom">自定义选择</option>
+                                    <option value="single">单站点发送(无冲突)</option>
+                                    <option value="collision2">双站点冲突(A+D)</option>
+                                    <option value="collision3">三站点冲突(A+B+C)</option>
+                                    <option value="collision4">四站点冲突(全部)</option>
+                                </select>
+                            </div>
+                            <div class="control-group">
+                                <span class="control-label">或手动选择:</span>
+                                <div class="station-selector" id="stationSelector"></div>
+                            </div>
+                            <div class="speed-group">
+                                <label>演示速度:</label>
+                                <select id="speedSelect">
+                                    <option value="1500">慢速</option>
+                                    <option value="800" selected>正常</option>
+                                    <option value="400">快速</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="control-right">
+                            <span class="action-hint" id="hintAction">请选择站点 ▶</span>
+                            <button class="btn btn-primary" id="btnStart">开始发送</button>
+                            <button class="btn btn-success" id="btnStep" disabled>单步执行</button>
+                            <button class="btn btn-success" id="btnAuto" disabled>自动演示</button>
+                            <button class="btn btn-secondary" id="btnReset">重置</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="side-panel">
+                <div class="side-header">站点状态</div>
+                <div class="side-content">
+                    <!-- 站点状态面板 -->
+                    <div id="stationPanels"></div>
+                    
+                    <!-- 执行日志 -->
+                    <div class="info-section">
+                        <div class="info-title">执行日志</div>
+                        <div class="log-list" id="logList"></div>
+                    </div>
+                    
+                    <!-- 协议说明 -->
+                    <div class="info-section">
+                        <div class="info-title">CSMA/CD流程</div>
+                        <div class="info-box">
+                            <strong>1. 先听后发</strong>：监听信道是否空闲<br>
+                            <strong>2. 边听边发</strong>：发送时持续检测冲突<br>
+                            <strong>3. 冲突停发</strong>：检测到冲突立即停止<br>
+                            <strong>4. 随机重发</strong>：等待退避时间后重试<br><br>
+                            <span class="highlight">退避算法</span>：二进制指数退避<br>
+                            等待时间 = rand(0, 2<sup>k</sup>-1) × 争用期<br>
+                            k = min(重传次数, 10)
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="legend-section">
+                    <div class="legend-title">图例</div>
+                    <div class="legend-list">
+                        <div class="legend-item">
+                            <div class="legend-dot idle"></div>
+                            <span>空闲</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-dot listening"></div>
+                            <span>监听信道</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-dot sending"></div>
+                            <span>发送数据</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-dot collision"></div>
+                            <span>检测到冲突</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-dot backoff"></div>
+                            <span>退避等待</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+<script>
+(function() {
+    // ===== 配置 =====
+    var CONFIG = {
+        stationCount: 4,
+        busY: 200,
+        busStartX: 100,
+        busEndX: 800,
+        stationWidth: 60,
+        stationHeight: 45,
+        signalSpeed: 5, // 像素/帧
+        contentionPeriod: 51.2 // 争用期(微秒)，实际中是51.2μs
+    };
+    
+    // 站点位置
+    var STATION_POSITIONS = [
+        { x: 150, name: 'A' },
+        { x: 350, name: 'B' },
+        { x: 550, name: 'C' },
+        { x: 750, name: 'D' }
+    ];
+    
+    // ===== 状态 =====
+    var state = {
+        phase: 'idle', // idle, listening, sending, collision, backoff, complete
+        selectedStations: [],
+        stations: [],
+        signals: [],
+        stepIndex: 0,
+        speed: 800,
+        autoMode: false,
+        logCount: 0,
+        collisionDetected: false,
+        collisionX: 0
+    };
+    
+    // 初始化站点状态
+    function initStations() {
+        state.stations = [];
+        for (var i = 0; i < CONFIG.stationCount; i++) {
+            state.stations.push({
+                id: i,
+                name: STATION_POSITIONS[i].name,
+                x: STATION_POSITIONS[i].x,
+                state: 'idle', // idle, listening, sending, collision, backoff
+                retryCount: 0,
+                backoffTime: 0,
+                wantToSend: false
+            });
+        }
+    }
+    
+    // ===== DOM引用 =====
+    var stationsGroup = document.getElementById('stationsGroup');
+    var signalsGroup = document.getElementById('signalsGroup');
+    var collisionGroup = document.getElementById('collisionGroup');
+    var stationSelector = document.getElementById('stationSelector');
+    var stationPanels = document.getElementById('stationPanels');
+    var logList = document.getElementById('logList');
+    
+    var btnStart = document.getElementById('btnStart');
+    var btnStep = document.getElementById('btnStep');
+    var btnAuto = document.getElementById('btnAuto');
+    var btnReset = document.getElementById('btnReset');
+    var speedSelect = document.getElementById('speedSelect');
+    var scenarioSelect = document.getElementById('scenarioSelect');
+    var hintAction = document.getElementById('hintAction');
+    var propDelayEl = document.getElementById('propDelay');
+    
+    var rule1 = document.getElementById('rule1');
+    var rule2 = document.getElementById('rule2');
+    var rule3 = document.getElementById('rule3');
+    var rule4 = document.getElementById('rule4');
+    
+    // 预设场景
+    var SCENARIOS = {
+        'custom': [],
+        'single': [0],
+        'collision2': [0, 3],
+        'collision3': [0, 1, 2],
+        'collision4': [0, 1, 2, 3]
+    };
+    
+    // ===== 工具函数 =====
+    function createSvgElement(tag) {
+        return document.createElementNS('http://www.w3.org/2000/svg', tag);
+    }
+    
+    function addLog(text, type) {
+        state.logCount++;
+        var item = document.createElement('div');
+        item.className = 'log-item ' + (type || '');
+        item.innerHTML = '<span class="log-time">[' + state.logCount + ']</span>' + text;
+        logList.insertBefore(item, logList.firstChild);
+        
+        // 限制日志数量
+        while (logList.children.length > 20) {
+            logList.removeChild(logList.lastChild);
+        }
+    }
+    
+    function highlightRule(ruleNum) {
+        rule1.classList.remove('active');
+        rule2.classList.remove('active');
+        rule3.classList.remove('active');
+        rule4.classList.remove('active');
+        
+        if (ruleNum === 1) rule1.classList.add('active');
+        if (ruleNum === 2) rule2.classList.add('active');
+        if (ruleNum === 3) rule3.classList.add('active');
+        if (ruleNum === 4) rule4.classList.add('active');
+    }
+    
+    // ===== 渲染函数 =====
+    function renderStations() {
+        stationsGroup.innerHTML = '';
+        
+        for (var i = 0; i < state.stations.length; i++) {
+            var station = state.stations[i];
+            var g = createSvgElement('g');
+            g.setAttribute('id', 'station-' + i);
+            
+            // 连接线
+            var line = createSvgElement('line');
+            line.setAttribute('class', 'connect-line');
+            line.setAttribute('id', 'connect-' + i);
+            line.setAttribute('x1', station.x);
+            line.setAttribute('y1', CONFIG.busY);
+            line.setAttribute('x2', station.x);
+            line.setAttribute('y2', CONFIG.busY - 60);
+            g.appendChild(line);
+            
+            // 站点主体
+            var rect = createSvgElement('rect');
+            rect.setAttribute('class', 'station-body ' + station.state);
+            rect.setAttribute('id', 'station-body-' + i);
+            rect.setAttribute('x', station.x - CONFIG.stationWidth / 2);
+            rect.setAttribute('y', CONFIG.busY - 60 - CONFIG.stationHeight);
+            rect.setAttribute('width', CONFIG.stationWidth);
+            rect.setAttribute('height', CONFIG.stationHeight);
+            rect.setAttribute('rx', '4');
+            g.appendChild(rect);
+            
+            // 站点名称
+            var label = createSvgElement('text');
+            label.setAttribute('class', 'station-label');
+            label.setAttribute('x', station.x);
+            label.setAttribute('y', CONFIG.busY - 60 - CONFIG.stationHeight / 2 - 5);
+            label.textContent = '站点' + station.name;
+            g.appendChild(label);
+            
+            // 状态文字
+            var status = createSvgElement('text');
+            status.setAttribute('class', 'station-status ' + station.state);
+            status.setAttribute('id', 'station-status-' + i);
+            status.setAttribute('x', station.x);
+            status.setAttribute('y', CONFIG.busY - 60 - CONFIG.stationHeight / 2 + 12);
+            status.textContent = getStateText(station.state);
+            g.appendChild(status);
+            
+            // 退避计时器（如果在退避状态）
+            if (station.state === 'backoff' && station.backoffTime > 0) {
+                var timer = createSvgElement('text');
+                timer.setAttribute('class', 'backoff-timer');
+                timer.setAttribute('x', station.x);
+                timer.setAttribute('y', CONFIG.busY - 60 - CONFIG.stationHeight - 10);
+                timer.textContent = '退避: ' + station.backoffTime;
+                g.appendChild(timer);
+            }
+            
+            stationsGroup.appendChild(g);
+        }
+    }
+    
+    function getStateText(stateStr) {
+        var map = {
+            'idle': '空闲',
+            'listening': '监听中',
+            'sending': '发送中',
+            'collision': '冲突!',
+            'backoff': '退避中'
+        };
+        return map[stateStr] || stateStr;
+    }
+    
+    function renderStationSelector() {
+        stationSelector.innerHTML = '';
+        
+        for (var i = 0; i < CONFIG.stationCount; i++) {
+            var btn = document.createElement('button');
+            btn.className = 'station-btn';
+            btn.setAttribute('data-index', i);
+            btn.textContent = '站点' + STATION_POSITIONS[i].name;
+            
+            btn.onclick = function() {
+                if (state.phase !== 'idle') return;
+                var idx = parseInt(this.getAttribute('data-index'));
+                this.classList.toggle('selected');
+                
+                var pos = state.selectedStations.indexOf(idx);
+                if (pos === -1) {
+                    state.selectedStations.push(idx);
+                } else {
+                    state.selectedStations.splice(pos, 1);
+                }
+                
+                updateUI();
+            };
+            
+            stationSelector.appendChild(btn);
+        }
+    }
+    
+    function renderStationPanels() {
+        stationPanels.innerHTML = '';
+        
+        for (var i = 0; i < state.stations.length; i++) {
+            var station = state.stations[i];
+            var panel = document.createElement('div');
+            panel.className = 'station-panel';
+            
+            var header = document.createElement('div');
+            header.className = 'station-panel-header';
+            
+            var name = document.createElement('span');
+            name.className = 'station-panel-name';
+            name.textContent = '站点' + station.name;
+            
+            var stateSpan = document.createElement('span');
+            stateSpan.className = 'station-panel-state ' + station.state;
+            stateSpan.textContent = getStateText(station.state);
+            
+            header.appendChild(name);
+            header.appendChild(stateSpan);
+            
+            var info = document.createElement('div');
+            info.className = 'station-panel-info';
+            
+            var infoText = '重传次数: ' + station.retryCount;
+            if (station.state === 'backoff') {
+                infoText += ' | 退避时间: ' + station.backoffTime;
+            }
+            if (station.wantToSend) {
+                infoText += ' | 待发送';
+            }
+            info.textContent = infoText;
+            
+            panel.appendChild(header);
+            panel.appendChild(info);
+            stationPanels.appendChild(panel);
+        }
+    }
+    
+    function renderSignals() {
+        signalsGroup.innerHTML = '';
+        
+        for (var i = 0; i < state.signals.length; i++) {
+            var signal = state.signals[i];
+            
+            // 信号波
+            var wave = createSvgElement('ellipse');
+            wave.setAttribute('class', 'signal-wave' + (signal.collision ? ' collision' : ''));
+            wave.setAttribute('cx', signal.x);
+            wave.setAttribute('cy', CONFIG.busY);
+            wave.setAttribute('rx', signal.width / 2);
+            wave.setAttribute('ry', 8);
+            signalsGroup.appendChild(wave);
+            
+            // 如果是JAM信号，添加标签
+            if (signal.isJam) {
+                var jamLabel = createSvgElement('text');
+                jamLabel.setAttribute('class', 'collision-text');
+                jamLabel.setAttribute('x', signal.x);
+                jamLabel.setAttribute('y', CONFIG.busY - 20);
+                jamLabel.textContent = 'JAM';
+                jamLabel.style.fontSize = '12px';
+                signalsGroup.appendChild(jamLabel);
+            }
+        }
+    }
+    
+    function renderCollision() {
+        collisionGroup.innerHTML = '';
+        
+        if (state.collisionDetected) {
+            // X标记
+            var x = state.collisionX;
+            var y = CONFIG.busY;
+            
+            var line1 = createSvgElement('line');
+            line1.setAttribute('class', 'collision-mark');
+            line1.setAttribute('x1', x - 20);
+            line1.setAttribute('y1', y - 20);
+            line1.setAttribute('x2', x + 20);
+            line1.setAttribute('y2', y + 20);
+            collisionGroup.appendChild(line1);
+            
+            var line2 = createSvgElement('line');
+            line2.setAttribute('class', 'collision-mark');
+            line2.setAttribute('x1', x + 20);
+            line2.setAttribute('y1', y - 20);
+            line2.setAttribute('x2', x - 20);
+            line2.setAttribute('y2', y + 20);
+            collisionGroup.appendChild(line2);
+            
+            var text = createSvgElement('text');
+            text.setAttribute('class', 'collision-text');
+            text.setAttribute('x', x);
+            text.setAttribute('y', y + 45);
+            text.textContent = '冲突检测!';
+            collisionGroup.appendChild(text);
+        }
+    }
+    
+    function updateUI() {
+        btnStart.disabled = state.phase !== 'idle' || state.selectedStations.length === 0;
+        btnStep.disabled = state.phase === 'idle' || state.phase === 'complete';
+        btnAuto.disabled = state.phase === 'idle' || state.phase === 'complete' || state.autoMode;
+        
+        // 更新选择器
+        var btns = stationSelector.querySelectorAll('.station-btn');
+        for (var i = 0; i < btns.length; i++) {
+            btns[i].disabled = state.phase !== 'idle';
+            var idx = parseInt(btns[i].getAttribute('data-index'));
+            btns[i].classList.toggle('selected', state.selectedStations.indexOf(idx) !== -1);
+        }
+        
+        // 更新提示
+        if (state.phase === 'idle') {
+            if (state.selectedStations.length === 0) {
+                hintAction.textContent = '请选择站点 ▶';
+                hintAction.style.display = 'inline';
+            } else {
+                hintAction.textContent = '点击开始 ▶';
+                hintAction.style.display = 'inline';
+            }
+        } else if (state.phase !== 'complete') {
+            hintAction.textContent = '单步/自动 ▶';
+            hintAction.style.display = 'inline';
+        } else {
+            hintAction.style.display = 'none';
+        }
+        
+        // 更新传播时延显示
+        propDelayEl.textContent = state.stepIndex;
+        
+        renderStations();
+        renderStationPanels();
+        renderSignals();
+        renderCollision();
+    }
+    
+    // ===== CSMA/CD协议步骤 =====
+    var protocolSteps = [];
+    
+    function buildSteps() {
+        protocolSteps = [];
+        var willCollide = state.selectedStations.length > 1;
+        
+        // 步骤1: 所有选中站点开始监听
+        protocolSteps.push({
+            action: 'listen',
+            stations: state.selectedStations.slice(),
+            description: '开始监听信道'
+        });
+        
+        // 步骤2: 信道空闲，开始发送
+        protocolSteps.push({
+            action: 'startSend',
+            stations: state.selectedStations.slice(),
+            description: '信道空闲，开始发送'
+        });
+        
+        if (willCollide) {
+            // 步骤3: 信号传播
+            protocolSteps.push({
+                action: 'propagate',
+                description: '信号在总线上传播'
+            });
+            
+            // 步骤4: 检测到冲突
+            protocolSteps.push({
+                action: 'detectCollision',
+                description: '检测到冲突！'
+            });
+            
+            // 步骤5: 停止发送，发送JAM信号
+            protocolSteps.push({
+                action: 'stopSend',
+                description: '停止发送，发送JAM信号'
+            });
+            
+            // 步骤6: 计算退避时间
+            protocolSteps.push({
+                action: 'calcBackoff',
+                description: '计算退避时间'
+            });
+            
+            // 步骤7: 退避等待
+            protocolSteps.push({
+                action: 'backoff',
+                description: '退避等待中...'
+            });
+            
+            // 步骤8: 退避结束，重新监听
+            protocolSteps.push({
+                action: 'retryListen',
+                description: '退避结束，重新监听'
+            });
+            
+            // 步骤9: 其中一个站点发送成功
+            protocolSteps.push({
+                action: 'retrySuccess',
+                description: '重传成功！'
+            });
+        } else {
+            // 单站点发送
+            // 步骤3: 信号传播
+            protocolSteps.push({
+                action: 'propagate',
+                description: '信号在总线上传播'
+            });
+            
+            // 步骤4: 发送完成
+            protocolSteps.push({
+                action: 'sendComplete',
+                description: '发送完成，无冲突'
+            });
+        }
+    }
+    
+    function executeStep() {
+        if (state.stepIndex >= protocolSteps.length) {
+            state.phase = 'complete';
+            updateUI();
+            return;
+        }
+        
+        var step = protocolSteps[state.stepIndex];
+        
+        switch (step.action) {
+            case 'listen':
+                highlightRule(1);
+                for (var i = 0; i < step.stations.length; i++) {
+                    var idx = step.stations[i];
+                    state.stations[idx].state = 'listening';
+                    state.stations[idx].wantToSend = true;
+                }
+                addLog('站点开始监听信道（先听后发）', 'listen');
+                break;
+                
+            case 'startSend':
+                highlightRule(2);
+                state.signals = [];
+                for (var i = 0; i < step.stations.length; i++) {
+                    var idx = step.stations[i];
+                    state.stations[idx].state = 'sending';
+                    // 创建信号
+                    state.signals.push({
+                        stationId: idx,
+                        x: state.stations[idx].x,
+                        width: 30,
+                        leftEdge: state.stations[idx].x - 15,
+                        rightEdge: state.stations[idx].x + 15,
+                        collision: false
+                    });
+                    // 更新连接线
+                    var connectLine = document.getElementById('connect-' + idx);
+                    if (connectLine) {
+                        connectLine.setAttribute('class', 'connect-line active');
+                    }
+                }
+                addLog('信道空闲，开始发送（边听边发）', 'send');
+                break;
+                
+            case 'propagate':
+                highlightRule(2);
+                // 扩展信号
+                for (var i = 0; i < state.signals.length; i++) {
+                    state.signals[i].width += 80;
+                    state.signals[i].leftEdge -= 40;
+                    state.signals[i].rightEdge += 40;
+                }
+                addLog('信号在总线上传播...', 'send');
+                break;
+                
+            case 'detectCollision':
+                highlightRule(3);
+                state.collisionDetected = true;
+                // 计算冲突位置
+                var signal1 = state.signals[0];
+                var signal2 = state.signals[1];
+                state.collisionX = (signal1.x + signal2.x) / 2;
+                
+                for (var i = 0; i < state.signals.length; i++) {
+                    state.signals[i].collision = true;
+                }
+                
+                for (var i = 0; i < state.selectedStations.length; i++) {
+                    var idx = state.selectedStations[i];
+                    state.stations[idx].state = 'collision';
+                    var connectLine = document.getElementById('connect-' + idx);
+                    if (connectLine) {
+                        connectLine.setAttribute('class', 'connect-line collision');
+                    }
+                }
+                addLog('<span class="danger">检测到冲突！（冲突停发）</span>', 'collision');
+                break;
+                
+            case 'stopSend':
+                highlightRule(3);
+                // 显示JAM信号（阻塞信号）
+                state.signals = [{
+                    stationId: -1,
+                    x: state.collisionX,
+                    width: 120,
+                    leftEdge: state.collisionX - 60,
+                    rightEdge: state.collisionX + 60,
+                    collision: true,
+                    isJam: true
+                }];
+                addLog('立即停止发送，发送32位JAM信号强化冲突', 'collision');
+                break;
+                
+            case 'calcBackoff':
+                highlightRule(4);
+                // 清除JAM信号
+                state.signals = [];
+                state.collisionDetected = false;
+                
+                // 计算退避时间
+                for (var i = 0; i < state.selectedStations.length; i++) {
+                    var idx = state.selectedStations[i];
+                    state.stations[idx].retryCount++;
+                    var k = Math.min(state.stations[idx].retryCount, 10);
+                    var maxBackoff = Math.pow(2, k) - 1;
+                    // 确保不同站点有不同的退避时间以便演示
+                    state.stations[idx].backoffTime = Math.floor(Math.random() * (maxBackoff + 1));
+                    state.stations[idx].state = 'backoff';
+                    var connectLine = document.getElementById('connect-' + idx);
+                    if (connectLine) {
+                        connectLine.setAttribute('class', 'connect-line');
+                    }
+                }
+                
+                // 确保至少有一个站点退避时间不同
+                if (state.selectedStations.length > 1) {
+                    var allSame = true;
+                    var firstBackoff = state.stations[state.selectedStations[0]].backoffTime;
+                    for (var i = 1; i < state.selectedStations.length; i++) {
+                        if (state.stations[state.selectedStations[i]].backoffTime !== firstBackoff) {
+                            allSame = false;
+                            break;
+                        }
+                    }
+                    if (allSame) {
+                        // 如果都相同，随机调整一个
+                        var randomIdx = state.selectedStations[Math.floor(Math.random() * state.selectedStations.length)];
+                        state.stations[randomIdx].backoffTime = Math.max(0, state.stations[randomIdx].backoffTime - 1);
+                    }
+                }
+                
+                var backoffInfo = state.selectedStations.map(function(idx) {
+                    var k = Math.min(state.stations[idx].retryCount, 10);
+                    return '站点' + state.stations[idx].name + ': rand(0,' + (Math.pow(2, k) - 1) + ')=' + state.stations[idx].backoffTime + 'τ';
+                }).join('<br>');
+                addLog('二进制指数退避(k=' + Math.min(state.stations[state.selectedStations[0]].retryCount, 10) + '):<br>' + backoffInfo, 'backoff');
+                break;
+                
+            case 'backoff':
+                highlightRule(4);
+                // 减少退避时间
+                var stillWaiting = false;
+                var waitingInfo = [];
+                for (var i = 0; i < state.selectedStations.length; i++) {
+                    var idx = state.selectedStations[i];
+                    if (state.stations[idx].backoffTime > 0) {
+                        state.stations[idx].backoffTime--;
+                        stillWaiting = true;
+                        waitingInfo.push('站点' + state.stations[idx].name + ':' + state.stations[idx].backoffTime + 'τ');
+                    } else {
+                        waitingInfo.push('站点' + state.stations[idx].name + ':就绪');
+                    }
+                }
+                addLog('退避计时: ' + waitingInfo.join(', '), 'backoff');
+                
+                // 如果还有站点在等待，继续退避步骤
+                if (stillWaiting) {
+                    state.stepIndex--; // 保持在当前步骤
+                }
+                break;
+                
+            case 'retryListen':
+                highlightRule(1);
+                state.collisionDetected = false;
+                
+                // 找到退避时间最短的站点（先完成退避的），这个站点将获得发送权
+                var readyStations = [];
+                for (var i = 0; i < state.selectedStations.length; i++) {
+                    var idx = state.selectedStations[i];
+                    if (state.stations[idx].backoffTime === 0) {
+                        readyStations.push(idx);
+                    }
+                }
+                
+                // 第一个准备好的站点获得发送权（退避时间短的先就绪）
+                state.winnerStation = readyStations[0];
+                
+                // 所有站点开始监听
+                for (var i = 0; i < state.selectedStations.length; i++) {
+                    var idx = state.selectedStations[i];
+                    state.stations[idx].state = 'listening';
+                }
+                
+                addLog('退避结束，站点' + state.stations[state.winnerStation].name + '先就绪，重新监听信道', 'listen');
+                break;
+                
+            case 'retrySuccess':
+                highlightRule(0);
+                // 胜出的站点发送成功
+                var winner = state.winnerStation;
+                state.stations[winner].state = 'sending';
+                state.stations[winner].wantToSend = false;
+                
+                // 其他站点检测到信道忙，回到等待状态
+                var otherStations = [];
+                for (var i = 0; i < state.selectedStations.length; i++) {
+                    var idx = state.selectedStations[i];
+                    if (idx !== winner) {
+                        state.stations[idx].state = 'idle';
+                        state.stations[idx].wantToSend = true; // 仍然想发送
+                        otherStations.push('站点' + state.stations[idx].name);
+                    }
+                }
+                
+                // 创建成功的信号
+                state.signals = [{
+                    stationId: winner,
+                    x: state.stations[winner].x,
+                    width: 200,
+                    leftEdge: state.stations[winner].x - 100,
+                    rightEdge: state.stations[winner].x + 100,
+                    collision: false
+                }];
+                
+                var connectLine = document.getElementById('connect-' + winner);
+                if (connectLine) {
+                    connectLine.setAttribute('class', 'connect-line active');
+                }
+                
+                var successMsg = '<span class="success">站点' + state.stations[winner].name + '重传成功！</span>';
+                if (otherStations.length > 0) {
+                    successMsg += '<br>' + otherStations.join('、') + '检测到信道忙，继续等待';
+                }
+                addLog(successMsg, 'success');
+                // 添加演示结束提示
+                addLog('<span class="highlight">▶ 演示结束</span>（点击"重置"可重新开始）', 'listen');
+                state.phase = 'complete';
+                break;
+                
+            case 'sendComplete':
+                highlightRule(0);
+                var sender = state.selectedStations[0];
+                state.stations[sender].state = 'idle';
+                state.stations[sender].wantToSend = false;
+                
+                // 扩展信号到整个总线
+                state.signals[0].width = 300;
+                state.signals[0].leftEdge = CONFIG.busStartX;
+                state.signals[0].rightEdge = CONFIG.busEndX;
+                
+                addLog('<span class="success">发送完成，传输成功！</span>', 'success');
+                // 添加演示结束提示
+                addLog('<span class="highlight">▶ 演示结束</span>（点击"重置"可重新开始）', 'listen');
+                state.phase = 'complete';
+                break;
+        }
+        
+        state.stepIndex++;
+        updateUI();
+    }
+    
+    // ===== 控制函数 =====
+    function startDemo() {
+        if (state.selectedStations.length === 0) return;
+        
+        // 标记选中的站点想要发送
+        for (var i = 0; i < state.selectedStations.length; i++) {
+            var idx = state.selectedStations[i];
+            state.stations[idx].wantToSend = true;
+        }
+        
+        state.phase = 'listening';
+        state.stepIndex = 0;
+        state.logCount = 0;
+        state.collisionDetected = false;
+        state.signals = [];
+        
+        logList.innerHTML = '';
+        collisionGroup.innerHTML = '';
+        
+        buildSteps();
+        
+        if (state.selectedStations.length > 1) {
+            addLog('<span class="warning">多站点同时发送，可能发生冲突！</span>', 'collision');
+        } else {
+            addLog('单站点发送，预计无冲突', 'listen');
+        }
+        
+        updateUI();
+    }
+    
+    function stepExecute() {
+        if (state.phase === 'idle' || state.phase === 'complete') return;
+        state.speed = parseInt(speedSelect.value) || 800;
+        executeStep();
+    }
+    
+    function autoExecute() {
+        if (state.phase === 'idle' || state.phase === 'complete') return;
+        
+        state.autoMode = true;
+        state.speed = parseInt(speedSelect.value) || 800;
+        updateUI();
+        
+        function runNext() {
+            if (state.phase === 'complete' || !state.autoMode) {
+                state.autoMode = false;
+                updateUI();
+                return;
+            }
+            
+            executeStep();
+            setTimeout(runNext, state.speed);
+        }
+        
+        runNext();
+    }
+    
+    function reset() {
+        state.phase = 'idle';
+        state.stepIndex = 0;
+        state.autoMode = false;
+        state.logCount = 0;
+        state.collisionDetected = false;
+        state.signals = [];
+        state.selectedStations = [];
+        
+        initStations();
+        
+        logList.innerHTML = '';
+        signalsGroup.innerHTML = '';
+        collisionGroup.innerHTML = '';
+        
+        highlightRule(0);
+        
+        // 重置选择器
+        var btns = stationSelector.querySelectorAll('.station-btn');
+        for (var i = 0; i < btns.length; i++) {
+            btns[i].classList.remove('selected');
+        }
+        
+        updateUI();
+    }
+    
+    // ===== 事件绑定 =====
+    btnStart.onclick = startDemo;
+    btnStep.onclick = stepExecute;
+    btnAuto.onclick = autoExecute;
+    btnReset.onclick = reset;
+    
+    scenarioSelect.onchange = function() {
+        if (state.phase !== 'idle') return;
+        var scenario = this.value;
+        
+        if (scenario === 'custom') {
+            // 清除所有选择
+            state.selectedStations = [];
+        } else {
+            // 应用预设场景
+            state.selectedStations = SCENARIOS[scenario].slice();
+        }
+        
+        // 更新选择器显示
+        var btns = stationSelector.querySelectorAll('.station-btn');
+        for (var i = 0; i < btns.length; i++) {
+            var idx = parseInt(btns[i].getAttribute('data-index'));
+            btns[i].classList.toggle('selected', state.selectedStations.indexOf(idx) !== -1);
+        }
+        
+        updateUI();
+    };
+    
+    // ===== 初始化 =====
+    initStations();
+    renderStationSelector();
+    updateUI();
+})();
+</script>
+</body>
+</html>

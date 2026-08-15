@@ -1,0 +1,1413 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>以太网交换机自学习演示</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        :root {
+            --primary: #1a56db;
+            --primary-light: #e1effe;
+            --success: #047857;
+            --success-light: #d1fae5;
+            --danger: #b91c1c;
+            --danger-light: #fee2e2;
+            --warning: #d97706;
+            --warning-light: #fef3c7;
+            --text: #1f2937;
+            --text-secondary: #6b7280;
+            --border: #d1d5db;
+            --bg-light: #f9fafb;
+            --white: #ffffff;
+        }
+        
+        body {
+            font-family: system-ui, -apple-system, "Segoe UI", "Microsoft YaHei", sans-serif;
+            background: var(--white);
+            color: var(--text);
+            font-size: 14px;
+            line-height: 1.5;
+        }
+        
+        .page {
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            max-width: 1400px;
+            margin: 0 auto;
+            border-left: 1px solid var(--border);
+            border-right: 1px solid var(--border);
+        }
+        
+        .page-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 8px 16px;
+            border-bottom: 1px solid var(--border);
+            background: var(--bg-light);
+        }
+        
+        .page-title {
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--text);
+        }
+        
+        .page-title code {
+            font-family: "Consolas", "Monaco", monospace;
+            background: var(--primary-light);
+            color: var(--primary);
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-size: 13px;
+            margin-left: 8px;
+        }
+        
+        .page-badge {
+            font-size: 12px;
+            color: var(--text-secondary);
+            background: var(--white);
+            padding: 4px 10px;
+            border: 1px solid var(--border);
+            border-radius: 3px;
+        }
+        
+        .page-body {
+            display: flex;
+            flex: 1;
+            overflow: hidden;
+        }
+        
+        .main-panel {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            border-right: 1px solid var(--border);
+        }
+        
+        .side-panel {
+            width: 280px;
+            display: flex;
+            flex-direction: column;
+            background: var(--bg-light);
+        }
+        
+        /* ===== 拓扑图区域 ===== */
+        .visual-area {
+            flex: 1;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .topology-box {
+            flex: 1;
+            background: var(--white);
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            position: relative;
+            min-height: 400px;
+        }
+        
+        .topology-svg {
+            width: 100%;
+            height: 100%;
+        }
+        
+        /* 主机样式 */
+        .host-rect {
+            fill: var(--white);
+            stroke: var(--border);
+            stroke-width: 2;
+        }
+        
+        .host-rect.active {
+            stroke: var(--primary);
+            fill: var(--primary-light);
+        }
+        
+        .host-rect.sending {
+            stroke: var(--success);
+            fill: var(--success-light);
+        }
+        
+        .host-rect.receiving {
+            stroke: var(--warning);
+            fill: var(--warning-light);
+        }
+        
+        .host-rect.discard {
+            stroke: var(--danger);
+            fill: var(--danger-light);
+        }
+        
+        .host-text {
+            font-family: "Consolas", "Monaco", monospace;
+            font-size: 14px;
+            font-weight: 600;
+            fill: var(--text);
+        }
+        
+        .mac-text {
+            font-family: "Consolas", "Monaco", monospace;
+            font-size: 10px;
+            fill: var(--text-secondary);
+        }
+        
+        /* 交换机样式 */
+        .switch-rect {
+            fill: var(--bg-light);
+            stroke: var(--primary);
+            stroke-width: 2;
+        }
+        
+        .switch-text {
+            font-family: system-ui, sans-serif;
+            font-size: 13px;
+            font-weight: 600;
+            fill: var(--primary);
+        }
+        
+        .port-circle {
+            fill: var(--white);
+            stroke: var(--border);
+            stroke-width: 1.5;
+        }
+        
+        .port-circle.active {
+            stroke: var(--success);
+            fill: var(--success-light);
+        }
+        
+        .port-text {
+            font-family: "Consolas", "Monaco", monospace;
+            font-size: 10px;
+            fill: var(--text-secondary);
+        }
+        
+        /* 连线样式 */
+        .link-line {
+            stroke: var(--border);
+            stroke-width: 2;
+        }
+        
+        .link-line.active {
+            stroke: var(--primary);
+            stroke-width: 3;
+        }
+        
+        .link-line.broadcast {
+            stroke: var(--warning);
+            stroke-width: 3;
+        }
+        
+        /* 帧动画 */
+        .frame-packet {
+            opacity: 0;
+        }
+        
+        .frame-rect {
+            fill: var(--success);
+            stroke: none;
+        }
+        
+        .frame-text {
+            font-family: "Consolas", "Monaco", monospace;
+            font-size: 9px;
+            fill: var(--white);
+            font-weight: 600;
+        }
+        
+        /* ===== 控制面板 ===== */
+        .control-area {
+            border-top: 1px solid var(--border);
+            padding: 12px 20px;
+            background: var(--white);
+        }
+        
+        .control-row {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
+        
+        .control-left {
+            flex: 1;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px 20px;
+            align-items: center;
+        }
+        
+        .control-right {
+            flex-shrink: 0;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            align-items: center;
+        }
+        
+        .control-group {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .control-label {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text);
+            white-space: nowrap;
+        }
+        
+        .control-select {
+            padding: 6px 10px;
+            border: 1px solid var(--border);
+            border-radius: 3px;
+            font-family: "Consolas", "Monaco", monospace;
+            font-size: 13px;
+            background: var(--white);
+            cursor: pointer;
+        }
+        
+        .control-select:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+        
+        .arrow-icon {
+            color: var(--text-secondary);
+            font-size: 16px;
+        }
+        
+        .btn {
+            padding: 6px 16px;
+            border: 1px solid transparent;
+            border-radius: 3px;
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        .btn-primary {
+            background: var(--primary);
+            color: var(--white);
+            border-color: var(--primary);
+        }
+        
+        .btn-primary:hover:not(:disabled) {
+            background: #1e40af;
+        }
+        
+        .btn-success {
+            background: var(--success);
+            color: var(--white);
+            border-color: var(--success);
+        }
+        
+        .btn-success:hover:not(:disabled) {
+            background: #065f46;
+        }
+        
+        .btn-secondary {
+            background: var(--white);
+            color: var(--text-secondary);
+            border-color: var(--border);
+        }
+        
+        .btn-secondary:hover:not(:disabled) {
+            background: var(--bg-light);
+            color: var(--text);
+        }
+        
+        /* 场景按钮 */
+        .scenario-row {
+            padding-bottom: 10px;
+            margin-bottom: 10px;
+            border-bottom: 1px dashed var(--border);
+        }
+        
+        .scenario-btns {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-left: 12px;
+        }
+        
+        .btn-scenario {
+            padding: 5px 12px;
+            background: var(--white);
+            color: var(--text-secondary);
+            border: 1px solid var(--border);
+            border-radius: 3px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .btn-scenario:hover:not(:disabled) {
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+        
+        .btn-scenario.active {
+            background: var(--primary);
+            color: var(--white);
+            border-color: var(--primary);
+        }
+        
+        .btn-scenario:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        .action-hint {
+            font-size: 12px;
+            color: var(--danger);
+            font-weight: 600;
+            animation: hintBlink 1s ease-in-out infinite;
+            margin-right: 4px;
+        }
+        
+        @keyframes hintBlink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        
+        /* ===== 右侧面板 ===== */
+        .side-header {
+            padding: 10px 12px;
+            border-bottom: 1px solid var(--border);
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text);
+        }
+        
+        .side-content {
+            flex: 1;
+            overflow-y: auto;
+            padding: 12px;
+        }
+        
+        /* 交换表 */
+        .switch-table-container {
+            margin-bottom: 16px;
+        }
+        
+        .section-title {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        
+        .switch-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-family: "Consolas", "Monaco", monospace;
+            font-size: 12px;
+        }
+        
+        .switch-table th {
+            background: var(--bg-light);
+            padding: 6px 8px;
+            text-align: left;
+            font-weight: 600;
+            color: var(--text);
+            border: 1px solid var(--border);
+        }
+        
+        .switch-table td {
+            padding: 6px 8px;
+            border: 1px solid var(--border);
+            background: var(--white);
+        }
+        
+        .switch-table tr.new-entry td {
+            background: var(--success-light);
+            color: var(--success);
+            font-weight: 600;
+        }
+        
+        .switch-table tr.highlight td {
+            background: var(--primary-light);
+            color: var(--primary);
+        }
+        
+        .empty-table {
+            text-align: center;
+            color: var(--text-secondary);
+            font-style: italic;
+            padding: 16px 8px;
+            background: var(--white);
+            border: 1px solid var(--border);
+            font-size: 12px;
+        }
+        
+        /* 步骤日志 */
+        .step-list {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+        
+        .step-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 8px;
+            padding: 8px 10px;
+            background: var(--white);
+            border: 1px solid var(--border);
+            border-radius: 3px;
+            font-size: 12px;
+            line-height: 1.4;
+            color: var(--text-secondary);
+        }
+        
+        .step-item.active {
+            border-color: var(--primary);
+            background: var(--primary-light);
+            color: var(--primary);
+        }
+        
+        .step-item.done {
+            border-color: var(--success);
+            color: var(--success);
+        }
+        
+        .step-item.learn {
+            border-color: var(--success);
+            background: var(--success-light);
+            color: var(--success);
+        }
+        
+        .step-item.forward {
+            border-color: var(--primary);
+            background: var(--primary-light);
+            color: var(--primary);
+        }
+        
+        .step-item.broadcast {
+            border-color: var(--warning);
+            background: var(--warning-light);
+            color: var(--warning);
+        }
+        
+        .step-item.discard {
+            border-color: var(--danger);
+            background: var(--danger-light);
+            color: var(--danger);
+        }
+        
+        .step-num {
+            flex-shrink: 0;
+            width: 18px;
+            height: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            background: var(--border);
+            color: var(--white);
+            font-size: 10px;
+            font-weight: 600;
+        }
+        
+        .step-item.active .step-num { background: var(--primary); }
+        .step-item.done .step-num { background: var(--success); }
+        .step-item.learn .step-num { background: var(--success); }
+        .step-item.forward .step-num { background: var(--primary); }
+        .step-item.broadcast .step-num { background: var(--warning); }
+        .step-item.discard .step-num { background: var(--danger); }
+        
+        .step-text {
+            flex: 1;
+        }
+        
+        /* 底部说明 */
+        .side-footer {
+            padding: 10px 12px;
+            border-top: 1px solid var(--border);
+            font-size: 11px;
+            color: var(--text-secondary);
+            background: var(--white);
+            line-height: 1.5;
+        }
+        
+        .legend {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 6px;
+        }
+        
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        
+        .legend-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 2px;
+        }
+        
+        .legend-dot.learn { background: var(--success); }
+        .legend-dot.forward { background: var(--primary); }
+        .legend-dot.broadcast { background: var(--warning); }
+        .legend-dot.discard { background: var(--danger); }
+    </style>
+</head>
+<body>
+    <div class="page">
+        <!-- 顶部标题栏 -->
+        <header class="page-header">
+            <h1 class="page-title">以太网交换机自学习<code>MAC Table</code></h1>
+            <span class="page-badge">计算机网络 · 数据链路层</span>
+        </header>
+        
+        <!-- 主体区域 -->
+        <div class="page-body">
+            <!-- 左侧主面板 -->
+            <div class="main-panel">
+                <!-- 拓扑图区域 -->
+                <div class="visual-area">
+                    <div class="topology-box">
+                        <svg class="topology-svg" id="topologySvg" viewBox="0 0 800 400">
+                            <defs>
+                                <marker id="arrowhead" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+                                    <polygon points="0 0, 8 3, 0 6" fill="#047857"/>
+                                </marker>
+                            </defs>
+                            
+                            <!-- 连线 -->
+                            <line class="link-line" id="link1" x1="120" y1="100" x2="340" y2="180"/>
+                            <line class="link-line" id="link2" x1="680" y1="100" x2="460" y2="180"/>
+                            <line class="link-line" id="link3" x1="120" y1="300" x2="340" y2="220"/>
+                            <line class="link-line" id="link4" x1="680" y1="300" x2="460" y2="220"/>
+                            
+                            <!-- 交换机 -->
+                            <rect class="switch-rect" x="320" y="160" width="160" height="80" rx="4"/>
+                            <text class="switch-text" x="400" y="195" text-anchor="middle">Switch</text>
+                            <text class="port-text" x="400" y="212" text-anchor="middle">交换机</text>
+                            
+                            <!-- 端口标记 -->
+                            <circle class="port-circle" id="port1" cx="340" cy="180" r="10"/>
+                            <text class="port-text" x="340" y="184" text-anchor="middle">1</text>
+                            <circle class="port-circle" id="port2" cx="460" cy="180" r="10"/>
+                            <text class="port-text" x="460" y="184" text-anchor="middle">2</text>
+                            <circle class="port-circle" id="port3" cx="340" cy="220" r="10"/>
+                            <text class="port-text" x="340" y="224" text-anchor="middle">3</text>
+                            <circle class="port-circle" id="port4" cx="460" cy="220" r="10"/>
+                            <text class="port-text" x="460" y="224" text-anchor="middle">4</text>
+                            
+                            <!-- 主机A -->
+                            <rect class="host-rect" id="hostA" x="40" y="60" width="80" height="80" rx="4"/>
+                            <text class="host-text" x="80" y="95" text-anchor="middle">主机 A</text>
+                            <text class="mac-text" x="80" y="115" text-anchor="middle">AA:AA:AA</text>
+                            
+                            <!-- 主机B -->
+                            <rect class="host-rect" id="hostB" x="680" y="60" width="80" height="80" rx="4"/>
+                            <text class="host-text" x="720" y="95" text-anchor="middle">主机 B</text>
+                            <text class="mac-text" x="720" y="115" text-anchor="middle">BB:BB:BB</text>
+                            
+                            <!-- 主机C -->
+                            <rect class="host-rect" id="hostC" x="40" y="260" width="80" height="80" rx="4"/>
+                            <text class="host-text" x="80" y="295" text-anchor="middle">主机 C</text>
+                            <text class="mac-text" x="80" y="315" text-anchor="middle">CC:CC:CC</text>
+                            
+                            <!-- 主机D -->
+                            <rect class="host-rect" id="hostD" x="680" y="260" width="80" height="80" rx="4"/>
+                            <text class="host-text" x="720" y="295" text-anchor="middle">主机 D</text>
+                            <text class="mac-text" x="720" y="315" text-anchor="middle">DD:DD:DD</text>
+                            
+                            <!-- 帧动画元素 -->
+                            <g class="frame-packet" id="framePacket">
+                                <rect class="frame-rect" x="-25" y="-12" width="50" height="24" rx="3"/>
+                                <text class="frame-text" id="frameLabel" x="0" y="4" text-anchor="middle"></text>
+                            </g>
+                        </svg>
+                    </div>
+                </div>
+                
+                <!-- 控制面板 -->
+                <div class="control-area">
+                    <!-- 第一行：场景选择 -->
+                    <div class="control-row scenario-row">
+                        <span class="control-label">预设场景</span>
+                        <div class="scenario-btns">
+                            <button class="btn btn-scenario active" id="btnScene1" title="交换表为空，首次通信需要广播">场景1：首次广播</button>
+                            <button class="btn btn-scenario" id="btnScene2" title="A的MAC已学习，B发给A可直接转发">场景2：学习后转发</button>
+                            <button class="btn btn-scenario" id="btnScene3" title="交换表已满，所有通信都是转发">场景3：交换表已满</button>
+                            <button class="btn btn-scenario" id="btnScene4" title="自动演示多次通信，观察交换表逐步建立">场景4：完整演示</button>
+                        </div>
+                    </div>
+                    <!-- 第二行：手动控制 -->
+                    <div class="control-row">
+                        <div class="control-left">
+                            <div class="control-group">
+                                <span class="control-label">发送方</span>
+                                <select class="control-select" id="selectSrc">
+                                    <option value="A">主机 A (AA:AA:AA)</option>
+                                    <option value="B">主机 B (BB:BB:BB)</option>
+                                    <option value="C">主机 C (CC:CC:CC)</option>
+                                    <option value="D">主机 D (DD:DD:DD)</option>
+                                </select>
+                            </div>
+                            <span class="arrow-icon">▶</span>
+                            <div class="control-group">
+                                <span class="control-label">接收方</span>
+                                <select class="control-select" id="selectDst">
+                                    <option value="A">主机 A (AA:AA:AA)</option>
+                                    <option value="B" selected>主机 B (BB:BB:BB)</option>
+                                    <option value="C">主机 C (CC:CC:CC)</option>
+                                    <option value="D">主机 D (DD:DD:DD)</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="control-right">
+                            <span class="action-hint" id="hintSend">请选择 ▶</span>
+                            <button class="btn btn-success" id="btnSend">发送帧</button>
+                            <button class="btn btn-secondary" id="btnResetScene">重置场景</button>
+                            <button class="btn btn-secondary" id="btnReset">清空交换表</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 右侧面板 -->
+            <div class="side-panel">
+                <div class="side-header">交换表 (MAC Table)</div>
+                <div class="side-content">
+                    <!-- 交换表显示 -->
+                    <div class="switch-table-container">
+                        <div class="section-title">
+                            <span>MAC地址 - 端口映射</span>
+                        </div>
+                        <div id="tableContainer">
+                            <div class="empty-table">交换表为空</div>
+                        </div>
+                    </div>
+                    
+                    <!-- 步骤日志 -->
+                    <div class="section-title">
+                        <span>处理步骤</span>
+                    </div>
+                    <div class="step-list" id="stepsList">
+                        <div class="step-item">
+                            <span class="step-num">-</span>
+                            <span class="step-text">等待发送帧...</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="side-footer">
+                    <div>交换机自学习：记录源MAC与入端口的映射</div>
+                    <div class="legend">
+                        <div class="legend-item">
+                            <div class="legend-dot learn"></div>
+                            <span>学习</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-dot forward"></div>
+                            <span>转发</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-dot broadcast"></div>
+                            <span>广播</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-dot discard"></div>
+                            <span>丢弃</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+    (function() {
+        // ===== 配置 =====
+        var HOSTS = {
+            A: { mac: 'AA:AA:AA', port: 1, x: 80, y: 100 },
+            B: { mac: 'BB:BB:BB', port: 2, x: 720, y: 100 },
+            C: { mac: 'CC:CC:CC', port: 3, x: 80, y: 300 },
+            D: { mac: 'DD:DD:DD', port: 4, x: 720, y: 300 }
+        };
+        
+        var SWITCH_CENTER = { x: 400, y: 200 };
+        
+        var PORT_POSITIONS = {
+            1: { x: 340, y: 180 },
+            2: { x: 460, y: 180 },
+            3: { x: 340, y: 220 },
+            4: { x: 460, y: 220 }
+        };
+        
+        // ===== 状态 =====
+        var macTable = {}; // MAC地址 -> 端口号
+        var isAnimating = false;
+        var stepCount = 0;
+        
+        // ===== DOM引用 =====
+        var selectSrc = document.getElementById('selectSrc');
+        var selectDst = document.getElementById('selectDst');
+        var btnSend = document.getElementById('btnSend');
+        var btnReset = document.getElementById('btnReset');
+        var hintSend = document.getElementById('hintSend');
+        var tableContainer = document.getElementById('tableContainer');
+        var stepsList = document.getElementById('stepsList');
+        var framePacket = document.getElementById('framePacket');
+        var frameLabel = document.getElementById('frameLabel');
+        
+        // ===== 渲染交换表 =====
+        function renderTable(highlightMac, isNew) {
+            var keys = Object.keys(macTable);
+            if (keys.length === 0) {
+                tableContainer.innerHTML = '<div class="empty-table">交换表为空</div>';
+                return;
+            }
+            
+            var html = '<table class="switch-table">';
+            html += '<tr><th>MAC地址</th><th>端口</th></tr>';
+            
+            for (var i = 0; i < keys.length; i++) {
+                var mac = keys[i];
+                var port = macTable[mac];
+                var rowClass = '';
+                if (mac === highlightMac) {
+                    rowClass = isNew ? 'new-entry' : 'highlight';
+                }
+                html += '<tr class="' + rowClass + '">';
+                html += '<td>' + mac + '</td>';
+                html += '<td>端口 ' + port + '</td>';
+                html += '</tr>';
+            }
+            
+            html += '</table>';
+            tableContainer.innerHTML = html;
+        }
+        
+        // ===== 添加步骤日志 =====
+        function addStep(text, type) {
+            stepCount++;
+            var stepItem = document.createElement('div');
+            stepItem.className = 'step-item ' + (type || '');
+            stepItem.innerHTML = '<span class="step-num">' + stepCount + '</span>' +
+                                '<span class="step-text">' + text + '</span>';
+            // 新步骤插入到顶部
+            if (stepsList.firstChild) {
+                stepsList.insertBefore(stepItem, stepsList.firstChild);
+            } else {
+                stepsList.appendChild(stepItem);
+            }
+            // 保持滚动在顶部
+            stepsList.scrollTop = 0;
+        }
+        
+        function clearSteps() {
+            stepCount = 0;
+            stepsList.innerHTML = '<div class="step-item"><span class="step-num">-</span><span class="step-text">等待发送帧...</span></div>';
+        }
+        
+        // ===== 高亮元素 =====
+        function highlightHost(hostId, className) {
+            var el = document.getElementById('host' + hostId);
+            if (el) {
+                el.classList.remove('active', 'sending', 'receiving', 'discard');
+                if (className) el.classList.add(className);
+            }
+        }
+        
+        function highlightPort(portNum, active) {
+            var el = document.getElementById('port' + portNum);
+            if (el) {
+                if (active) {
+                    el.classList.add('active');
+                } else {
+                    el.classList.remove('active');
+                }
+            }
+        }
+        
+        function highlightLink(linkNum, className) {
+            var el = document.getElementById('link' + linkNum);
+            if (el) {
+                el.classList.remove('active', 'broadcast');
+                if (className) el.classList.add(className);
+            }
+        }
+        
+        function clearHighlights() {
+            var hosts = ['A', 'B', 'C', 'D'];
+            for (var i = 0; i < hosts.length; i++) {
+                highlightHost(hosts[i], null);
+            }
+            for (var j = 1; j <= 4; j++) {
+                highlightPort(j, false);
+                highlightLink(j, null);
+            }
+        }
+        
+        // ===== 帧动画 =====
+        function animateFrame(fromX, fromY, toX, toY, label, duration, callback) {
+            frameLabel.textContent = label;
+            framePacket.style.opacity = '1';
+            framePacket.setAttribute('transform', 'translate(' + fromX + ',' + fromY + ')');
+            
+            var startTime = null;
+            
+            function animate(timestamp) {
+                if (!startTime) startTime = timestamp;
+                var progress = (timestamp - startTime) / duration;
+                
+                if (progress >= 1) {
+                    framePacket.setAttribute('transform', 'translate(' + toX + ',' + toY + ')');
+                    if (callback) callback();
+                    return;
+                }
+                
+                var currentX = fromX + (toX - fromX) * progress;
+                var currentY = fromY + (toY - fromY) * progress;
+                framePacket.setAttribute('transform', 'translate(' + currentX + ',' + currentY + ')');
+                
+                requestAnimationFrame(animate);
+            }
+            
+            requestAnimationFrame(animate);
+        }
+        
+        function hideFrame() {
+            framePacket.style.opacity = '0';
+        }
+        
+        // ===== 按钮状态 =====
+        function setButtonsEnabled(enabled) {
+            btnSend.disabled = !enabled;
+            btnReset.disabled = !enabled;
+            selectSrc.disabled = !enabled;
+            selectDst.disabled = !enabled;
+            isAnimating = !enabled;
+            
+            if (enabled) {
+                hintSend.style.display = 'inline';
+            } else {
+                hintSend.style.display = 'none';
+            }
+        }
+        
+        // ===== 发送帧处理 =====
+        function sendFrame() {
+            if (isAnimating) return;
+            
+            var srcId = selectSrc.value;
+            var dstId = selectDst.value;
+            
+            if (srcId === dstId) {
+                alert('发送方和接收方不能相同！');
+                return;
+            }
+            
+            setButtonsEnabled(false);
+            clearSteps();
+            clearHighlights();
+            
+            var src = HOSTS[srcId];
+            var dst = HOSTS[dstId];
+            var srcPort = PORT_POSITIONS[src.port];
+            var dstPort = PORT_POSITIONS[dst.port];
+            
+            // 步骤1：发送帧
+            addStep('主机 ' + srcId + ' 发送帧：源=' + src.mac + ', 目的=' + dst.mac, 'active');
+            highlightHost(srcId, 'sending');
+            highlightLink(src.port, 'active');
+            highlightPort(src.port, true);
+            
+            // 动画：从源主机到交换机
+            animateFrame(src.x, src.y, srcPort.x, srcPort.y, src.mac + '▶' + dst.mac, 600, function() {
+                
+                // 步骤2：学习源MAC
+                setTimeout(function() {
+                    var alreadyKnown = macTable[src.mac] !== undefined;
+                    if (alreadyKnown) {
+                        addStep('源地址 ' + src.mac + ' 已在交换表中（端口 ' + src.port + '）', 'learn');
+                    } else {
+                        macTable[src.mac] = src.port;
+                        addStep('学习：' + src.mac + ' → 端口 ' + src.port + ' (新增)', 'learn');
+                    }
+                    renderTable(src.mac, !alreadyKnown);
+                    
+                    // 步骤3：查找目的MAC
+                    setTimeout(function() {
+                        var dstPortNum = macTable[dst.mac];
+                        
+                        if (dstPortNum !== undefined) {
+                            // 找到目的MAC，转发
+                            addStep('查表：目的地址 ' + dst.mac + ' 在端口 ' + dstPortNum, 'forward');
+                            renderTable(dst.mac, false);
+                            
+                            setTimeout(function() {
+                                addStep('转发：从端口 ' + dstPortNum + ' 发出', 'forward');
+                                highlightLink(dstPortNum, 'active');
+                                highlightPort(dstPortNum, true);
+                                
+                                // 动画：从交换机到目的主机
+                                var targetPort = PORT_POSITIONS[dstPortNum];
+                                animateFrame(targetPort.x, targetPort.y, dst.x, dst.y, src.mac + '▶' + dst.mac, 600, function() {
+                                    highlightHost(dstId, 'receiving');
+                                    addStep('主机 ' + dstId + ' 收到帧', 'done');
+                                    hideFrame();
+                                    
+                                    setTimeout(function() {
+                                        setButtonsEnabled(true);
+                                    }, 500);
+                                });
+                            }, 400);
+                            
+                        } else {
+                            // 未找到目的MAC，广播
+                            addStep('查表：目的地址 ' + dst.mac + ' 未找到', 'broadcast');
+                            
+                            setTimeout(function() {
+                                addStep('广播：从除端口 ' + src.port + ' 外的所有端口发出', 'broadcast');
+                                
+                                // 高亮所有广播链路
+                                var broadcastPorts = [];
+                                for (var h in HOSTS) {
+                                    if (h !== srcId) {
+                                        highlightLink(HOSTS[h].port, 'broadcast');
+                                        highlightPort(HOSTS[h].port, true);
+                                        broadcastPorts.push({ id: h, host: HOSTS[h] });
+                                    }
+                                }
+                                
+                                // 广播动画（简化：直接到目的主机）
+                                hideFrame();
+                                
+                                // 创建多个帧动画
+                                var completed = 0;
+                                var total = broadcastPorts.length;
+                                
+                                for (var i = 0; i < broadcastPorts.length; i++) {
+                                    (function(bp, index) {
+                                        var targetPort = PORT_POSITIONS[bp.host.port];
+                                        
+                                        setTimeout(function() {
+                                            // 创建临时帧元素
+                                            var tempFrame = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+                                            tempFrame.innerHTML = '<rect fill="#d97706" x="-25" y="-12" width="50" height="24" rx="3"/>' +
+                                                                 '<text fill="#fff" font-family="Consolas,Monaco,monospace" font-size="9" font-weight="600" x="0" y="4" text-anchor="middle">' + 
+                                                                 src.mac + '</text>';
+                                            tempFrame.setAttribute('transform', 'translate(' + targetPort.x + ',' + targetPort.y + ')');
+                                            document.getElementById('topologySvg').appendChild(tempFrame);
+                                            
+                                            var startTime = null;
+                                            var fromX = targetPort.x;
+                                            var fromY = targetPort.y;
+                                            var toX = bp.host.x;
+                                            var toY = bp.host.y;
+                                            
+                                            function animateBroadcast(timestamp) {
+                                                if (!startTime) startTime = timestamp;
+                                                var progress = (timestamp - startTime) / 500;
+                                                
+                                                if (progress >= 1) {
+                                                    tempFrame.setAttribute('transform', 'translate(' + toX + ',' + toY + ')');
+                                                    
+                                                    setTimeout(function() {
+                                                        tempFrame.remove();
+                                                        completed++;
+                                                        
+                                                        if (bp.id === dstId) {
+                                                            highlightHost(bp.id, 'receiving');
+                                                            addStep('主机 ' + bp.id + ' 收到帧（目标）', 'done');
+                                                        } else {
+                                                            highlightHost(bp.id, 'discard');
+                                                            addStep('主机 ' + bp.id + ' 收到帧并丢弃（非目标）', 'discard');
+                                                        }
+                                                        
+                                                        if (completed === total) {
+                                                            setTimeout(function() {
+                                                                setButtonsEnabled(true);
+                                                            }, 500);
+                                                        }
+                                                    }, 100);
+                                                    return;
+                                                }
+                                                
+                                                var currentX = fromX + (toX - fromX) * progress;
+                                                var currentY = fromY + (toY - fromY) * progress;
+                                                tempFrame.setAttribute('transform', 'translate(' + currentX + ',' + currentY + ')');
+                                                
+                                                requestAnimationFrame(animateBroadcast);
+                                            }
+                                            
+                                            requestAnimationFrame(animateBroadcast);
+                                        }, index * 100);
+                                    })(broadcastPorts[i], i);
+                                }
+                            }, 400);
+                        }
+                    }, 400);
+                }, 400);
+            });
+        }
+        
+        // ===== 重置交换表 =====
+        function resetTable() {
+            if (isAnimating) return;
+            macTable = {};
+            renderTable();
+            clearSteps();
+            clearHighlights();
+            hideFrame();
+        }
+        
+        // ===== 场景相关 =====
+        var currentScene = 1;
+        var btnScene1 = document.getElementById('btnScene1');
+        var btnScene2 = document.getElementById('btnScene2');
+        var btnScene3 = document.getElementById('btnScene3');
+        var btnScene4 = document.getElementById('btnScene4');
+        var sceneBtns = [btnScene1, btnScene2, btnScene3, btnScene4];
+        
+        function setSceneButtonsEnabled(enabled) {
+            for (var i = 0; i < sceneBtns.length; i++) {
+                sceneBtns[i].disabled = !enabled;
+            }
+        }
+        
+        function selectScene(sceneNum) {
+            if (isAnimating) return;
+            currentScene = sceneNum;
+            
+            // 更新按钮样式
+            for (var i = 0; i < sceneBtns.length; i++) {
+                sceneBtns[i].classList.remove('active');
+            }
+            sceneBtns[sceneNum - 1].classList.add('active');
+            
+            // 根据场景初始化
+            resetTable();
+            clearSteps();
+            
+            switch (sceneNum) {
+                case 1:
+                    // 场景1：首次广播 - 交换表为空
+                    macTable = {};
+                    selectSrc.value = 'A';
+                    selectDst.value = 'B';
+                    addStep('场景1：交换表为空，A→B 需要广播', 'active');
+                    addStep('点击"发送帧"开始演示', '');
+                    break;
+                    
+                case 2:
+                    // 场景2：学习后转发 - A的MAC已在表中
+                    macTable = { 'AA:AA:AA': 1 };
+                    selectSrc.value = 'B';
+                    selectDst.value = 'A';
+                    addStep('场景2：A的MAC已学习，B→A 可直接转发', 'active');
+                    addStep('交换表已有 AA:AA:AA → 端口1', 'learn');
+                    addStep('点击"发送帧"开始演示', '');
+                    break;
+                    
+                case 3:
+                    // 场景3：交换表已满 - 所有MAC都在表中
+                    macTable = {
+                        'AA:AA:AA': 1,
+                        'BB:BB:BB': 2,
+                        'CC:CC:CC': 3,
+                        'DD:DD:DD': 4
+                    };
+                    selectSrc.value = 'C';
+                    selectDst.value = 'D';
+                    addStep('场景3：交换表已满，任意通信都是转发', 'active');
+                    addStep('交换表已包含所有主机的MAC地址', 'learn');
+                    addStep('点击"发送帧"开始演示', '');
+                    break;
+                    
+                case 4:
+                    // 场景4：完整演示
+                    macTable = {};
+                    addStep('场景4：完整演示 - 观察交换表逐步建立', 'active');
+                    addStep('将依次执行：A→B, B→A, C→D, D→C', '');
+                    addStep('点击"发送帧"开始自动演示', '');
+                    break;
+            }
+            
+            renderTable();
+        }
+        
+        // 完整演示的通信序列
+        var demoSequence = [
+            { src: 'A', dst: 'B', desc: '第1步：A→B（广播，学习A）' },
+            { src: 'B', dst: 'A', desc: '第2步：B→A（转发，学习B）' },
+            { src: 'C', dst: 'D', desc: '第3步：C→D（广播，学习C）' },
+            { src: 'D', dst: 'C', desc: '第4步：D→C（转发，学习D）' }
+        ];
+        var demoIndex = 0;
+        var isAutoDemo = false;
+        
+        function runAutoDemo() {
+            if (demoIndex >= demoSequence.length) {
+                // 演示完成
+                isAutoDemo = false;
+                demoIndex = 0;
+                addStep('===== 完整演示结束 =====', 'done');
+                addStep('交换表已包含所有主机的MAC地址', 'learn');
+                setButtonsEnabled(true);
+                setSceneButtonsEnabled(true);
+                return;
+            }
+            
+            var step = demoSequence[demoIndex];
+            selectSrc.value = step.src;
+            selectDst.value = step.dst;
+            
+            // 添加当前步骤说明
+            addStep('───── ' + step.desc + ' ─────', 'active');
+            
+            demoIndex++;
+            
+            // 延迟执行发送，让用户看到当前步骤
+            setTimeout(function() {
+                sendFrameWithCallback(function() {
+                    // 当前发送完成，继续下一步
+                    setTimeout(runAutoDemo, 800);
+                });
+            }, 500);
+        }
+        
+        // 带回调的发送帧函数
+        function sendFrameWithCallback(callback) {
+            // 如果正在动画中，等待后重试
+            if (isAnimating) {
+                setTimeout(function() {
+                    sendFrameWithCallback(callback);
+                }, 200);
+                return;
+            }
+            
+            var srcId = selectSrc.value;
+            var dstId = selectDst.value;
+            
+            if (srcId === dstId) {
+                if (callback) callback();
+                return;
+            }
+            
+            setButtonsEnabled(false);
+            setSceneButtonsEnabled(false);
+            
+            var src = HOSTS[srcId];
+            var dst = HOSTS[dstId];
+            var srcPort = PORT_POSITIONS[src.port];
+            var dstPort = PORT_POSITIONS[dst.port];
+            
+            clearHighlights();
+            
+            // 步骤1：发送帧
+            addStep('主机 ' + srcId + ' 发送帧：源=' + src.mac + ', 目的=' + dst.mac, 'active');
+            highlightHost(srcId, 'sending');
+            highlightLink(src.port, 'active');
+            highlightPort(src.port, true);
+            
+            // 动画：从源主机到交换机
+            animateFrame(src.x, src.y, srcPort.x, srcPort.y, src.mac + '▶' + dst.mac, 600, function() {
+                
+                // 步骤2：学习源MAC
+                setTimeout(function() {
+                    var alreadyKnown = macTable[src.mac] !== undefined;
+                    if (alreadyKnown) {
+                        addStep('源地址 ' + src.mac + ' 已在交换表中（端口 ' + src.port + '）', 'learn');
+                    } else {
+                        macTable[src.mac] = src.port;
+                        addStep('学习：' + src.mac + ' → 端口 ' + src.port + ' (新增)', 'learn');
+                    }
+                    renderTable(src.mac, !alreadyKnown);
+                    
+                    // 步骤3：查找目的MAC
+                    setTimeout(function() {
+                        var dstPortNum = macTable[dst.mac];
+                        
+                        if (dstPortNum !== undefined) {
+                            // 找到目的MAC，转发
+                            addStep('查表：目的地址 ' + dst.mac + ' 在端口 ' + dstPortNum, 'forward');
+                            renderTable(dst.mac, false);
+                            
+                            setTimeout(function() {
+                                addStep('转发：从端口 ' + dstPortNum + ' 发出', 'forward');
+                                highlightLink(dstPortNum, 'active');
+                                highlightPort(dstPortNum, true);
+                                
+                                // 动画：从交换机到目的主机
+                                var targetPort = PORT_POSITIONS[dstPortNum];
+                                animateFrame(targetPort.x, targetPort.y, dst.x, dst.y, src.mac + '▶' + dst.mac, 600, function() {
+                                    highlightHost(dstId, 'receiving');
+                                    addStep('主机 ' + dstId + ' 收到帧', 'done');
+                                    hideFrame();
+                                    
+                                    setTimeout(function() {
+                                        isAnimating = false; // 重置动画状态
+                                        if (!isAutoDemo) {
+                                            setButtonsEnabled(true);
+                                            setSceneButtonsEnabled(true);
+                                        }
+                                        if (callback) callback();
+                                    }, 500);
+                                });
+                            }, 400);
+                            
+                        } else {
+                            // 未找到目的MAC，广播
+                            addStep('查表：目的地址 ' + dst.mac + ' 未找到', 'broadcast');
+                            
+                            setTimeout(function() {
+                                addStep('广播：从除端口 ' + src.port + ' 外的所有端口发出', 'broadcast');
+                                
+                                // 高亮所有广播链路
+                                var broadcastPorts = [];
+                                for (var h in HOSTS) {
+                                    if (h !== srcId) {
+                                        highlightLink(HOSTS[h].port, 'broadcast');
+                                        highlightPort(HOSTS[h].port, true);
+                                        broadcastPorts.push({ id: h, host: HOSTS[h] });
+                                    }
+                                }
+                                
+                                // 广播动画
+                                hideFrame();
+                                
+                                var completed = 0;
+                                var total = broadcastPorts.length;
+                                
+                                for (var i = 0; i < broadcastPorts.length; i++) {
+                                    (function(bp, index) {
+                                        var targetPort = PORT_POSITIONS[bp.host.port];
+                                        
+                                        setTimeout(function() {
+                                            var tempFrame = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+                                            tempFrame.innerHTML = '<rect fill="#d97706" x="-25" y="-12" width="50" height="24" rx="3"/>' +
+                                                                 '<text fill="#fff" font-family="Consolas,Monaco,monospace" font-size="9" font-weight="600" x="0" y="4" text-anchor="middle">' + 
+                                                                 src.mac + '</text>';
+                                            tempFrame.setAttribute('transform', 'translate(' + targetPort.x + ',' + targetPort.y + ')');
+                                            document.getElementById('topologySvg').appendChild(tempFrame);
+                                            
+                                            var startTime = null;
+                                            var fromX = targetPort.x;
+                                            var fromY = targetPort.y;
+                                            var toX = bp.host.x;
+                                            var toY = bp.host.y;
+                                            
+                                            function animateBroadcast(timestamp) {
+                                                if (!startTime) startTime = timestamp;
+                                                var progress = (timestamp - startTime) / 500;
+                                                
+                                                if (progress >= 1) {
+                                                    tempFrame.setAttribute('transform', 'translate(' + toX + ',' + toY + ')');
+                                                    
+                                                    setTimeout(function() {
+                                                        tempFrame.remove();
+                                                        completed++;
+                                                        
+                                                        if (bp.id === dstId) {
+                                                            highlightHost(bp.id, 'receiving');
+                                                            addStep('主机 ' + bp.id + ' 收到帧（目标）', 'done');
+                                                        } else {
+                                                            highlightHost(bp.id, 'discard');
+                                                            addStep('主机 ' + bp.id + ' 收到帧并丢弃（非目标）', 'discard');
+                                                        }
+                                                        
+                                                        if (completed === total) {
+                                                            setTimeout(function() {
+                                                                isAnimating = false; // 重置动画状态
+                                                                if (!isAutoDemo) {
+                                                                    setButtonsEnabled(true);
+                                                                    setSceneButtonsEnabled(true);
+                                                                }
+                                                                if (callback) callback();
+                                                            }, 500);
+                                                        }
+                                                    }, 100);
+                                                    return;
+                                                }
+                                                
+                                                var currentX = fromX + (toX - fromX) * progress;
+                                                var currentY = fromY + (toY - fromY) * progress;
+                                                tempFrame.setAttribute('transform', 'translate(' + currentX + ',' + currentY + ')');
+                                                
+                                                requestAnimationFrame(animateBroadcast);
+                                            }
+                                            
+                                            requestAnimationFrame(animateBroadcast);
+                                        }, index * 100);
+                                    })(broadcastPorts[i], i);
+                                }
+                            }, 400);
+                        }
+                    }, 400);
+                }, 400);
+            });
+        }
+        
+        // 修改原来的发送帧函数，场景4时启动自动演示
+        var originalSendFrame = sendFrame;
+        sendFrame = function() {
+            if (currentScene === 4 && !isAutoDemo) {
+                // 场景4：启动自动演示
+                isAutoDemo = true;
+                demoIndex = 0;
+                macTable = {};
+                renderTable();
+                clearSteps();
+                addStep('===== 开始完整演示 =====', 'active');
+                runAutoDemo();
+            } else if (!isAutoDemo) {
+                originalSendFrame();
+            }
+        };
+        
+        // ===== 重置场景 =====
+        var btnResetScene = document.getElementById('btnResetScene');
+        
+        function resetCurrentScene() {
+            if (isAnimating) return;
+            isAutoDemo = false;
+            demoIndex = 0;
+            selectScene(currentScene);
+        }
+        
+        // ===== 事件绑定 =====
+        btnSend.onclick = sendFrame;
+        btnReset.onclick = resetTable;
+        btnResetScene.onclick = resetCurrentScene;
+        btnScene1.onclick = function() { selectScene(1); };
+        btnScene2.onclick = function() { selectScene(2); };
+        btnScene3.onclick = function() { selectScene(3); };
+        btnScene4.onclick = function() { selectScene(4); };
+        
+        // ===== 初始化 =====
+        renderTable();
+        setButtonsEnabled(true);
+        selectScene(1); // 默认选择场景1
+    })();
+    </script>
+</body>
+</html>
