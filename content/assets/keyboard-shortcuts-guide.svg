@@ -1,0 +1,63 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="680" viewBox="0 0 1200 680" role="img" aria-labelledby="title desc">
+  <title id="title">常用快捷键示意图</title>
+  <desc id="desc">六组 Windows 常用快捷键及其作用：复制、粘贴、撤销、切换窗口、打开文件管理器、选中地址栏。</desc>
+  <rect width="1200" height="680" rx="28" fill="#f7f8fc"/>
+  <text x="60" y="72" fill="#202124" font-family="Microsoft YaHei, Segoe UI, sans-serif" font-size="34" font-weight="700">常用快捷键</text>
+  <text x="60" y="112" fill="#5f6368" font-family="Microsoft YaHei, Segoe UI, sans-serif" font-size="20">先按住第一个键，再按一下第二个键</text>
+  <g font-family="Microsoft YaHei, Segoe UI, sans-serif">
+    <g transform="translate(60 155)">
+      <rect width="330" height="195" rx="20" fill="#ffffff" stroke="#d9ddea" stroke-width="2"/>
+      <rect x="28" y="28" width="116" height="62" rx="12" fill="#eef1ff" stroke="#5668d8" stroke-width="2"/>
+      <rect x="158" y="28" width="74" height="62" rx="12" fill="#eef1ff" stroke="#5668d8" stroke-width="2"/>
+      <text x="86" y="68" text-anchor="middle" fill="#3344aa" font-size="24" font-weight="700">Ctrl</text>
+      <text x="195" y="68" text-anchor="middle" fill="#3344aa" font-size="26" font-weight="700">C</text>
+      <text x="28" y="137" fill="#202124" font-size="24" font-weight="700">复制</text>
+      <text x="28" y="168" fill="#5f6368" font-size="18">复制选中的文字或文件</text>
+    </g>
+    <g transform="translate(435 155)">
+      <rect width="330" height="195" rx="20" fill="#ffffff" stroke="#d9ddea" stroke-width="2"/>
+      <rect x="28" y="28" width="116" height="62" rx="12" fill="#eef1ff" stroke="#5668d8" stroke-width="2"/>
+      <rect x="158" y="28" width="74" height="62" rx="12" fill="#eef1ff" stroke="#5668d8" stroke-width="2"/>
+      <text x="86" y="68" text-anchor="middle" fill="#3344aa" font-size="24" font-weight="700">Ctrl</text>
+      <text x="195" y="68" text-anchor="middle" fill="#3344aa" font-size="26" font-weight="700">V</text>
+      <text x="28" y="137" fill="#202124" font-size="24" font-weight="700">粘贴</text>
+      <text x="28" y="168" fill="#5f6368" font-size="18">把复制的内容放到这里</text>
+    </g>
+    <g transform="translate(810 155)">
+      <rect width="330" height="195" rx="20" fill="#ffffff" stroke="#d9ddea" stroke-width="2"/>
+      <rect x="28" y="28" width="116" height="62" rx="12" fill="#eef1ff" stroke="#5668d8" stroke-width="2"/>
+      <rect x="158" y="28" width="74" height="62" rx="12" fill="#eef1ff" stroke="#5668d8" stroke-width="2"/>
+      <text x="86" y="68" text-anchor="middle" fill="#3344aa" font-size="24" font-weight="700">Ctrl</text>
+      <text x="195" y="68" text-anchor="middle" fill="#3344aa" font-size="26" font-weight="700">Z</text>
+      <text x="28" y="137" fill="#202124" font-size="24" font-weight="700">撤销</text>
+      <text x="28" y="168" fill="#5f6368" font-size="18">撤销刚才的一步操作</text>
+    </g>
+    <g transform="translate(60 390)">
+      <rect width="330" height="195" rx="20" fill="#ffffff" stroke="#d9ddea" stroke-width="2"/>
+      <rect x="28" y="28" width="116" height="62" rx="12" fill="#fff4df" stroke="#d59731" stroke-width="2"/>
+      <rect x="158" y="28" width="74" height="62" rx="12" fill="#fff4df" stroke="#d59731" stroke-width="2"/>
+      <text x="86" y="68" text-anchor="middle" fill="#9b6513" font-size="22" font-weight="700">Alt</text>
+      <text x="195" y="68" text-anchor="middle" fill="#9b6513" font-size="22" font-weight="700">Tab</text>
+      <text x="28" y="137" fill="#202124" font-size="24" font-weight="700">切换窗口</text>
+      <text x="28" y="168" fill="#5f6368" font-size="18">在打开的窗口之间切换</text>
+    </g>
+    <g transform="translate(435 390)">
+      <rect width="330" height="195" rx="20" fill="#ffffff" stroke="#d9ddea" stroke-width="2"/>
+      <rect x="28" y="28" width="116" height="62" rx="12" fill="#e9f7ef" stroke="#36a269" stroke-width="2"/>
+      <rect x="158" y="28" width="74" height="62" rx="12" fill="#e9f7ef" stroke="#36a269" stroke-width="2"/>
+      <text x="86" y="68" text-anchor="middle" fill="#257849" font-size="22" font-weight="700">Win</text>
+      <text x="195" y="68" text-anchor="middle" fill="#257849" font-size="22" font-weight="700">E</text>
+      <text x="28" y="137" fill="#202124" font-size="24" font-weight="700">打开文件管理器</text>
+      <text x="28" y="168" fill="#5f6368" font-size="18">快速打开文件和文件夹</text>
+    </g>
+    <g transform="translate(810 390)">
+      <rect width="330" height="195" rx="20" fill="#ffffff" stroke="#d9ddea" stroke-width="2"/>
+      <rect x="28" y="28" width="116" height="62" rx="12" fill="#f4eaff" stroke="#9661c8" stroke-width="2"/>
+      <rect x="158" y="28" width="74" height="62" rx="12" fill="#f4eaff" stroke="#9661c8" stroke-width="2"/>
+      <text x="86" y="68" text-anchor="middle" fill="#6b3a9d" font-size="24" font-weight="700">Ctrl</text>
+      <text x="195" y="68" text-anchor="middle" fill="#6b3a9d" font-size="22" font-weight="700">L</text>
+      <text x="28" y="137" fill="#202124" font-size="24" font-weight="700">选中地址栏</text>
+      <text x="28" y="168" fill="#5f6368" font-size="18">在浏览器中定位网址</text>
+    </g>
+  </g>
+</svg>

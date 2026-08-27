@@ -12,6 +12,7 @@
   <div class="mini-topic-item"><a class="mini-topic-card" href="save-location/"><strong>文件应该保存在哪里</strong><span>认识下载、文档、桌面和项目文件夹，避免文件“下载了但找不到”。</span></a></div>
   <div class="mini-topic-item"><a class="mini-topic-card" href="browser-choice/"><strong>浏览器该怎么选</strong><span>按设备、账号、扩展和隐私需求选择，不追求所谓唯一最佳浏览器。</span></a></div>
   <div class="mini-topic-item"><a class="mini-topic-card" href="installer-basics/"><strong>安装包到底是什么</strong><span>分清安装程序、压缩包和便携版，知道从哪里下载、安装时看什么。</span></a></div>
+  <div class="mini-topic-item"><a class="mini-topic-card" href="archive-files/"><strong>压缩包打不开怎么办</strong><span>认识 ZIP、7z、RAR，学会安全地解压、压缩和判断文件损坏。</span></a></div>
   <div class="mini-topic-item"><a class="mini-topic-card" href="auto-update/"><strong>自动更新要不要关</strong><span>区分安全更新、功能更新和强制重启，学习安全地延后而不是盲目关闭。</span></a></div>
 </div>
 
