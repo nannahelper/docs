@@ -38,6 +38,14 @@ nav:
       - 课程分类总览: categories/learning-map.md
       - 赛博扫盲:
           - 分类概览: categories/cyber-literacy.md
+          - 小专题:
+              - 专题首页: cyber-literacy-small-topics/index.md
+              - C 盘快满了，不知道该清什么: cyber-literacy-small-topics/disk-space.md
+              - 常用快捷键怎么记: cyber-literacy-small-topics/keyboard-shortcuts.md
+              - 文件应该保存在哪里: cyber-literacy-small-topics/save-location.md
+              - 浏览器该怎么选: cyber-literacy-small-topics/browser-choice.md
+              - 安装包到底是什么: cyber-literacy-small-topics/installer-basics.md
+              - 自动更新要不要关: cyber-literacy-small-topics/auto-update.md
           - 互联网与浏览器:
               - 课程首页: cyber-internet-basics/index.md
               - 第 1 章：连接网络和使用浏览器: cyber-internet-basics/01-url-dns.md
