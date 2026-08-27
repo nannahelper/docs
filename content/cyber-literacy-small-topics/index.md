@@ -7,12 +7,12 @@
 <div class="section-lead"><span class="eyebrow">ONE QUESTION AT A TIME</span><h2>遇到一个问题，就解决一个问题</h2><p>先看懂，再动手；先做低风险操作，再决定是否需要更复杂的设置。</p></div>
 
 <div class="mini-topic-grid">
-  <a class="mini-topic-card" href="disk-space/"><strong>C 盘快满了，不知道该清什么</strong><span>先找出谁占空间，再清理临时文件和明确不需要的内容。</span></a>
-  <a class="mini-topic-card" href="keyboard-shortcuts/"><strong>常用快捷键怎么记</strong><span>从复制、撤销、切换窗口和地址栏开始，不背一整张表。</span></a>
-  <a class="mini-topic-card" href="save-location/"><strong>文件应该保存在哪里</strong><span>认识下载、文档、桌面和项目文件夹，避免文件“下载了但找不到”。</span></a>
-  <a class="mini-topic-card" href="browser-choice/"><strong>浏览器该怎么选</strong><span>按设备、账号、扩展和隐私需求选择，不追求所谓唯一最佳浏览器。</span></a>
-  <a class="mini-topic-card" href="installer-basics/"><strong>安装包到底是什么</strong><span>分清安装程序、压缩包和便携版，知道从哪里下载、安装时看什么。</span></a>
-  <a class="mini-topic-card" href="auto-update/"><strong>自动更新要不要关</strong><span>区分安全更新、功能更新和强制重启，学习安全地延后而不是盲目关闭。</span></a>
+  <div class="mini-topic-item"><a class="mini-topic-card" href="disk-space/"><strong>C 盘快满了，不知道该清什么</strong><span>先找出谁占空间，再清理临时文件和明确不需要的内容。</span></a></div>
+  <div class="mini-topic-item"><a class="mini-topic-card" href="keyboard-shortcuts/"><strong>常用快捷键怎么记</strong><span>从复制、撤销、切换窗口和地址栏开始，不背一整张表。</span></a></div>
+  <div class="mini-topic-item"><a class="mini-topic-card" href="save-location/"><strong>文件应该保存在哪里</strong><span>认识下载、文档、桌面和项目文件夹，避免文件“下载了但找不到”。</span></a></div>
+  <div class="mini-topic-item"><a class="mini-topic-card" href="browser-choice/"><strong>浏览器该怎么选</strong><span>按设备、账号、扩展和隐私需求选择，不追求所谓唯一最佳浏览器。</span></a></div>
+  <div class="mini-topic-item"><a class="mini-topic-card" href="installer-basics/"><strong>安装包到底是什么</strong><span>分清安装程序、压缩包和便携版，知道从哪里下载、安装时看什么。</span></a></div>
+  <div class="mini-topic-item"><a class="mini-topic-card" href="auto-update/"><strong>自动更新要不要关</strong><span>区分安全更新、功能更新和强制重启，学习安全地延后而不是盲目关闭。</span></a></div>
 </div>
 
 ## 使用方法
