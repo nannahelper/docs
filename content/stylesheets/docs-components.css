@@ -146,33 +146,6 @@
   font-size: 0.85rem;
 }
 
-.eli5-panel {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  margin: 1rem 0 1.5rem;
-  padding: 1.25rem 1.5rem;
-  border: 1px solid var(--md-default-fg-color--lightest);
-  border-radius: 0.75rem;
-  background: linear-gradient(135deg, var(--md-code-bg-color), var(--md-default-bg-color));
-}
-
-.eli5-panel .eli5-icon {
-  flex: 0 0 auto;
-  font-size: 2.75rem;
-  line-height: 1;
-}
-
-.eli5-panel h2 {
-  margin: 0.2rem 0 0.35rem;
-  font-size: 1.25rem;
-}
-
-.eli5-panel p {
-  margin: 0;
-  line-height: 1.7;
-}
-
 .mini-topic-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
