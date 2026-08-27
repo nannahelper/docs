@@ -4,7 +4,7 @@
 
 | 项目 | 内容 |
 |:---|:---|
-| 学习时长 | 35 分钟 |
+| 学习时长 | 10 分钟 |
 | 核心概念 | 系统包管理器、软件源、PATH、版本验证 |
 | 核心比喻 | 包管理器是软件商店的命令行收银台 |
 | 实践任务 | 用命令行安装 Git、Python 和 Node.js，并记录版本 |
@@ -25,6 +25,8 @@
 | Windows | `winget`；熟悉后可选 `scoop` | `winget --version` |
 | macOS | Homebrew | `brew --version` |
 | Ubuntu / Debian | APT | `apt --version` |
+
+第一次只选择一条与你系统匹配的路线即可。Windows 优先完成 `winget`，只有明确需要用户目录安装或课程指定时再了解 Scoop；macOS 选择 Homebrew，Ubuntu / Debian 选择 APT。把四套命令全部执行一遍，不会让环境更“完整”，反而更容易出现多个版本互相覆盖。
 
 !!! warning "安全边界"
     只从系统自带商店、官方文档或可信的软件源安装工具。看到要求关闭安全软件、粘贴陌生远程脚本或使用管理员权限的命令时，先停下来核对来源。
@@ -56,9 +58,9 @@ node --version
 
 安装完成后，如果当前终端仍提示“找不到命令”，关闭并重新打开终端，让新的 PATH 生效。
 
-## 4.3 Windows：Scoop
+## 4.3 Windows：Scoop（可选）
 
-Scoop 适合希望把开发工具安装到用户目录、减少管理员权限依赖的学习者。请先打开 [Scoop 官方文档](https://scoop.sh/)，核对当前安装命令，再执行官方提供的脚本。
+Scoop 适合希望把开发工具安装到用户目录、减少管理员权限依赖的学习者，但它不是 Windows 的必装组件。请先打开 [Scoop 官方文档](https://scoop.sh/)，核对当前安装命令，再决定是否执行官方提供的脚本。
 
 ```powershell
 Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
@@ -70,6 +72,8 @@ scoop install git python nodejs-lts
 
 !!! warning "为什么要先看官方文档"
     `irm ... | iex` 会下载并执行远程脚本。它适合学习命令行安装流程，但不应盲目复制任何陌生网站给出的同类命令。安装前检查域名、脚本内容和当前 PowerShell 窗口。
+
+如果你不知道 `Set-ExecutionPolicy` 会改变什么，或者无法确认脚本来源，就跳过 Scoop，使用上一节的 `winget`。学习包管理器的目标是理解“搜索 → 确认来源 → 安装 → 验证”，不是为了完成某个软件清单而降低安全标准。
 
 ## 4.4 macOS 与 Linux
 

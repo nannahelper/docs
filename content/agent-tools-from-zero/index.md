@@ -2,7 +2,7 @@
 
 随着大模型能力与应用方式不断演进，我们使用 AI 的方式也经历了从聊天对话，到提示词工程，再到 Agent 工具协作的转变。
 
-本教程带大家从“聊天”进入“协作”：以 OpenCode Desktop 接入 DeepSeek API Key 为主线，理解 Agent 的模型、工具、权限、上下文和可审计工作流。
+本教程是赛博扫盲的 AI 协作扩展，不是第一次认识电脑或互联网的入口。它带大家从“聊天”进入“协作”：以 OpenCode Desktop 接入 DeepSeek API Key 为主线，理解 Agent 的模型、工具、权限、上下文和可审计工作流。
 
 聊天式 AI 通常等你提问、给出回答；Agent 工具则可能继续读取文件、执行命令、修改代码或调用外部服务。能力变强后，真正需要学习的就不只是“怎么写提示词”，还包括如何描述任务、划定工作目录、确认工具权限、检查中间结果，以及在不确定时让它停下来。把 Agent 当作一个会使用工具的协作者，会比把它当作一个更聪明的搜索框更接近实际使用。
 
@@ -12,8 +12,8 @@
 
 | 项目 | 内容 |
 |:---|:---|
-| 适合人群 | 想使用 AI 编程助手，但不清楚 GUI、CLI、API Key 和权限边界的学习者 |
-| 预计时长 | 约 4 小时（包含练习） |
+| 适合人群 | 已会基本电脑操作、准备使用 AI 编程助手的学习者 |
+| 预计时长 | 快速阅读约 45 分钟；完整配置按账号、网络和设备情况安排 |
 | 适用版本 | OpenCode Desktop / CLI 以当前官方文档为准；DeepSeek API 兼容接口 |
 | 维护状态 | 维护中 |
 | 最后更新 | 2026-08-14 |
@@ -29,21 +29,25 @@
 
 ## 📋 前置要求
 
-- 已完成命令行开发环境配置，至少会使用终端和 Git。
-- 拥有可用的 DeepSeek API Key，或准备使用其他兼容提供商。
+- 已完成[互联网与浏览器](../cyber-internet-basics/index.md)和[命令行开发环境配置](../cyber-environment-from-zero/index.md)的基础部分，至少会打开项目目录、复制命令和查看 Git 状态。
+- 可以先只读学习，不必为了阅读本教程申请 API Key；真正配置时再准备可撤销、有限额的测试 Key。
 - 理解 API 调用可能产生费用，不把密钥提交到仓库。
+
+## 🧭 推荐使用方式
+
+先读第 1 章理解 Agent 的工作边界，再直接做第 6 章的只读任务；确认自己能检查文件范围、命令输出和 Git 状态后，再按需要配置 Desktop、CLI 或其他工具。第一次不要同时安装多个 Agent，也不要一开始开放删除、发布、联网和访问个人资料的权限。
 
 ## 🗺️ 学习路线
 
 | 章节 | 主题 | 核心比喻 | 预计时长 |
 |:---|:---|:---|:---:|
-| [第 1 章：Agent 是什么](01-agent-basics.md) | Agent 工作方式 | 有工具权限的协作者 | 25 分钟 |
-| [第 2 章：OpenCode Desktop 接入 DeepSeek](02-opencode-desktop-deepseek.md) | GUI、Provider 与 API Key | 给协作者发工作证 | 45 分钟 |
-| [第 3 章：OpenCode CLI](03-opencode-cli.md) | CLI、项目上下文与任务 | 用工单交代任务 | 35 分钟 |
-| [第 4 章：权限、安全与成本](04-permissions-and-safety.md) | 权限、密钥与费用边界 | 给协作者划安全边界 | 30 分钟 |
-| [第 5 章：工具选型与综合任务](05-tool-selection-project.md) | 诊断、验收与回滚 | 选择合适的工作台 | 35 分钟 |
-| [第 6 章：任务描述与第一份 Agent 任务](06-duck-principle-and-first-task.md) | 零基础任务卡与只读实践 | 先把任务交代清楚 | 35 分钟 |
-| [第 7 章：其他 Agent 工具与协作方式](07-other-agent-tools.md) | GUI、CLI、IDE 与任务矩阵 | 不同任务用不同工作台 | 30 分钟 |
+| [第 1 章：Agent 是什么](01-agent-basics.md) | Agent 工作方式 | 有工具权限的协作者 | 8 分钟 |
+| [第 2 章：OpenCode Desktop 接入 DeepSeek](02-opencode-desktop-deepseek.md) | GUI、Provider 与 API Key | 给协作者发工作证 | 12 分钟 |
+| [第 3 章：OpenCode CLI](03-opencode-cli.md) | CLI、项目上下文与任务 | 用工单交代任务 | 10 分钟 |
+| [第 4 章：权限、安全与成本](04-permissions-and-safety.md) | 权限、密钥与费用边界 | 给协作者划安全边界 | 8 分钟 |
+| [第 5 章：工具选型与综合任务](05-tool-selection-project.md) | 诊断、验收与回滚 | 选择合适的工作台 | 10 分钟 |
+| [第 6 章：任务描述与第一份 Agent 任务](06-duck-principle-and-first-task.md) | 零基础任务卡与只读实践 | 先把任务交代清楚 | 12 分钟 |
+| [第 7 章：其他 Agent 工具与协作方式](07-other-agent-tools.md) | GUI、CLI、IDE 与任务矩阵 | 不同任务用不同工作台 | 8 分钟 |
 
 ## 🔭 追更：2026-08-13，DeepSeek Harness 进入公开开发者预览
 

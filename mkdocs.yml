@@ -69,9 +69,9 @@ nav:
               - 第 3 章：Python 与包管理器: cyber-environment-from-zero/03-python-and-packages.md
               - 第 4 章：包管理器与常用开发工具: cyber-environment-from-zero/04-package-managers.md
               - 第 5 章：Node.js、npm 与前端工具链: cyber-environment-from-zero/05-node-and-npm.md
-              - 第 6 章：Git 与 Shell: cyber-environment-from-zero/04-git-and-shell.md
-              - 第 7 章：问题描述与排错实践: cyber-environment-from-zero/06-duck-principle.md
-              - 第 8 章：综合验收与排错: cyber-environment-from-zero/05-environment-check.md
+              - 第 6 章：Git 与 Shell: cyber-environment-from-zero/06-git-and-shell.md
+              - 第 7 章：问题描述与排错实践: cyber-environment-from-zero/07-duck-principle.md
+              - 第 8 章：综合验收与排错: cyber-environment-from-zero/08-environment-check.md
           - Agent 工具入门:
               - 课程首页: agent-tools-from-zero/index.md
               - 第 1 章：Agent 是什么: agent-tools-from-zero/01-agent-basics.md

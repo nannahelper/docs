@@ -4,7 +4,7 @@
 
 | 项目 | 内容 |
 |:---|:---|
-| 学习时长 | 45 分钟 |
+| 学习时长 | 12 分钟 |
 | 核心概念 | Desktop、Provider、API Key、模型、项目目录 |
 | 核心比喻 | API Key 是工作证，Provider 是对接窗口，模型是具体协作者 |
 | 实践任务 | 用 OpenCode Desktop 完成一次只读项目分析 |
@@ -25,6 +25,8 @@
 ## 2.2 创建并保护 DeepSeek API Key
 
 在 [DeepSeek 开放平台](https://platform.deepseek.com/) 创建 API Key。复制后只放入 OpenCode 的凭据输入框或本地安全存储中。
+
+如果你只是阅读本章或还没有明确的练习任务，不必为了“试一下”申请、充值或长期保留 Key。真正开始调用前，先确认服务商的当前计费、限额、删除和撤销说明；第一次使用只放入可撤销、设置了预算边界的测试凭据。
 
 !!! danger "密钥规则"
     不要把真实 API Key 写进 Markdown、`opencode.json`、`.env.example`、截图、终端录屏或 Git 提交。示例只使用 `sk-your-key` 这样的占位符。

@@ -4,12 +4,26 @@
 
 | 项目 | 内容 |
 |:---|:---|
-| 学习时长 | 15 分钟 |
+| 学习时长 | 8 分钟 |
 | 核心概念 | 目标、对象、范围、时间、版本、输出 |
 | 核心比喻 | 给快递写清地址 |
 | 实践任务 | 把一个模糊问题改写成检索问题 |
 
 [提问的智慧](https://github.com/ryanhanwu/How-To-Ask-Questions-The-Smart-Way/blob/main/README-zh_CN.md) “Python 怎么学”太大；“Windows 11 上，零基础如何在 30 分钟内安装 Python 并验证 PATH”才有对象、系统和结果。
+
+## 先照着写一个可搜索的问题
+
+假设你看到“安装 Python 后仍然提示找不到命令”，不要直接搜索“Python 不能用”。先把已知信息填成一张小卡片：
+
+```text
+目标：让 Python 在 Windows 11 的 PowerShell 中输出版本号
+现象：输入 python --version 后提示找不到命令
+已经尝试：从官方页面安装过一次，关闭并重新打开过终端
+需要确认：安装位置、PATH 是否生效、命令是否应写成 py
+希望得到：官方说明、检查命令和每一步的预期结果
+```
+
+这张卡片可以直接改成三轮搜索：`Python Windows 11 install official`、`site:python.org Windows py launcher PATH`、`"python is not recognized" Windows 11`。第一轮认识术语，第二轮找官方说明，第三轮用完整错误核对相似案例；搜索结果只是线索，仍要打开页面确认。
 
 ## 搜索前先承认“我还不知道什么”
 
