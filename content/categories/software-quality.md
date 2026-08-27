@@ -5,6 +5,6 @@
 <div class="section-lead"><span class="eyebrow">SOFTWARE QUALITY</span><h2>把一次成功，变成长期可靠</h2><p>这里汇集工程方法、调试测试和团队协作相关内容。</p></div>
 
 <div class="course-grid">
-<a class="course-card" href="../../debugging-testing-from-zero/"><span class="course-tag">质量保障</span><h3>调试与测试指南</h3><p>学习定位错误、记录日志、编写测试和验证修改。</p><span class="course-meta">5 章 · 约 3–4 小时</span></a>
-<a class="course-card" href="../../mythical_man_month/"><span class="course-tag">软件工程</span><h3>《人月神话》软件工程入门</h3><p>从概念完整性、团队沟通到项目估算和维护。</p><span class="course-meta">19 章 · 约 5–6 小时</span></a>
+<a class="course-card" href="/docs/debugging-testing-from-zero/"><span class="course-tag">质量保障</span><h3>调试与测试指南</h3><p>学习定位错误、记录日志、编写测试和验证修改。</p><span class="course-meta">5 章 · 约 3–4 小时</span></a>
+<a class="course-card" href="/docs/mythical_man_month/"><span class="course-tag">软件工程</span><h3>《人月神话》软件工程入门</h3><p>从概念完整性、团队沟通到项目估算和维护。</p><span class="course-meta">19 章 · 约 5–6 小时</span></a>
 </div>
