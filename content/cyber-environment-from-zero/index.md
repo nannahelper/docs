@@ -11,7 +11,6 @@
 | 项目 | 内容 |
 |:---|:---|
 | 适合人群 | 已决定开始写代码、但不知道如何安装和验证开发工具的初学者 |
-| 预计时长 | 快速阅读约 45 分钟；完整安装按设备和网络情况安排 |
 | 适用版本 | Windows 11、macOS 14+、Ubuntu 22.04+；命令随版本变化 |
 | 维护状态 | 维护中 |
 | 最后更新 | 2026-08-14 |
@@ -39,16 +38,16 @@
 
 ## 🗺️ 学习路线
 
-| 章节 | 主题 | 核心比喻 | 预计时长 |
-|:---|:---|:---|:---:|
-| [第 1 章：终端、命令和 PATH](01-terminal-and-path.md) | 认识终端与环境变量 | 给电脑一张地址簿 | 8 分钟 |
-| [第 2 章：C/C++ 编译环境](02-cpp-toolchain.md) | 配置 C/C++ 编译环境 | 把施工图变成机器 | 12 分钟 |
-| [第 3 章：Python 与包管理器](03-python-and-packages.md) | Python 与虚拟环境 | 给项目准备隔离工具箱 | 10 分钟 |
-| [第 4 章：包管理器与常用开发工具](04-package-managers.md) | winget、Scoop、Homebrew、APT | 软件商店的命令行收银台 | 10 分钟 |
-| [第 5 章：Node.js、npm 与前端工具链](05-node-and-npm.md) | npm、npx、pnpm、Bun | 清单、小票与工具箱 | 10 分钟 |
-| [第 6 章：Git 与 Shell](06-git-and-shell.md) | 给项目装上存档和遥控器 | 版本库与命令组合 | 8 分钟 |
-| [第 7 章：问题描述与排错实践](07-duck-principle.md) | 用证据描述和缩小问题 | 把报修单写清楚 | 8 分钟 |
-| [第 8 章：综合验收与排错](08-environment-check.md) | 完成一次开机自检 | 把工具串成可复现环境 | 12 分钟 |
+| 章节 | 主题 | 核心比喻 |
+| :--- | :--- | :--- |
+| [第 1 章：终端、命令和 PATH](01-terminal-and-path.md) | 认识终端与环境变量 | 给电脑一张地址簿 |
+| [第 2 章：C/C++ 编译环境](02-cpp-toolchain.md) | 配置 C/C++ 编译环境 | 把施工图变成机器 |
+| [第 3 章：Python 与包管理器](03-python-and-packages.md) | Python 与虚拟环境 | 给项目准备隔离工具箱 |
+| [第 4 章：包管理器与常用开发工具](04-package-managers.md) | winget、Scoop、Homebrew、APT | 软件商店的命令行收银台 |
+| [第 5 章：Node.js、npm 与前端工具链](05-node-and-npm.md) | npm、npx、pnpm、Bun | 清单、小票与工具箱 |
+| [第 6 章：Git 与 Shell](06-git-and-shell.md) | 给项目装上存档和遥控器 | 版本库与命令组合 |
+| [第 7 章：问题描述与排错实践](07-duck-principle.md) | 用证据描述和缩小问题 | 把报修单写清楚 |
+| [第 8 章：综合验收与排错](08-environment-check.md) | 完成一次开机自检 | 把工具串成可复现环境 |
 
 ## 🚀 快速开始
 

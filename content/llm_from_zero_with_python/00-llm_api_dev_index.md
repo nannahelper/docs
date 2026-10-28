@@ -2,7 +2,6 @@
 
 | 课程信息 | 内容 |
 |:---|:---|
-| 预计时长 | 约 2–3 小时（包含实践） |
 | 适用版本 | Python 3.11+、OpenAI 兼容 API |
 | 维护状态 | 维护中 |
 | 最后更新 | 2026-08-13 |
@@ -33,13 +32,13 @@
 
 ## 学习路线
 
-| 章节 | 内容摘要 | 入口 | 预计时间 |
-|:---|:---|:---|:---:|
-| 第一章：环境准备 | 安装 VSCode、Python、配置虚拟环境 | [进入章节](01-environment-setup.md) | 30 分钟 |
-| 第二章：API 集成入门 | 第一次调用 DeepSeek API，理解核心概念 | [进入章节](02-api-integration.md) | 45 分钟 |
-| 第三章：概念与 Chatbot 实战 | 理解 Web UI 与 API，构建终端 Chatbot | [进入章节](03-concepts.md) | 30 分钟 |
-| 第四章：批量处理工作流 | 自动清洗非结构化数据，导出 Excel | [进入章节](04-batch-processing.md) | 60 分钟 |
-| 第五章：安全与展望 | API Key 安全、成本监控、Agent/RAG 展望 | [进入章节](05-security.md) | 20 分钟 |
+| 章节 | 内容摘要 | 入口 |
+|:---|:---|:---|
+| 第一章：环境准备 | 安装 VSCode、Python、配置虚拟环境 | [进入章节](01-environment-setup.md) |
+| 第二章：API 集成入门 | 第一次调用 DeepSeek API，理解核心概念 | [进入章节](02-api-integration.md) |
+| 第三章：概念与 Chatbot 实战 | 理解 Web UI 与 API，构建终端 Chatbot | [进入章节](03-concepts.md) |
+| 第四章：批量处理工作流 | 自动清洗非结构化数据，导出 Excel | [进入章节](04-batch-processing.md) |
+| 第五章：安全与展望 | API Key 安全、成本监控、Agent/RAG 展望 | [进入章节](05-security.md) |
 
 ## 建议阅读顺序
 

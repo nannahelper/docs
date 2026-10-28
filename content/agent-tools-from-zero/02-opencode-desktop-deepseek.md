@@ -4,7 +4,6 @@
 
 | 项目 | 内容 |
 |:---|:---|
-| 学习时长 | 12 分钟 |
 | 核心概念 | Desktop、Provider、API Key、模型、项目目录 |
 | 核心比喻 | API Key 是工作证，Provider 是对接窗口，模型是具体协作者 |
 | 实践任务 | 用 OpenCode Desktop 完成一次只读项目分析 |

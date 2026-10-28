@@ -8,16 +8,16 @@
 
 ## 学习路线
 
-| 章节 | 核心目标 | 入口 | 预计时长 |
-|:---|:---|:---|:---:|
-| 第 1 章 | 文档基础操作与排版 | [进入章节](01-document-basics.md) | 25 分钟 |
-| 第 2 章 | 样式与模板 | [进入章节](02-styles-and-templates.md) | 30 分钟 |
-| 第 3 章 | 表格与图形 | [进入章节](03-tables-and-graphics.md) | 25 分钟 |
-| 第 4 章 | 长文档编排 | [进入章节](04-long-documents.md) | 35 分钟 |
-| 第 5 章 | 邮件合并与自动化 | [进入章节](05-mail-merge.md) | 30 分钟 |
-| 第 6 章 | 协作与审阅 | [进入章节](06-collaboration.md) | 25 分钟 |
-| 第 7 章 | 高级技巧与故障排除 | [进入章节](07-advanced-tips.md) | 25 分钟 |
-| 第 8 章 | 综合实战项目 | [进入章节](08-final-project.md) | 45 分钟 |
+| 章节 | 核心目标 | 入口 |
+| :--- | :--- | :--- |
+| 第 1 章 | 文档基础操作与排版 | [进入章节](01-document-basics.md) |
+| 第 2 章 | 样式与模板 | [进入章节](02-styles-and-templates.md) |
+| 第 3 章 | 表格与图形 | [进入章节](03-tables-and-graphics.md) |
+| 第 4 章 | 长文档编排 | [进入章节](04-long-documents.md) |
+| 第 5 章 | 邮件合并与自动化 | [进入章节](05-mail-merge.md) |
+| 第 6 章 | 协作与审阅 | [进入章节](06-collaboration.md) |
+| 第 7 章 | 高级技巧与故障排除 | [进入章节](07-advanced-tips.md) |
+| 第 8 章 | 综合实战项目 | [进入章节](08-final-project.md) |
 
 ---
 

@@ -6,20 +6,20 @@
 
 | 课程 | 主要内容 | 入口 |
 |:---|:---|:---|
-| 互联网与浏览器 | 从连接 Wi-Fi 到网址、请求、开发者工具和网页排错；约 1.5–2 小时 | [进入课程](cyber-internet-basics/index.md) |
-| 账号安全与隐私 | 从第一次登录到密码、2FA、钓鱼、设备和 API Key；约 1.5–2 小时 | [进入课程](cyber-account-security/index.md) |
-| 搜索与信息判断 | 从写清问题到搜索、来源、AI 核验和事实报告；约 1.5–2 小时 | [进入课程](cyber-search-literacy/index.md) |
-| 命令行开发环境配置 | C/C++、Python、Git、Shell、包管理器和环境排错；约 4 小时 | [进入课程](cyber-environment-from-zero/index.md) |
-| Agent 工具入门 | OpenCode Desktop、DeepSeek API Key、CLI、权限和工具选型；约 4 小时 | [进入课程](agent-tools-from-zero/index.md) |
+| 互联网与浏览器 | 从连接 Wi-Fi 到网址、请求、开发者工具和网页排错 | [进入课程](cyber-internet-basics/index.md) |
+| 账号安全与隐私 | 从第一次登录到密码、2FA、钓鱼、设备和 API Key | [进入课程](cyber-account-security/index.md) |
+| 搜索与信息判断 | 从写清问题到搜索、来源、AI 核验和事实报告 | [进入课程](cyber-search-literacy/index.md) |
+| 命令行开发环境配置 | C/C++、Python、Git、Shell、包管理器和环境排错 | [进入课程](cyber-environment-from-zero/index.md) |
+| Agent 工具入门 | OpenCode Desktop、DeepSeek API Key、CLI、权限和工具选型 | [进入课程](agent-tools-from-zero/index.md) |
 
 ## 基础课程
 
 | 课程 | 适合人群 | 入口 |
 |:---|:---|:---|
-| Python 新手指南 | 没有系统编程经验的学习者；约 3–4 小时 | [进入课程](python-from-zero/index.md) |
-| SQL 新手指南 | 想学习数据库查询和数据处理的学习者；约 3–4 小时 | [进入课程](sql-from-zero/index.md) |
-| C 语言新手指南 | 想理解编译、内存和底层基础的学习者；约 4 小时 | [进入课程](c-from-zero/index.md) |
-| 调试与测试指南 | 想提高代码排错和质量保障能力的学习者；约 3–4 小时 | [进入课程](debugging-testing-from-zero/index.md) |
+| Python 新手指南 | 没有系统编程经验的学习者 | [进入课程](python-from-zero/index.md) |
+| SQL 新手指南 | 想学习数据库查询和数据处理的学习者 | [进入课程](sql-from-zero/index.md) |
+| C 语言新手指南 | 想理解编译、内存和底层基础的学习者 | [进入课程](c-from-zero/index.md) |
+| 调试与测试指南 | 想提高代码排错和质量保障能力的学习者 | [进入课程](debugging-testing-from-zero/index.md) |
 | Git 与 GitHub 团队协作 | 需要进行版本控制和团队协作的学习者 | [进入课程](git_github_from_zero/index.md) |
 
 ## 编程语言
@@ -73,4 +73,4 @@
 - **规划中**：已进入分类和课程索引，正文仍在补充。
 - **历史课程**：仍可阅读，但建议结合当前软件版本核对。
 
-进入课程后，课程首页会展示最后更新、适用版本、维护状态、学习时长、教材和章节目录。
+进入课程后，课程首页会展示最后更新、适用版本、维护状态、教材和章节目录。

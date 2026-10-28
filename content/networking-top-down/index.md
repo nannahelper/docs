@@ -17,7 +17,6 @@
 | 项目 | 内容 |
 |:---|:---|
 | **学习目标** | 掌握 8 章全部核心概念、协议原理与公式推导；能独立解答 408 计网部分选择题与综合大题 |
-| **预计时长** | 约 16–20 学时（快速学习；完整刷题与复习另计） |
 | **前置要求** | 基本的计算机操作知识；了解进程、端口等常识性概念 |
 | **适用版本** | 原书第 9 版（含 HTTP/3、QUIC、5G 等新内容） |
 | **知识体系** | 因特网基础、应用层、传输层、网络层（数据平面+控制平面）、链路层、无线移动、网络安全 |
@@ -29,16 +28,16 @@
 
 ## 学习路径
 
-| 章节 | 核心内容 | 408 权重 | 学时 |
-|:---|:---|:---:|:---:|
-| [第 1 章：计算机网络与因特网](01-network-and-internet.md) | 端系统、分组/电路交换、四种时延、分层与封装 | ★★★★★ | 1.5 |
-| [第 2 章：应用层](02-application-layer.md) | HTTP 家族、DNS、电子邮件、流媒体与 CDN、Socket | ★★★★★ | 2 |
-| [第 3 章：传输层](03-transport-layer.md) | 复用/解复用、RDT/GBN/SR、TCP、拥塞控制 | ★★★★★ | 3 |
-| [第 4 章：网络层·数据平面](04-network-layer-data-plane.md) | 路由器内部、IPv4 编址/CIDR/NAT、IPv6、SDN | ★★★★★ | 2.5 |
-| [第 5 章：网络层·控制平面](05-network-layer-control-plane.md) | Dijkstra、距离向量、OSPF、BGP、ICMP、SNMP | ★★★★★ | 2 |
-| [第 6 章：链路层与局域网](06-link-layer-and-lans.md) | 差错检测(CRC)、CSMA/CD、以太网、交换机、VLAN | ★★★★★ | 2 |
-| [第 7 章：无线与移动网络](07-wireless-and-mobile.md) | 802.11 WiFi、5G、移动性、蓝牙/卫星/IoT | ★★☆ | 1.5 |
-| [第 8 章：网络安全](08-security.md) | 密码学、哈希/签名、TLS、IPsec、防火墙/IDS | ★★☆ | 1.5 |
+| 章节 | 核心内容 | 408 权重 |
+| :--- | :--- | :---: |
+| [第 1 章：计算机网络与因特网](01-network-and-internet.md) | 端系统、分组/电路交换、四种时延、分层与封装 | ★★★★★ |
+| [第 2 章：应用层](02-application-layer.md) | HTTP 家族、DNS、电子邮件、流媒体与 CDN、Socket | ★★★★★ |
+| [第 3 章：传输层](03-transport-layer.md) | 复用/解复用、RDT/GBN/SR、TCP、拥塞控制 | ★★★★★ |
+| [第 4 章：网络层·数据平面](04-network-layer-data-plane.md) | 路由器内部、IPv4 编址/CIDR/NAT、IPv6、SDN | ★★★★★ |
+| [第 5 章：网络层·控制平面](05-network-layer-control-plane.md) | Dijkstra、距离向量、OSPF、BGP、ICMP、SNMP | ★★★★★ |
+| [第 6 章：链路层与局域网](06-link-layer-and-lans.md) | 差错检测(CRC)、CSMA/CD、以太网、交换机、VLAN | ★★★★★ |
+| [第 7 章：无线与移动网络](07-wireless-and-mobile.md) | 802.11 WiFi、5G、移动性、蓝牙/卫星/IoT | ★★☆ |
+| [第 8 章：网络安全](08-security.md) | 密码学、哈希/签名、TLS、IPsec、防火墙/IDS | ★★☆ |
 
 ---
 

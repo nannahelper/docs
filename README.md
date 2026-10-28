@@ -35,9 +35,9 @@
 
 | 教程 | 内容 |
 |:---|:---|
-| [互联网与浏览器](content/cyber-internet-basics/index.md) | 从连接 Wi-Fi 开始，学习网址、请求、开发者工具、登录和网页排错；约 1.5–2 小时 |
-| [账号安全与隐私](content/cyber-account-security/index.md) | 从第一次登录开始，学习密码、2FA、钓鱼、设备隐私和 API Key；约 1.5–2 小时 |
-| [搜索与信息判断](content/cyber-search-literacy/index.md) | 从写清问题开始，学习搜索、来源、资料卡、AI 核验和事实报告；约 1.5–2 小时 |
+| [互联网与浏览器](content/cyber-internet-basics/index.md) | 从连接 Wi-Fi 开始，学习网址、请求、开发者工具、登录和网页排错 |
+| [账号安全与隐私](content/cyber-account-security/index.md) | 从第一次登录开始，学习密码、2FA、钓鱼、设备隐私和 API Key |
+| [搜索与信息判断](content/cyber-search-literacy/index.md) | 从写清问题开始，学习搜索、来源、资料卡、AI 核验和事实报告 |
 | [命令行开发环境配置](content/cyber-environment-from-zero/index.md) | 以 C/C++ 为主线，补齐 Python、Git、Shell、包管理器和环境排错 |
 | [Agent 工具入门](content/agent-tools-from-zero/index.md) | 以 OpenCode Desktop 接入 DeepSeek API Key 为例，学习 GUI、CLI、权限和安全 |
 
@@ -152,12 +152,12 @@
 
 #### 新增基础课程
 
-| 教程 | 简介 | 学习时长 |
-|:---|:---|:---|
-| [Python 新手指南](content/python-from-zero/index.md) | 从运行第一段代码到完成命令行记账本 | 约 3–4 小时 |
-| [SQL 新手指南](content/sql-from-zero/index.md) | 从第一条查询到学习记录数据库 | 约 3–4 小时 |
-| [C 语言新手指南](content/c-from-zero/index.md) | 从编译、指针到内存和通讯录项目 | 约 4 小时 |
-| [调试与测试指南](content/debugging-testing-from-zero/index.md) | 从读懂错误到 pytest 和持续集成 | 约 3–4 小时 |
+| 教程 | 简介 |
+| :--- | :--- |
+| [Python 新手指南](content/python-from-zero/index.md) | 从运行第一段代码到完成命令行记账本 |
+| [SQL 新手指南](content/sql-from-zero/index.md) | 从第一条查询到学习记录数据库 |
+| [C 语言新手指南](content/c-from-zero/index.md) | 从编译、指针到内存和通讯录项目 |
+| [调试与测试指南](content/debugging-testing-from-zero/index.md) | 从读懂错误到 pytest 和持续集成 |
 
 ---
 
@@ -319,7 +319,7 @@
 
 #### PyTorch 入门指南
 
-基于 PyTorch 中文文档，在约 5–6 小时的主线学习中系统了解深度学习框架。从张量操作到完整项目实战，每个知识点配备示例代码。
+基于 PyTorch 中文文档，系统了解深度学习框架。从张量操作到完整项目实战，每个知识点配备示例代码。
 
 | 章节 | 内容 |
 |:---|:---|
