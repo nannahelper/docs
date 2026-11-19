@@ -7,5 +7,6 @@
 <div class="course-grid">
 <a class="course-card" href="/docs/llm_from_zero_with_python/00-llm_api_dev_index/"><span class="course-tag">AI 应用</span><h3>零基础入门 LLM API</h3><p>从 API 调用、Chatbot 到批量处理和安全。</p><span class="course-meta">6 章</span></a>
 <a class="course-card" href="/docs/neural-network-from-zero/"><span class="course-tag">模型原理</span><h3>神经网络与深度学习</h3><p>用直觉和数学理解梯度、反向传播与 Transformer。</p><span class="course-meta">8 章</span></a>
+<a class="course-card" href="/docs/grokking-deep-learning/"><span class="course-tag">学习实验</span><h3>南哪助手和你一起学《深度学习图解》</h3><p>从公式直觉到 NumPy 实现，逐步理解前向传播、梯度下降和反向传播。</p><span class="course-meta">16 章 · NumPy 实验</span></a>
 <a class="course-card" href="/docs/pytorch-from-zero/"><span class="course-tag">深度学习框架</span><h3>PyTorch 入门指南</h3><p>从张量和自动求导走向完整训练项目。</p><span class="course-meta">8 章</span></a>
 </div>

@@ -215,6 +215,25 @@ nav:
               - 第 6 章：Transformer 架构: neural-network-from-zero/06-transformer-architecture.md
               - 第 7 章：注意力机制: neural-network-from-zero/07-attention-mechanism.md
               - 第 8 章：LLM 如何记忆: neural-network-from-zero/08-how-llms-memorize.md
+          - 南哪助手和你一起学《深度学习图解》:
+              - 课程首页: grokking-deep-learning/index.md
+              - 第 1 章：为什么学习深度学习: grokking-deep-learning/chapters/01-introduction.md
+              - 第 2 章：机器如何学习: grokking-deep-learning/chapters/02-learning-basics.md
+              - 第 3 章：前向传播: grokking-deep-learning/chapters/03-forward-propagation.md
+              - 第 4 章：梯度下降: grokking-deep-learning/chapters/04-gradient-descent.md
+              - 第 5 章：泛化梯度下降: grokking-deep-learning/chapters/05-generalized-gradient-descent.md
+              - 第 6 章：反向传播: grokking-deep-learning/chapters/06-backpropagation.md
+              - 第 7 章：理解神经网络: grokking-deep-learning/chapters/07-understanding-networks.md
+              - 第 8 章：正则化与批量训练: grokking-deep-learning/chapters/08-regularization-and-batching.md
+              - 第 9 章：激活函数: grokking-deep-learning/chapters/09-activation-functions.md
+              - 第 10 章：卷积神经网络: grokking-deep-learning/chapters/10-convolutional-neural-networks.md
+              - 第 11 章：词嵌入: grokking-deep-learning/chapters/11-word-embeddings.md
+              - 第 12–16 章：后续路线: grokking-deep-learning/chapters/12-16-roadmap.md
+              - 代码实验区: grokking-deep-learning/labs/README.md
+              - 学习进度: grokking-deep-learning/progress.md
+              - 章节笔记: grokking-deep-learning/notes.md
+              - 问题日志: grokking-deep-learning/questions.md
+              - 资源与环境: grokking-deep-learning/resources.md
           - PyTorch 入门指南:
               - 课程首页: pytorch-from-zero/index.md
               - 第 1 章：张量基础操作: pytorch-from-zero/01-tensor-basics.md

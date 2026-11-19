@@ -41,6 +41,7 @@
 | 网络爬虫新手指南 | HTTP、网页解析、存储和合规采集 | [进入课程](web-crawler-from-zero/index.md) |
 | 前端入门指南 | HTML、CSS、JavaScript 和页面实战 | [进入课程](frontend-from-zero/index.md) |
 | 神经网络与深度学习 | 神经网络、反向传播和 Transformer | [进入课程](neural-network-from-zero/index.md) |
+| 《深度学习图解》伴学课程 | 公式直觉、NumPy、前向传播、梯度下降和反向传播 | [进入课程](grokking-deep-learning/index.md) |
 | PyTorch 入门指南 | 张量、自动求导、训练和项目实践 | [进入课程](pytorch-from-zero/index.md) |
 | 线性规划与优化方法 | 建模、图解法、单纯形法和灵敏度分析 | [进入课程](linear-programming-from-zero/index.md) |
 | Docker 新手指南 | 镜像、容器、网络、数据卷和 Compose | [进入课程](docker-from-zero/index.md) |
