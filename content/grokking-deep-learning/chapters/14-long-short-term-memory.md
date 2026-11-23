@@ -188,4 +188,3 @@ print([gate.min() for gate in gates_tuple])
 ## 一句话复述
 
 LSTM 用细胞状态保存长期信息，用多个可学习的门决定忘记什么、写入什么以及当前输出什么。
-

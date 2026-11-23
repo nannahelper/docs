@@ -193,4 +193,3 @@ def recurrent_forward(sequence, W_x, W_h, b):
 ## 一句话复述
 
 循环层用同一套参数逐步读取序列，并通过隐藏状态把有限的历史信息带到下一个时间步。
-
