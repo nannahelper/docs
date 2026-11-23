@@ -29,7 +29,12 @@
 | 第 9 章 | 建模概率与非线性：激活函数 | [进入章节](chapters/09-activation-functions.md) |
 | 第 10 章 | 关于边和角的神经学习：卷积神经网络 | [进入章节](chapters/10-convolutional-neural-networks.md) |
 | 第 11 章 | 理解语言的神经网络：词嵌入 | [进入章节](chapters/11-word-embeddings.md) |
-| 第 12–16 章 | 循环层、框架、LSTM、联邦学习和后续方向 | [进入路线图](chapters/12-16-roadmap.md) |
+| 第 12 章 | 像莎士比亚一样写作：循环层 | [进入章节](chapters/12-recurrent-layers.md) |
+| 第 13 章 | 介绍自动优化：搭建深度学习框架 | [进入章节](chapters/13-automatic-optimization.md) |
+| 第 14 章 | 学习像莎士比亚一样写作：长短期记忆网络 | [进入章节](chapters/14-long-short-term-memory.md) |
+| 第 15 章 | 在看不见的数据上做深度学习：联邦学习 | [进入章节](chapters/15-federated-learning.md) |
+| 第 16 章 | 往哪里去：简要指引 | [进入章节](chapters/16-where-to-go.md) |
+| 12–16 总览 | 五章之间的学习顺序 | [进入总览](chapters/12-16-roadmap.md) |
 
 ## 当前重点
 

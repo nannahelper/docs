@@ -17,7 +17,7 @@
 | 学习主线 | 手算最小例子 → NumPy 实现 → 解释结果 |
 | 适用版本 | Python 3.x、NumPy 1.x/2.x；Notebook 以本地环境为准 |
 | 维护状态 | 持续补充中 |
-| 最后更新 | 2026-11-19 |
+| 最后更新 | 2026-11-23 |
 | 反馈入口 | [GitHub Issues](https://github.com/nannahelper/docs/issues) |
 
 ## 使用方式
@@ -46,7 +46,12 @@
 | [第 9 章：建模概率与非线性：激活函数](chapters/09-activation-functions.md) | 非线性从哪里来？ | 补强 |
 | [第 10 章：关于边和角的神经学习：卷积神经网络](chapters/10-convolutional-neural-networks.md) | 网络如何识别局部模式？ | 补强 |
 | [第 11 章：理解语言的神经网络：词嵌入](chapters/11-word-embeddings.md) | 词如何变成可计算的向量？ | 补强 |
-| [第 12–16 章：后续路线](chapters/12-16-roadmap.md) | 循环层、自动优化、长短期记忆网络、联邦学习与下一步方向 | 路线 |
+| [第 12 章：像莎士比亚一样写作：循环层](chapters/12-recurrent-layers.md) | 网络如何沿时间步保留上下文？ | 扩展 |
+| [第 13 章：介绍自动优化：搭建深度学习框架](chapters/13-automatic-optimization.md) | 如何把层、梯度和优化器组织起来？ | 扩展 |
+| [第 14 章：学习像莎士比亚一样写作：长短期记忆网络](chapters/14-long-short-term-memory.md) | 如何让序列模型保留长期信息？ | 扩展 |
+| [第 15 章：在看不见的数据上做深度学习：联邦学习](chapters/15-federated-learning.md) | 数据不能集中时如何协作训练？ | 扩展 |
+| [第 16 章：往哪里去：简要指引](chapters/16-where-to-go.md) | 学完全书后怎样选择下一步？ | 路线 |
+| [第 12–16 章总览](chapters/12-16-roadmap.md) | 五章之间如何衔接？ | 导航 |
 
 ## 代码实验
 
