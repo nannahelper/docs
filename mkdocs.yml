@@ -360,6 +360,12 @@ nav:
               - 质量评估报告: mythical_man_month/quality_report.md
       - 工具与生产力:
           - 分类概览: categories/tools-and-productivity.md
+          - NJUtable 在线表格与表单:
+              - 课程首页: njutable-from-zero/index.md
+              - 第 1 章：创建表格和字段: njutable-from-zero/01-table-and-fields.md
+              - 第 2 章：创建填写表单: njutable-from-zero/02-build-form.md
+              - 第 3 章：设置权限并分享: njutable-from-zero/03-permissions-and-sharing.md
+              - 第 4 章：排错与安全: njutable-from-zero/04-troubleshooting-and-safety.md
           - Git 与 GitHub 团队协作:
               - 课程首页: git_github_from_zero/index.md
               - 第 1 章：认识版本控制与环境配置: git_github_from_zero/01-git-github-intro.md

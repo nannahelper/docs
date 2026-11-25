@@ -11,6 +11,7 @@
 - `vscode-create-venv.png` — VSCode 命令面板创建 venv 环境
 - `deepseek-api-key.png` — DeepSeek 平台 API Keys 页面
 - `opencode-desktop-settings.png` — OpenCode Desktop 设置、Provider 与模型入口示例
+- `njutable/` — NJUtable 建表、字段、表单、权限和分享界面截图
 
 ## 来源记录
 
@@ -26,3 +27,4 @@
 | `vscode-create-venv.png` | [Visual Studio Code：Python environments](https://code.visualstudio.com/docs/python/environments) |
 | `deepseek-api-key.png` | [Apidog：How to Use the DeepSeek API](https://apidog.com/blog/how-to-use-deepseek-api-r1-v3/) |
 | `opencode-desktop-settings.png` | [《试用 opencode 一周，我把 Claude Code 扔了》](https://juejin.cn/post/7599965904617242670) 中的 OpenCode Desktop 简体中文界面截图；用于定位设置入口和打开项目按钮 |
+| `njutable/` | 根据教程维护者提供的操作说明整理；用于标注建表和表单配置入口 |

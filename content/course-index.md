@@ -54,6 +54,7 @@
 
 | 课程 | 主要内容 | 入口 |
 |:---|:---|:---|
+| NJUtable 在线表格与表单 | 字段设计、表单、权限、分享和排错 | [进入课程](njutable-from-zero/index.md) |
 | Markdown 新手指南 | 技术文档、README 和协作文档 | [进入课程](markdown-from-zero/index.md) |
 | LaTeX 新手指南 | 学术排版、公式、引用和作品集 | [进入课程](latex-from-zero/index.md) |
 | MkDocs 与 GitHub Pages | 文档站搭建、配置和部署 | [进入课程](mkdocs-from-zero/index.md) |

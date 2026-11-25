@@ -6,6 +6,7 @@
 
 <div class="course-grid">
 <a class="course-card" href="/docs/git_github_from_zero/"><span class="course-tag">协作工具</span><h3>Git 与 GitHub 团队协作</h3><p>从本地版本控制到分支、协作和代码审查。</p><span class="course-meta">8 章</span></a>
+<a class="course-card" href="/docs/njutable-from-zero/"><span class="course-tag">在线协作</span><h3>NJUtable 在线表格与表单</h3><p>创建数据表、设计填写表单、设置权限并分享链接。</p><span class="course-meta">4 章</span></a>
 <a class="course-card" href="/docs/markdown-from-zero/"><span class="course-tag">文档写作</span><h3>Markdown 新手指南</h3><p>写出清晰、可读、可维护的技术文档。</p><span class="course-meta">4 章</span></a>
 <a class="course-card" href="/docs/latex-from-zero/"><span class="course-tag">学术写作</span><h3>LaTeX 新手指南</h3><p>制作论文、报告、简历和专业排版文档。</p><span class="course-meta">4 章</span></a>
 <a class="course-card" href="/docs/mkdocs-from-zero/"><span class="course-tag">发布工具</span><h3>MkDocs 与 GitHub Pages</h3><p>从 Markdown 到一个可以在线访问的文档网站。</p><span class="course-meta">7 章</span></a>

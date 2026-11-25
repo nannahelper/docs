@@ -92,6 +92,17 @@
 | 部署上线 | GitHub 仓库创建、GitHub Actions CI/CD、GitHub Pages 发布 |
 | 格式规范检查清单 | 粗体间距规则、自动化检查工具、写作工作流建议 |
 
+#### NJUtable 在线表格与表单使用指南
+
+从一张空白表开始，完成字段设计、表单创建、登录限制、链接分享和常见问题排查。
+
+| 章节 | 内容 |
+|:---|:---|
+| 创建表格和字段 | 文本、单选和文件上传字段 |
+| 创建填写表单 | 传统表单、子表选择和字段布局 |
+| 设置权限并分享 | 登录限制、填写链接和转发前测试 |
+| 排错与安全 | 字段缺失、链接错误、权限和数据管理 |
+
 #### Microsoft Word 高效使用指南
 
 从文档排版到自动化，系统掌握 Word 的专业文档制作能力。适合已有基本操作经验的用户进阶提升。
@@ -494,6 +505,7 @@
     ├── markdown-from-zero/          # Markdown 新手指南
     ├── latex-from-zero/             # LaTeX 新手指南
     ├── mkdocs-from-zero/            # MkDocs 与 GitHub Pages 部署
+    ├── njutable-from-zero/          # NJUtable 在线表格与表单
     ├── office-word-from-zero/       # Microsoft Word 高效使用
     ├── office-excel-from-zero/      # Microsoft Excel 高效使用
     ├── office-powerpoint-from-zero/ # Microsoft PowerPoint 高效使用
